@@ -300,11 +300,15 @@ can be passed to the :py:meth:`~.AbstractGraphicsContext.set_font` method.
 ~~~~~~~~~~~~~~~~
 
 If you don't want to rely on the font description parsing in ``KivaFont``, you
-can also manually construct a :class:`kiva.fonttools.font.Font` instance. Once
+can also manually construct a :class:`~kiva.fonttools.font.Font` instance. Once
 you have a ``Font`` instance, it can be passed to the
-:py:meth:`~.AbstractGraphicsContext.set_font` method.
+:py:meth:`~.AbstractGraphicsContext.set_font` method.  Note that
+:class:`~kiva.fonttools.font.Font` is an expression of the *desired* font.
+The actual font that is rendererd depends on the capabilities of the Kiva
+backend, the operating system, and the fonts actually installed on the user's
+system.
 
-``Font(face_name="", size=12, family=SWISS, weight=NORMAL, style=NORMAL)``
+``Font(face_name="", size=12, family=SWISS, weight=WEIGHT_NORMAL, style=NORMAL)``
 
 ``face_name`` is the font's name: "Arial", "Webdings", "Verdana", etc.
 
@@ -315,8 +319,12 @@ you have a ``Font`` instance, it can be passed to the
 If ``face_name`` is empty, the value of ``family`` will be used to select the
 desired font.
 
-``weight`` is a constant from :py:mod:`kiva.constants`. Pick from ``NORMAL`` or
-``BOLD``.
+``weight`` is a weight constant from :py:mod:`kiva.constants`. Pick from
+``WEIGHT_NORMAL`` or ``WEIGHT_BOLD``.  Some backends support additional weights
+``WEIGHT_THIN``, ``WEIGHT_EXTRALIGHT``, ``WEIGHT_LIGHT``, ``WEIGHT_MEDIUM``,
+``WEIGHT_SEMIBOLD``, ``WEIGHT_BOLD``, ``WEIGHT_EXTRABOLD``, ``WEIGHT_HEAVY``,
+``WEIGHT_EXTRAHEAVY``.  Backends that only know about bold and normal weights
+treat any weight of semi-bold or more as bold, and all others as normal weight.
 
 ``style`` is a constant from :py:mod:`kiva.constants`. Pick from ``NORMAL`` or
 ``ITALIC``.
