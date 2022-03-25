@@ -966,25 +966,22 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             A device-specific font object. In this case, a cairo FontFace
             object. It's not clear how this can be used right now.
         """
-        if font.weight in (constants.BOLD, constants.BOLD_ITALIC):
+        # Cairo only handles bold/normal weights
+        if font.is_bold():
             weight = cairo.FONT_WEIGHT_BOLD
         else:
             weight = cairo.FONT_WEIGHT_NORMAL
 
-        if font.style in (constants.ITALIC, constants.BOLD_ITALIC):
+        if font.style in contants.italic_styles:
             style = cairo.FONT_SLANT_ITALIC
         else:
             style = cairo.FONT_SLANT_NORMAL
 
-        face_name = font.face_name
+        face_name = font.findfontname()
 
         ctx = self._ctx
         ctx.select_font_face(face_name, style, weight)
         ctx.set_font_size(font.size)
-        # facename = font.face_name
-        # slant = font.style
-
-        # self._ctx.set_font_face(font)
 
     def set_font_size(self, size):
         """ Sets the size of the font.
