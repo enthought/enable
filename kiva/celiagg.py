@@ -661,9 +661,7 @@ class GraphicsContext(object):
             style = (font.style in constants.italic_styles)
 
             # Win32 font selection is handled by the OS
-            self.font = agg.Font(
-                font.findfontname(), font.size, weight, italic
-            )
+            self.font = agg.Font(font.findfontname(), font.size, weight, style)
         else:
             # FreeType font selection is handled by kiva
             spec = font.findfont()
