@@ -140,38 +140,38 @@ class TestFont(unittest.TestCase):
         font = Font()
         font.weight = BOLD
         with self.assertWarns(DeprecationWarning):
-            query = font.findfont()
-        self.assertEqual(query.weight, WEIGHT_BOLD)
+            query = font._make_font_query()
+        self.assertEqual(query.get_weight(), WEIGHT_BOLD)
 
         # Don't use BOLD as a style
         font = Font()
         font.style = BOLD
         with self.assertWarns(DeprecationWarning):
-            query = font.findfont()
-        self.assertEqual(query.weight, WEIGHT_BOLD)
-        self.assertEqual(query.style, "normal")
+            query = font._make_font_query()
+        self.assertEqual(query.get_weight(), WEIGHT_BOLD)
+        self.assertEqual(query.get_style(), "normal")
 
         # Don't use BOLD_ITALIC as a style
         font = Font()
         font.style = BOLD_ITALIC
         with self.assertWarns(DeprecationWarning):
-            query = font.findfont()
-        self.assertEqual(query.weight, WEIGHT_BOLD)
-        self.assertEqual(query.style, "italic")
+            query = font._make_font_query()
+        self.assertEqual(query.get_weight(), WEIGHT_BOLD)
+        self.assertEqual(query.get_style(), "italic")
 
         # Ignore BOLD style if weight is not normal
         font = Font()
         font.weight = WEIGHT_LIGHT
         font.style = BOLD
         with self.assertWarns(DeprecationWarning):
-            query = font.findfont()
-        self.assertEqual(query.weight, WEIGHT_LIGHT)
-        self.assertEqual(query.style, "normal")
+            query = font._make_font_query()
+        self.assertEqual(query.get_weight(), WEIGHT_LIGHT)
+        self.assertEqual(query.get_style(), "normal")
 
         font = Font()
         font.weight = WEIGHT_LIGHT
         font.style = BOLD_ITALIC
         with self.assertWarns(DeprecationWarning):
-            query = font.findfont()
-        self.assertEqual(query.weight, WEIGHT_LIGHT)
-        self.assertEqual(query.style, "italic")
+            query = font._make_font_query()
+        self.assertEqual(query.get_weight(), WEIGHT_LIGHT)
+        self.assertEqual(query.get_style(), "italic")

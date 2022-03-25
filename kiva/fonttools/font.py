@@ -16,7 +16,7 @@ import warnings
 from kiva.constants import (
     BOLD, DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN,
     SCRIPT, SWISS, TELETYPE, WEIGHT_BOLD, WEIGHT_MEDIUM, WEIGHT_NORMAL,
-    bold_styles, italic_syles
+    bold_styles, italic_styles
 )
 from kiva.fonttools._query import FontQuery
 from kiva.fonttools.font_manager import default_font_manager
@@ -44,7 +44,7 @@ def str_to_font(fontspec):
     point_size = 10
     family = DEFAULT
     style = NORMAL
-    weight = NORMAL
+    weight = WEIGHT_NORMAL
     underline = 0
     facename = []
     for word in fontspec.split():
@@ -106,14 +106,6 @@ class Font(object):
                 or not isinstance(underline, int)
                 or not isinstance(encoding, int)):
             raise RuntimeError("Bad value in Font() constructor.")
-
-        # This can be removed in Enable 7
-        if weight == BOLD:
-            weight = WEIGHT_BOLD
-            warnings.warn(
-                "Use WEIGHT_BOLD instead of BOLD for Font.weight",
-                DeprecationWarning
-            )
 
         self.face_name = face_name
         self.size = size
@@ -202,13 +194,15 @@ class Font(object):
                 DeprecationWarning
             )
             return WEIGHT_BOLD
-        elif self.weight == WEIGHT_NORMAL and self.style in bold_styles:
+        elif self.style in bold_styles:
             warnings.warn(
                 "Set Font.weight to WEIGHT_BOLD instead of Font.style to "
                 "BOLD or BOLD_STYLE",
                 DeprecationWarning
             )
-            return WEIGHT_BOLD
+            # if weight is default, and style is bold, report as bold
+            if self.weight == WEIGHT_NORMAL:
+                return WEIGHT_BOLD
 
         return self.weight
 
