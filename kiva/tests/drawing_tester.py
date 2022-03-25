@@ -15,7 +15,9 @@ import tempfile
 import numpy
 from PIL import Image
 
-from kiva.api import MODERN, Font
+from kiva.api import (
+    DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN, SCRIPT, TELETYPE, Font
+)
 
 
 class DrawingTester(object):
@@ -77,12 +79,20 @@ class DrawingTester(object):
             self.gc.stroke_path()
 
     def test_text(self):
-        with self.draw_and_check():
-            font = Font(family=MODERN)
-            font.size = 24
-            self.gc.set_font(font)
-            self.gc.set_text_position(23, 67)
-            self.gc.show_text("hello kiva")
+        for family in [
+                DECORATIVE, DEFAULT, ITALIC, MODERN, ROMAN, SCRIPT, TELETYPE]:
+            for weight in range(100, 1001, 100):
+                for style in [NORMAL, ITALIC]:
+                    with self.subTest(family=family, weight=weight, style=style):
+                        self.gc = self.create_graphics_context()
+                        with self.draw_and_check():
+                            font = Font(family=family)
+                            font.size = 24
+                            font.weight = weight
+                            font.style = style
+                            self.gc.set_font(font)
+                            self.gc.set_text_position(23, 67)
+                            self.gc.show_text("hello kiva")
 
     def test_circle_fill(self):
         with self.draw_and_check():
@@ -152,7 +162,7 @@ class DrawingTester(object):
         """
         raise NotImplementedError()
 
-    def create_graphics_context(self, width, length):
+    def create_graphics_context(self, width=300, length=300):
         """ Create the desired graphics context
         """
         raise NotImplementedError()
@@ -170,7 +180,7 @@ class DrawingImageTester(DrawingTester):
         self.gc.set_fill_color((1.0, 0.0, 0.0))
         self.gc.set_line_width(5)
 
-    def create_graphics_context(self, width, length, pixel_scale):
+    def create_graphics_context(self, width=600, length=600, pixel_scale=1.0):
         """ Create the desired graphics context
         """
         raise NotImplementedError()

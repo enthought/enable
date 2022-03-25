@@ -633,7 +633,13 @@ class GraphicsContext(GraphicsContextBase):
             face_name = "Helvetica"
 
         # Apply the style as a suffix to the face name
-        face_name += font_styles.get(font.style, "")
+        suffix = ""
+        if font.is_bold():
+            suffix += "Bold"
+        if font.style in constants.italic_styles:
+            suffix += 'Oblique'
+        if suffix:
+            face_name += '-' + suffix
         try:
             self.gc.setFont(face_name, font.size)
         except KeyError:

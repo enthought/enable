@@ -32,7 +32,7 @@ class TestGLDrawing(DrawingImageTester, unittest.TestCase):
             del self.window
         DrawingImageTester.tearDown(self)
 
-    def create_graphics_context(self, width, height, pixel_scale):
+    def create_graphics_context(self, width=600, height=600, pixel_scale=2.0):
         from kiva.gl import GraphicsContext
 
         # XXX: Ignore scaling in the unit tests so this works on CI.

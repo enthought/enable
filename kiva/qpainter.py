@@ -44,9 +44,29 @@ draw_modes[constants.EOF_FILL_STROKE] = QtCore.Qt.WindingFill
 
 font_styles = {}
 font_styles["regular"] = constants.NORMAL
-font_styles["bold"] = constants.BOLD
+font_styles["bold"] = constants.NORMAL
 font_styles["italic"] = constants.ITALIC
-font_styles["bold italic"] = constants.BOLD_ITALIC
+font_styles["bold italic"] = constants.ITALIC
+
+font_weights = {
+    "regular": constants.WEIGHT_NORMAL,
+    "bold": constants.WEIGHT_BOLD,
+    "italic": constants.WEIGHT_NORMAL,
+    "bold italic": constants.WEIGHT_BOLD,
+}
+
+weight_to_qt_weight = {
+    constants.WEIGHT_THIN: QtGui.QFont.Weight.Thin,
+    constants.WEIGHT_EXTRALIGHT: QtGui.QFont.Weight.ExtraLight,
+    constants.WEIGHT_LIGHT: QtGui.QFont.Weight.Light,
+    constants.WEIGHT_NORMAL: QtGui.QFont.Weight.Normal,
+    constants.WEIGHT_MEDIUM: QtGui.QFont.Weight.Medium,
+    constants.WEIGHT_SEMIBOLD: QtGui.QFont.Weight.DemiBold,
+    constants.WEIGHT_BOLD: QtGui.QFont.Weight.Bold,
+    constants.WEIGHT_EXTRABOLD: QtGui.QFont.Weight.ExtraBold,
+    constants.WEIGHT_HEAVY: QtGui.QFont.Weight.Black,
+    constants.WEIGHT_EXTRAHEAVY: 99,
+}
 
 gradient_coord_modes = {}
 gradient_coord_modes["userSpaceOnUse"] = QtGui.QGradient.LogicalMode
@@ -622,7 +642,8 @@ class GraphicsContext(object):
         """ Set the font for the current graphics context.
         """
         style = font_styles.get(style, constants.NORMAL)
-        font = Font(name, size=size, style=style)
+        weight = font_weights.get(style, constants.WEIGHT_NORMAL)
+        font = Font(name, size=size, style=style, weight=weight)
         self.set_font(font)
 
     def set_font(self, font):
@@ -630,10 +651,11 @@ class GraphicsContext(object):
         """
         qfont = QtGui.QFont(font.face_name, font.size)
 
-        if font.style in (constants.BOLD, constants.BOLD_ITALIC):
-            qfont.setBold(True)
-        if font.style in (constants.ITALIC, constants.BOLD_ITALIC):
-            qfont.setItalic(True)
+        weight = font._get_weight()
+        qfont.setWeight(weight_to_qt_weight[weight])
+
+        qfont.setItalic(font.style in constants.italic_styles)
+
         self.gc.setFont(qfont)
 
     def set_font_size(self, size):

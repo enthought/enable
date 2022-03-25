@@ -17,7 +17,7 @@ is_not_macos = not sys.platform == "darwin"
 
 @unittest.skipIf(is_not_macos, "Not macOS")
 class TestQuartzDrawing(DrawingImageTester, unittest.TestCase):
-    def create_graphics_context(self, width, height, pixel_scale):
+    def create_graphics_context(self, width=600, height=600, pixel_scale=2.0):
         from kiva.quartz import ABCGI
 
         return ABCGI.CGBitmapContext((width, height), base_pixel_scale=pixel_scale)

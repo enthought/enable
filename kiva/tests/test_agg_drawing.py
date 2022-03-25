@@ -16,7 +16,7 @@ from kiva.image import GraphicsContext
 
 
 class TestAggDrawing(DrawingImageTester, unittest.TestCase):
-    def create_graphics_context(self, width, height, pixel_scale):
+    def create_graphics_context(self, width=600, height=600, pixel_scale=2.0):
         return GraphicsContext((width, height), base_pixel_scale=pixel_scale)
 
     def test_save_dpi(self):
