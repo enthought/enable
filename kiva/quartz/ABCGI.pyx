@@ -808,7 +808,7 @@ cdef class CGContext:
             constants.BOLD: 'bold',
             constants.ITALIC: 'italic',
             constants.BOLD_ITALIC: 'bold italic',
-        }[font.weight | font.style]
+        }[font.is_bold() | font.style]
         self.select_font(font.face_name, font.size, style=style)
 
     def set_font_size(self, float size):
