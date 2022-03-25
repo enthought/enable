@@ -66,7 +66,7 @@ def init_constants():
     font_styles = {"italic": kc.ITALIC}
 
     # Mapping of strings to Kiva font weights:
-    font_weights = {"bold": kc.BOLD}
+    font_weights = {"bold": kc.WEIGHT_BOLD}
 
     default_face = {
         kc.SWISS: "Arial",

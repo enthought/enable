@@ -53,7 +53,7 @@ class ToolkitEditorFactory(EditorFactory):
         font = editor.value
         weight = (
             wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD
-        )[font.weight == kc.BOLD]
+        )[font.weight == kc.WEIGHT_BOLD]
         style = (
             wx.FONTSTYLE_NORMAL, wx.FONTSTYLE_ITALIC
         )[font.style == kc.ITALIC]
@@ -96,7 +96,7 @@ class ToolkitEditorFactory(EditorFactory):
                 wx.FONTFAMILY_MODERN: kc.MODERN,
             }.get(font.GetFamily(), kc.SWISS),
             weight=(
-                kc.NORMAL, kc.BOLD
+                kc.WEIGHT_NORMAL, kc.WEIGHT_BOLD
             )[font.GetWeight() == wx.FONTWEIGHT_BOLD],
             style=(
                 kc.NORMAL, kc.ITALIC
@@ -114,7 +114,7 @@ class ToolkitEditorFactory(EditorFactory):
         """
         import kiva.constants as kc
 
-        weight = {kc.BOLD: " Bold"}.get(font.weight, "")
+        weight = {kc.WEIGHT_BOLD: " Bold"}.get(font.weight, "")
         style = {kc.ITALIC: " Italic"}.get(font.style, "")
         underline = " Underline" if font.underline != 0 else ""
 
