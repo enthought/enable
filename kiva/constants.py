@@ -56,6 +56,10 @@ BOLD = 1
 ITALIC = 2
 BOLD_ITALIC = 3
 
+# convenience sets for styles
+bold_styles = {BOLD, BOLD_ITALIC}
+italic_styles = {ITALIC, BOLD_ITALIC}
+
 # Font families, as defined by the Windows API, and their CSS equivalents
 DEFAULT = 0
 SWISS = 1  # Sans-serif
