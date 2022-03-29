@@ -13,7 +13,6 @@ demo programs have to use.
 """
 
 from traits.api import HasTraits, Instance
-from traits.etsconfig.api import ETSConfig
 from traitsui.api import Item, View
 
 from enable.api import Component, ComponentEditor

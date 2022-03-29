@@ -20,6 +20,7 @@ from pyface.timer.api import DoLaterTimer
 
 
 # Define a toolkit-specific function for determining the global mouse position
+# XXX this probably belongs in Pyface's SystemMetrics or something similar.
 if toolkit.toolkit == "wx":
     import wx
 
@@ -46,7 +47,7 @@ else:
     def GetGlobalMousePosition():
         raise NotImplementedError(
             "GetGlobalMousePosition is not defined for"
-            "toolkit '%s'." % ETSConfig.toolkit
+            "toolkit '%s'." % toolkit.toolkit
         )
 
 

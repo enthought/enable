@@ -9,8 +9,6 @@
 # Thanks for using Enthought open source!
 import warnings
 
-from traits.etsconfig.api import ETSConfig
-
 from kiva.fonttools.font_manager import default_font_manager
 
 
@@ -31,9 +29,11 @@ def add_application_fonts(filenames):
     fm.update_fonts(filenames)
 
     # Handle the GUI toolkit
-    if ETSConfig.toolkit.startswith("qt"):
+    from traitsui.api import toolkit
+
+    if toolkit().toolkit.startswith("qt"):
         _qt_impl(filenames)
-    elif ETSConfig.toolkit == "wx":
+    elif toolkit().toolkit == "wx":
         _wx_impl(filenames)
 
 
