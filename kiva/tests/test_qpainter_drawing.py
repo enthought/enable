@@ -31,7 +31,7 @@ class TestQPainterDrawing(DrawingImageTester, unittest.TestCase):
 
         DrawingImageTester.setUp(self)
 
-    def create_graphics_context(self, width, height, pixel_scale):
+    def create_graphics_context(self, width=600, height=600, pixel_scale=2.0):
         from kiva.qpainter import GraphicsContext
 
         return GraphicsContext((width, height), base_pixel_scale=pixel_scale)

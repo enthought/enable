@@ -41,6 +41,13 @@ pix_formats = {
     "rgba32": blend2d.Format.XRGB32,
 }
 
+# map used in select_font
+font_styles = {
+    "regular": (constants.WEIGHT_NORMAL, constants.NORMAL),
+    "bold": (constants.WEIGHT_BOLD, constants.NORMAL),
+    "italic": (constants.WEIGHT_NORMAL, constants.ITALIC),
+    "bold italic": (constants.WEIGHT_BOLD, constants.ITALIC),
+}
 
 class GraphicsContext(object):
     def __init__(self, size, *args, **kwargs):
@@ -467,13 +474,15 @@ class GraphicsContext(object):
     def select_font(self, face_name, size=12, style="regular", encoding=None):
         """ Set the font for the current graphics context.
         """
-        self.set_font(Font(face_name, size=size, style=style))
+        weight, style = font_styles[style.lower()]
+        self.set_font(Font(face_name, size=size, weight=weight, style=style))
 
     def set_font(self, font):
         """ Set the font for the current graphics context.
         """
         spec = font.findfont()
         self._kiva_font = font
+        # XXX doesn't handle .ttc/.otc files with multiple fonts
         self.font = blend2d.Font(spec.filename, font.size)
 
     def set_font_size(self, size):

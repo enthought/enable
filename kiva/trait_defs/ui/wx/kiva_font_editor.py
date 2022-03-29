@@ -48,15 +48,16 @@ class ToolkitEditorFactory(EditorFactory):
         """ Returns a wxFont object corresponding to a specified object's font
             trait.
         """
+        from pyface.ui.wx.font import weight_to_wx_weight
         import kiva.constants as kc
 
         font = editor.value
-        weight = (
-            wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD
-        )[font.weight == kc.BOLD]
+        weight = weight_to_wx_weight.get(
+            font._get_weight(), wx.FONTWEIGHT_NORMAL)
         style = (
-            wx.FONTSTYLE_NORMAL, wx.FONTSTYLE_ITALIC
-        )[font.style == kc.ITALIC]
+            wx.FONTSTYLE_ITALIC if font.style in kc.italic_styles
+            else wx.FONTSTYLE_NORMAL
+        )
         family = {
             kc.DEFAULT: wx.FONTFAMILY_DEFAULT,
             kc.DECORATIVE: wx.FONTFAMILY_DECORATIVE,
@@ -82,6 +83,7 @@ class ToolkitEditorFactory(EditorFactory):
     def from_wx_font(self, font):
         """ Gets the application equivalent of a wxPython value.
         """
+        from pyface.ui.wx.font import wx_weight_to_weight
         import kiva.constants as kc
         from kiva.fonttools import Font
 
@@ -95,12 +97,12 @@ class ToolkitEditorFactory(EditorFactory):
                 wx.FONTFAMILY_SWISS: kc.SWISS,
                 wx.FONTFAMILY_MODERN: kc.MODERN,
             }.get(font.GetFamily(), kc.SWISS),
-            weight=(
-                kc.NORMAL, kc.BOLD
-            )[font.GetWeight() == wx.FONTWEIGHT_BOLD],
+            weight=wx_weight_to_weight[font.GetWeight()],
             style=(
-                kc.NORMAL, kc.ITALIC
-            )[font.GetStyle() == wx.FONTSTYLE_ITALIC],
+                # XXX: treat wx.FONTSTYLE_OBLIQUE as italic for now
+                kc.NORMAL if font.GetStyle() == wx.FONTSTYLE_NORMAL
+                else kc.ITALIC
+            ),
             underline=font.GetUnderlined() - 0,  # convert Bool to an int type
             face_name=font.GetFaceName(),
         )
@@ -114,9 +116,9 @@ class ToolkitEditorFactory(EditorFactory):
         """
         import kiva.constants as kc
 
-        weight = {kc.BOLD: " Bold"}.get(font.weight, "")
-        style = {kc.ITALIC: " Italic"}.get(font.style, "")
-        underline = " Underline" if font.underline != 0 else ""
+        weight = " Bold" if font.is_bold() else ""
+        style = " Italic" if font.style in italic_styles else ""
+        underline = " Underline" if font.underline else ""
 
         return "%s point %s%s%s%s" % (
             font.size,

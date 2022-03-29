@@ -16,7 +16,7 @@ from numpy import array, ndarray
 
 # Local kiva imports
 from kiva.affine import affine_from_values, transform_points
-from kiva.constants import BOLD, BOLD_ITALIC, ITALIC
+from kiva.constants import BOLD, bold_styles, italic_styles
 from kiva.fonttools import Font
 from kiva.gl.gl import CompiledPath, GraphicsContextGL, KivaGLFontType
 
@@ -404,12 +404,8 @@ try:
                         family=kiva_gl_font.family,
                         style=kiva_gl_font.style,
                     )
-                bold = False
-                italic = False
-                if font.style in [BOLD, BOLD_ITALIC] or font.weight == BOLD:
-                    bold = True
-                if font.style in [ITALIC, BOLD_ITALIC]:
-                    italic = True
+                bold = font.is_bold()
+                italic = font.style in italic_styles
                 pyglet_font = load_font(
                     font.findfontname(), font.size, bold, italic
                 )

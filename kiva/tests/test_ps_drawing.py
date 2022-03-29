@@ -15,7 +15,7 @@ from kiva.tests.drawing_tester import DrawingTester
 
 
 class TestPSDrawing(DrawingTester, unittest.TestCase):
-    def create_graphics_context(self, width, height):
+    def create_graphics_context(self, width=300, height=300):
         return PSGC((width, height))
 
     @contextlib.contextmanager

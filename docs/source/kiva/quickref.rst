@@ -307,7 +307,9 @@ draw_mode:
     FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE
 
 text_style:
-    NORMAL, BOLD, ITALIC
+    NORMAL, ITALIC
+text_weight:
+    WEIGHT_NORMAL, WEIGHT_BOLD (some backends support additional weights)
 text_draw_mode:
     TEXT_FILL, TEXT_STROKE, TEXT_FILL_STROKE, TEXT_INVISIBLE, TEXT_FILL_CLIP,
     TEXT_STROKE_CLIP, TEXT_FILL_STROKE_CLIP, TEXT_CLIP

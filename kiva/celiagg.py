@@ -42,6 +42,18 @@ draw_modes = {
     constants.FILL_STROKE: agg.DrawingMode.DrawFillStroke,
     constants.EOF_FILL_STROKE: agg.DrawingMode.DrawEofFillStroke,
 }
+font_weights = {
+    constants.WEIGHT_THIN: agg.FontWeight.Thin,
+    constants.WEIGHT_EXTRALIGHT: agg.FontWeight.ExtraLight,
+    constants.WEIGHT_LIGHT: agg.FontWeight.Light,
+    constants.WEIGHT_NORMAL: agg.FontWeight.Regular,
+    constants.WEIGHT_MEDIUM: agg.FontWeight.Medium,
+    constants.WEIGHT_SEMIBOLD: agg.FontWeight.SemiBold,
+    constants.WEIGHT_BOLD: agg.FontWeight.Bold,
+    constants.WEIGHT_EXTRABOLD: agg.FontWeight.ExtraBold,
+    constants.WEIGHT_HEAVY: agg.FontWeight.Heavy,
+    constants.WEIGHT_EXTRAHEAVY: agg.FontWeight.Heavy,
+}
 text_modes = {
     constants.TEXT_FILL: agg.TextDrawingMode.TextDrawRaster,
     constants.TEXT_STROKE: agg.TextDrawingMode.TextDrawStroke,
@@ -81,6 +93,13 @@ StateBundle = namedtuple(
     ['state', 'path', 'stroke', 'fill', 'transform', 'text_transform', 'font'],
 )
 
+# map used in select_font
+font_styles = {
+    "regular": (constants.WEIGHT_NORMAL, constants.NORMAL),
+    "bold": (constants.WEIGHT_BOLD, constants.NORMAL),
+    "italic": (constants.WEIGHT_NORMAL, constants.ITALIC),
+    "bold italic": (constants.WEIGHT_BOLD, constants.ITALIC),
+}
 
 class GraphicsContext(object):
     def __init__(self, size, *args, **kwargs):
@@ -630,22 +649,19 @@ class GraphicsContext(object):
     def select_font(self, face_name, size=12, style='regular', encoding=None):
         """ Set the font for the current graphics context.
         """
-        self.set_font(Font(face_name, size=size, style=style))
+        weight, style = font_styles[style.lower()]
+        self.set_font(Font(face_name, size=size, weight=weight, style=style))
 
     def set_font(self, font):
         """ Set the font for the current graphics context.
         """
         if sys.platform in ('win32', 'cygwin'):
             # Have to pass weight and italic on Win32
-            italic = (font.style in (constants.ITALIC, constants.BOLD_ITALIC))
-            weight = agg.FontWeight.Regular
-            if font.style in (constants.BOLD, constants.BOLD_ITALIC):
-                weight = agg.FontWeight.Bold
+            weight = font_weights.get(font._get_weight(), agg.FontWeight.Regular)
+            italic = (font.style in constants.italic_styles)
 
             # Win32 font selection is handled by the OS
-            self.font = agg.Font(
-                font.findfontname(), font.size, weight, italic
-            )
+            self.font = agg.Font(font.findfontname(), font.size, weight, italic)
         else:
             # FreeType font selection is handled by kiva
             spec = font.findfont()

@@ -56,6 +56,10 @@ BOLD = 1
 ITALIC = 2
 BOLD_ITALIC = 3
 
+# convenience sets for styles
+bold_styles = {BOLD, BOLD_ITALIC}
+italic_styles = {ITALIC, BOLD_ITALIC}
+
 # Font families, as defined by the Windows API, and their CSS equivalents
 DEFAULT = 0
 SWISS = 1  # Sans-serif
@@ -64,6 +68,18 @@ MODERN = 3  # Monospace
 DECORATIVE = 4  # Fantasy
 SCRIPT = 5  # Cursive
 TELETYPE = 6
+
+# Font weight constants
+WEIGHT_THIN = 100
+WEIGHT_EXTRALIGHT = 200
+WEIGHT_LIGHT = 300
+WEIGHT_NORMAL = 400
+WEIGHT_MEDIUM = 500
+WEIGHT_SEMIBOLD = 600
+WEIGHT_BOLD = 700
+WEIGHT_EXTRABOLD = 800
+WEIGHT_HEAVY = 900
+WEIGHT_EXTRAHEAVY = 1000
 
 # -----------------------------------------------------------------------------
 # Text Drawing Mode Constants
