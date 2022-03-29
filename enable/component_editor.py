@@ -14,13 +14,10 @@ from enable.colors import ColorTrait
 from enable.window import Window
 
 from traits.api import Bool, Property, Tuple
-from traitsui.api import BasicEditorFactory, toolkit_object
-
+from traitsui.api import BasicEditorFactory, Editor as BaseEditor, toolkit_object
 
 Editor = toolkit_object("editor:Editor")
-try:
-    Editor(None)
-except NotImplementedError:
+if not issubclass(Editor, BaseEditor):
     Editor = object
 
 
