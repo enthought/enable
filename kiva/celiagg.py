@@ -658,10 +658,10 @@ class GraphicsContext(object):
         if sys.platform in ('win32', 'cygwin'):
             # Have to pass weight and italic on Win32
             weight = font_weights.get(font._get_weight(), agg.FontWeight.Regular)
-            style = (font.style in constants.italic_styles)
+            italic = (font.style in constants.italic_styles)
 
             # Win32 font selection is handled by the OS
-            self.font = agg.Font(font.findfontname(), font.size, weight, style)
+            self.font = agg.Font(font.findfontname(), font.size, weight, italic)
         else:
             # FreeType font selection is handled by kiva
             spec = font.findfont()
