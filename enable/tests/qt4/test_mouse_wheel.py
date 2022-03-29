@@ -44,30 +44,40 @@ class MouseWheelTestCase(TestCase):
         self.window._size = (600, 600)
 
     def test_vertical_mouse_wheel(self):
-        from pyface.qt import QtCore, QtGui
+        from pyface.qt import QtCore, QtGui, is_qt4, is_qt5
 
-        is_qt4 = QtCore.__version_info__[0] <= 4
 
         # create and mock a mouse wheel event
         if is_qt4:
             qt_event = QtGui.QWheelEvent(
-                QtCore.QPoint(0, 0),
-                200,
-                QtCore.Qt.NoButton,
-                QtCore.Qt.NoModifier,
-                QtCore.Qt.Vertical,
+                QtCore.QPoint(0, 0),  # pos
+                200,  # delta
+                QtCore.Qt.NoButton,  # buttons
+                QtCore.Qt.NoModifier,  # modifiers
+                QtCore.Qt.Vertical,  # orient
+            )
+        elif is_qt5:
+            qt_event = QtGui.QWheelEvent(
+                QtCore.QPoint(0, 0),  # pos
+                self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),  # globalPos
+                QtCore.QPoint(0, 200),  # pixelDelta
+                QtCore.QPoint(0, 200),  # angleDelta
+                200,  # qt4Delta
+                QtCore.Qt.Vertical,  # qt4Orietation
+                QtCore.Qt.NoButton,  # buttons
+                QtCore.Qt.NoModifier,  # modifiers
+                QtCore.Qt.ScrollUpdate,  # phase
             )
         else:
             qt_event = QtGui.QWheelEvent(
-                QtCore.QPoint(0, 0),
-                self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),
-                QtCore.QPoint(0, 200),
-                QtCore.QPoint(0, 200),
-                200,
-                QtCore.Qt.Vertical,
-                QtCore.Qt.NoButton,
-                QtCore.Qt.NoModifier,
-                QtCore.Qt.ScrollUpdate,
+                QtCore.QPointF(0, 0),  # pos
+                self.window.control.mapToGlobal(QtCore.QPointF(0, 0)),  # globalPos
+                QtCore.QPoint(0, 200),  # pixelDelta
+                QtCore.QPoint(0, 200),  # angleDelta
+                QtCore.Qt.NoButton,  # buttons
+                QtCore.Qt.NoModifier,  # modifiers
+                QtCore.Qt.ScrollUpdate,  # phase
+                False,  # inverted
             )
 
         # dispatch event
@@ -79,30 +89,39 @@ class MouseWheelTestCase(TestCase):
         self.assertEqual(self.tool.event.mouse_wheel_delta, (0, 200))
 
     def test_horizontal_mouse_wheel(self):
-        from pyface.qt import QtCore, QtGui
-
-        is_qt4 = QtCore.__version_info__[0] <= 4
+        from pyface.qt import QtCore, QtGui, is_qt4, is_qt5
 
         # create and mock a mouse wheel event
         if is_qt4:
             qt_event = QtGui.QWheelEvent(
-                QtCore.QPoint(0, 0),
-                200,
-                QtCore.Qt.NoButton,
-                QtCore.Qt.NoModifier,
-                QtCore.Qt.Horizontal,
+                QtCore.QPoint(0, 0),  # pos
+                200,  # delta
+                QtCore.Qt.NoButton,  # buttons
+                QtCore.Qt.NoModifier,  # modifiers
+                QtCore.Qt.Horizontal,  # orient
+            )
+        elif is_qt5:
+            qt_event = QtGui.QWheelEvent(
+                QtCore.QPoint(0, 0),  # pos
+                self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),  # globalPos
+                QtCore.QPoint(200, 0),  # pixelDelta
+                QtCore.QPoint(200, 0),  # angleDelta
+                200,  # qt4Delta
+                QtCore.Qt.Horizontal,  # qt4Orietation
+                QtCore.Qt.NoButton,  # buttons
+                QtCore.Qt.NoModifier,  # modifiers
+                QtCore.Qt.ScrollUpdate,  # phase
             )
         else:
             qt_event = QtGui.QWheelEvent(
-                QtCore.QPoint(0, 0),
-                self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),
-                QtCore.QPoint(200, 0),
-                QtCore.QPoint(200, 0),
-                200,
-                QtCore.Qt.Vertical,
-                QtCore.Qt.NoButton,
-                QtCore.Qt.NoModifier,
-                QtCore.Qt.ScrollUpdate,
+                QtCore.QPointF(0, 0),  # pos
+                self.window.control.mapToGlobal(QtCore.QPointF(0, 0)),  # globalPos
+                QtCore.QPoint(200, 0),  # pixelDelta
+                QtCore.QPoint(200, 0),  # angleDelta
+                QtCore.Qt.NoButton,  # buttons
+                QtCore.Qt.NoModifier,  # modifiers
+                QtCore.Qt.ScrollUpdate,  # phase
+                False,  # inverted
             )
 
         # dispatch event
@@ -114,24 +133,40 @@ class MouseWheelTestCase(TestCase):
         self.assertEqual(self.tool.event.mouse_wheel_delta, (200, 0))
 
     def test_vertical_mouse_wheel_without_pixel_delta(self):
-        from pyface.qt import QtCore, QtGui
-
-        is_qt4 = QtCore.__version_info__[0] <= 4
-        if is_qt4:
-            self.skipTest("Not directly applicable in Qt4")
+        from pyface.qt import QtCore, QtGui, is_qt4, is_qt5
 
         # create and mock a mouse wheel event
-        qt_event = QtGui.QWheelEvent(
-            QtCore.QPoint(0, 0),
-            self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),
-            QtCore.QPoint(0, 0),
-            QtCore.QPoint(0, 200),
-            200,
-            QtCore.Qt.Vertical,
-            QtCore.Qt.NoButton,
-            QtCore.Qt.NoModifier,
-            QtCore.Qt.ScrollUpdate,
-        )
+        if is_qt4:
+            qt_event = QtGui.QWheelEvent(
+                QtCore.QPoint(0, 0),  # pos
+                200,  # delta
+                QtCore.Qt.NoButton,  # buttons
+                QtCore.Qt.NoModifier,  # modifiers
+                QtCore.Qt.Vertical,  # orient
+            )
+        elif is_qt5:
+            qt_event = QtGui.QWheelEvent(
+                QtCore.QPoint(0, 0),  # pos
+                self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),  # globalPos
+                QtCore.QPoint(0, 0),  # pixelDelta
+                QtCore.QPoint(0, 200),  # angleDelta
+                200,  # qt4Delta
+                QtCore.Qt.Horizontal,  # qt4Orientation
+                QtCore.Qt.NoButton,  # buttons
+                QtCore.Qt.NoModifier,  # modifiers
+                QtCore.Qt.ScrollUpdate,  # phase
+            )
+        else:
+            qt_event = QtGui.QWheelEvent(
+                QtCore.QPointF(0, 0),  # pos
+                self.window.control.mapToGlobal(QtCore.QPointF(0, 0)),  # globalPos
+                QtCore.QPoint(0, 0),  # pixelDelta
+                QtCore.QPoint(0, 200),  # angleDelta
+                QtCore.Qt.NoButton,  # buttos
+                QtCore.Qt.NoModifier,  # modifiers
+                QtCore.Qt.ScrollUpdate,  # phase
+                False,  # inverted
+            )
 
         # dispatch event
         self.window._on_mouse_wheel(qt_event)

@@ -26,7 +26,7 @@
 import warnings
 
 # Qt imports.
-from pyface.qt import QtCore, QtGui, QtOpenGL, is_qt4, qt_api
+from pyface.qt import QtCore, QtGui, QtOpenGL, is_qt4, is_qt5, qt_api
 
 # Enthought library imports.
 from enable.abstract_window import AbstractWindow
@@ -457,8 +457,12 @@ class _Window(AbstractWindow):
         # If the event (if there is one) doesn't contain the mouse position,
         # modifiers and buttons then get sensible defaults.
         try:
-            x = event.x()
-            y = event.y()
+            if is_qt4 or is_qt5:
+                x = event.x()
+                y = event.y()
+            else:
+                x = event.position().x()
+                y = event.position().y()
             modifiers = event.modifiers()
             buttons = event.buttons()
         except AttributeError:
