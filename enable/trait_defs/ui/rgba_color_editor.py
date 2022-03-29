@@ -7,11 +7,11 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 # Thanks for using Enthought open source!
-from traits.etsconfig.api import ETSConfig
+from traitsui.api import toolkit
 
-if ETSConfig.toolkit == "wx":
+if toolkit().toolkit == "wx":
     from .wx.rgba_color_editor import RGBAColorEditor
-elif ETSConfig.toolkit.startswith("qt"):
+elif toolkit().toolkit.startswith("qt"):
     from .qt4.rgba_color_editor import RGBAColorEditor
 else:
     RGBAColorEditor = None

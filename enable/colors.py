@@ -9,8 +9,11 @@
 # Thanks for using Enthought open source!
 # This is a redirection file that determines what constitutes a color trait
 # in Chaco, and what constitutes the standard colors.
+
 from traits.etsconfig.api import ETSConfig
 from traits.api import List, Str, Trait, Tuple, TraitError
+from traitsui.api import toolkit as traits_toolkit
+
 
 # Color definitions
 transparent_color = (0.0, 0.0, 0.0, 0.0)
@@ -174,13 +177,8 @@ color_table = {
     "sys_window": (0.83137, 0.81569, 0.78431, 1.0),
 }
 
-if not ETSConfig.toolkit:
-    # Force Traits to decide on its toolkit if it hasn't already
-    from traitsui.api import toolkit as traits_toolkit
 
-    traits_toolkit()
-
-if ETSConfig.toolkit == "wx":
+if traits_toolkit().toolkit == "wx":
     import wx
     from traitsui.wx.color_editor import (
         ToolkitEditorFactory as StandardColorEditorFactory,
@@ -282,7 +280,7 @@ if ETSConfig.toolkit == "wx":
         editor=ColorEditorFactory,
     )
 
-elif ETSConfig.toolkit.startswith("qt"):
+elif traits_toolkit().toolkit.startswith("qt"):
     from pyface.qt import QtGui
     from traitsui.qt4.color_editor import (
         ToolkitEditorFactory as StandardColorEditorFactory,

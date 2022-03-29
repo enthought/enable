@@ -14,18 +14,18 @@
 #  Imports:
 # -----------------------------------------------------------------------------
 
-from traits.etsconfig.api import ETSConfig
+from traits.api import Trait, TraitError, TraitHandler, TraitFactory
+from traitsui.api import toolkit
 
-if ETSConfig.toolkit == "wx":
+if toolkit().toolkit == "wx":
     from .ui.wx.kiva_font_editor import KivaFontEditor
-elif ETSConfig.toolkit.startswith("qt"):
+elif toolkit().toolkit.startswith("qt"):
     # FIXME
     # from .ui.qt4.kiva_font_editor import KivaFontEditor
     KivaFontEditor = None
 else:
     KivaFontEditor = None
 
-from traits.api import Trait, TraitError, TraitHandler, TraitFactory
 
 
 # -----------------------------------------------------------------------------

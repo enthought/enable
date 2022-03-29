@@ -13,24 +13,18 @@
 from enable.colors import ColorTrait
 from enable.window import Window
 
-from traits.etsconfig.api import ETSConfig
-
 from traits.api import Bool, Property, Tuple
-from traitsui.api import BasicEditorFactory
+from traitsui.api import BasicEditorFactory, toolkit_object
 
-if ETSConfig.toolkit == "wx":
-    from traitsui.wx.editor import Editor
-elif ETSConfig.toolkit.startswith("qt"):
-    from traitsui.qt4.editor import Editor
-else:
+
+Editor = toolkit_object("editor:Editor")
+try:
+    Editor()
+except NotImplementedError:
     Editor = object
 
 
 class _ComponentEditor(Editor):
-
-    # -------------------------------------------------------------------------
-    #  Trait definitions:
-    # -------------------------------------------------------------------------
 
     # The plot editor is scrollable (overrides Traits UI Editor).
     scrollable = True
