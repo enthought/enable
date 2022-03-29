@@ -19,7 +19,7 @@ from traitsui.api import BasicEditorFactory, toolkit_object
 
 Editor = toolkit_object("editor:Editor")
 try:
-    Editor()
+    Editor(None)
 except NotImplementedError:
     Editor = object
 

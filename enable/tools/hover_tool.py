@@ -15,7 +15,7 @@ components.
 # Enthought library imports
 from enable.base_tool import BaseTool
 from traits.api import Any, Callable, Enum, Float, Int
-from pyface.api import toolkit
+from pyface.toolkit import toolkit
 from pyface.timer.api import DoLaterTimer
 
 
