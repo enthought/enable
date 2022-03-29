@@ -58,7 +58,7 @@ class MouseWheelTestCase(TestCase):
             )
         elif is_qt5:
             qt_event = QtGui.QWheelEvent(
-                QtCore.QPointF(0, 0),  # pos
+                QtCore.QPoint(0, 0),  # pos
                 self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),  # globalPos
                 QtCore.QPoint(0, 200),  # pixelDelta
                 QtCore.QPoint(0, 200),  # angleDelta
@@ -102,7 +102,7 @@ class MouseWheelTestCase(TestCase):
             )
         elif is_qt5:
             qt_event = QtGui.QWheelEvent(
-                QtCore.QPointF(0, 0),  # pos
+                QtCore.QPoint(0, 0),  # pos
                 self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),  # globalPos
                 QtCore.QPoint(200, 0),  # pixelDelta
                 QtCore.QPoint(200, 0),  # angleDelta
@@ -146,7 +146,7 @@ class MouseWheelTestCase(TestCase):
             )
         elif is_qt5:
             qt_event = QtGui.QWheelEvent(
-                QtCore.QPointF(0, 0),  # pos
+                QtCore.QPoint(0, 0),  # pos
                 self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),  # globalPos
                 QtCore.QPoint(0, 0),  # pixelDelta
                 QtCore.QPoint(0, 200),  # angleDelta
