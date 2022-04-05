@@ -7,20 +7,86 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 # Thanks for using Enthought open source!
-""" Trait definition for an RGBA-based color, which is either:
+""" Trait definition for an RGBA-based color
 
-* A tuple of the form (*red*,*green*,*blue*,*alpha*), where each component is
-  in the range from 0.0 to 1.0
-* An integer which in hexadecimal is of the form 0xAARRGGBB, where AA is alpha,
-  RR is red, GG is green, and BB is blue.
+An RGBA-based color is a tuple of the form (*red*, *green*, *blue*, *alpha*),
+where each component is in the range from 0.0 to 1.0, which is the color
+representation used by Kiva for drawing.
+
+Two traits are made available, a casting trait which takes many different color
+representations and converts them to a tuple, and a mapped version of the trait
+which holds the unconverted value and has a shadow trait holding the RGBA tuple
+value.
 """
+import copy
 
 import numpy as np
 
-from pyface.color import Color
-from pyface.util.color_parser import ColorParseError, parse_text
+from pyface.color import Color as PyfaceColor
+from pyface.util.color_helpers import ints_to_channels
+from pyface.util.color_parser import color_table, parse_text
 from traits.api import TraitType
 from traits.trait_base import SequenceTypes
+
+# Placeholders for system- and toolkit-specific UI colors; the
+# toolkit-dependent code below will fill these with the appropriate
+# values.  These hardcoded defaults are for the Windows Classic
+# theme.
+color_table["syswindow"] = (0.83137, 0.81569, 0.78431, 1.0)
+
+
+def convert_to_color_tuple(value):
+    """Convert various color representations to Kiva color tuple.
+
+    This can accept integers of the form 0xRRGGBB, strings which
+    can be parsed by Pyface's color parser, (r, g, b) and (r, g, b, a) tuples
+    with either float 0.0 to 1.0 or int 0 to 255, Pyface Color objects, and
+    toolkit color objects.
+    """
+    if type(value) is int:
+        value = int(value)
+        if 0 <= value <= 0xFFFFFF:
+            return (
+                (value >> 16) / 255.0,
+                ((value >> 8) & 0xFF) / 255.0,
+                (value & 0xFF) / 255.0,
+                1.0,
+            )
+        else:
+            raise ValueError(
+                f"Integer value must be of the form 0xRRGGBB"
+            )
+
+    if isinstance(value, str):
+        _, value = parse_text(value)
+
+    is_array = isinstance(value, (np.ndarray, np.void))
+    if is_array or isinstance(value, SequenceTypes):
+        value = tuple(value)
+        if len(value) not in {3, 4}:
+            raise ValueError("Sequence must have length 3 or 4.")
+        if all(isinstance(x, (int, np.integer)) for x in value):
+            if len(value) == 3:
+                value += (255,)
+            if all(0 <= x < 256 for x in value):
+                value = ints_to_channels(value)
+            else:
+                raise ValueError(
+                    f"Integer sequence values not in range 0 to 255: {value}"
+                )
+        if len(value) == 3:
+            value += (1.0,)
+        if all(0 <= x <= 1.0 for x in value):
+            return value
+        else:
+            raise ValueError(
+                f"Float sequence values not in range 0 to 1: {value}"
+            )
+
+    if not isinstance(value, PyfaceColor):
+        # assume that it is a toolkit color object
+        value = PyfaceColor.from_toolkit(value)
+    return value.rgba
 
 
 class RGBAColor(TraitType):
@@ -28,31 +94,27 @@ class RGBAColor(TraitType):
     """
 
     def __init__(self, value="white", **metadata):
-        default_value = self.validate(None, None, value)
+        try:
+            default_value = convert_to_color_tuple(value)
+        except Exception:
+            self.error(None, None, value)
+
         super().__init__(default_value, **metadata)
 
     def validate(self, object, name, value):
-        if isinstance(value, Color):
-            return value.rgba
-        if isinstance(value, str):
-            try:
-                _, value = parse_text(value)
-            except ColorParseError:
-                self.error(object, name, value)
-        is_array = isinstance(value, (np.ndarray, np.void))
-        if is_array or isinstance(value, SequenceTypes):
-            value = tuple(value)
-            if len(value) == 3:
-                value += (1.0,)
-            if len(value) == 4:
-                return value
+        try:
+            return convert_to_color_tuple(value)
+        except Exception:
+            self.error(object, name, value)
 
         self.error(object, name, value)
 
     def info(self):
         return (
-            "a Pyface Color, a #-hexadecimal rgb or rgba string,  a standard "
-            "color name, or a sequence of RGBA or RGB values between 0 and 1"
+            "a Pyface Color, a #-hexadecimal rgb or rgba string, a CSS "
+            "color representation, a sequence of RGBA or RGB floats "
+            "between 0.0 and 1.0 or ints between 0 and 255, or an integer of "
+            "the form 0xRRGGBB"
         )
 
     def create_editor(self):
@@ -60,5 +122,33 @@ class RGBAColor(TraitType):
         return RGBAColorEditor()
 
 
-# synonym for backwards compatibility
+class MappedRGBAColor(RGBAColor):
+    """A mapped trait that maps various color representations to RGBA tuples.
+    """
+
+    is_mapped = True
+
+    def validate(self, object, name, value):
+        try:
+            convert_to_color_tuple(value)
+        except Exception:
+            self.error(object, name, value)
+
+        return value
+
+    def mapped_value(self, value):
+        """Return the mapped RGBA value."""
+        return convert_to_color_tuple(value)
+
+    def post_setattr(self, object, name, value):
+        """Set the shadow trait after setting the current value."""
+        setattr(object, name + '_', self.mapped_value(value))
+
+
+# synonyms for backwards compatibility
 RGBAColorTrait = RGBAColor
+ColorTrait = MappedRGBAColor("black")
+
+black_color_trait = MappedRGBAColor("black")
+white_color_trait = MappedRGBAColor("white")
+transparent_color_trait = MappedRGBAColor("transparent")

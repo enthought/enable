@@ -16,6 +16,7 @@
 # -----------------------------------------------------------------------------
 
 from pyface.qt import QtGui
+from pyface.ui.qt4.color import toolkit_color_to_rgba, rgba_to_toolkit_color
 
 from traits.trait_base import SequenceTypes
 
@@ -33,6 +34,7 @@ from traitsui.qt4.color_editor import (
 
 
 class ToolkitEditorFactory(BaseColorToolkitEditorFactory):
+
     def to_qt4_color(self, editor):
         """ Gets the PyQt color equivalent of the object trait.
         """
@@ -42,8 +44,7 @@ class ToolkitEditorFactory(BaseColorToolkitEditorFactory):
             color = getattr(editor.object, editor.name)
 
         if type(color) in SequenceTypes:
-            c = QtGui.QColor()
-            c.setRgbF(color[0], color[1], color[2], color[3])
+            c = rgba_to_toolkit_color(color)
         else:
             c = QtGui.QColor(color)
         return c
@@ -51,7 +52,7 @@ class ToolkitEditorFactory(BaseColorToolkitEditorFactory):
     def from_qt4_color(self, color):
         """ Gets the application equivalent of a PyQt value.
         """
-        return (color.redF(), color.greenF(), color.blueF(), color.alphaF())
+        return toolkit_color_to_rgba(color)
 
     def str_color(self, color):
         """ Returns the text representation of a specified color value.

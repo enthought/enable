@@ -19,6 +19,28 @@ from traitsui.api import EditorFactory
 
 from enable.trait_defs.rgba_color_trait import RGBAColor
 
+rgba_float_dtype = np.dtype([
+    ('red', float),
+    ('green', float),
+    ('blue', float),
+    ('alpha', float),
+])
+rgba_uint8_dtype = np.dtype([
+    ('red', "uint8"),
+    ('green', "uint8"),
+    ('blue', "uint8"),
+    ('alpha', "uint8"),
+])
+rgb_float_dtype = np.dtype([
+    ('red', float),
+    ('green', float),
+    ('blue', float),
+])
+rgb_uint8_dtype = np.dtype([
+    ('red', "uint8"),
+    ('green', "uint8"),
+    ('blue', "uint8"),
+])
 
 class ColorClass(HasTraits):
 
@@ -31,126 +53,109 @@ class TestRGBAColor(unittest.TestCase):
         trait = RGBAColor()
         self.assertEqual(trait.default_value, (1.0, 1.0, 1.0, 1.0))
 
-    def test_init_name(self):
-        trait = RGBAColor("rebeccapurple")
-        self.assertEqual(
-            trait.default_value,
+    def test_default_value(self):
+        values = [
+            "rebeccapurple",
+            "rebecca purple",
+            "#666633339999ffff",
+            "#663399ff",
+            "#639f",
+            Color(rgba=(0.4, 0.2, 0.6, 1.0)),
+            Color(rgba=(0.4, 0.2, 0.6, 1.0)).to_toolkit(),
             (0.4, 0.2, 0.6, 1.0),
-        )
-
-    def test_init_hex(self):
-        trait = RGBAColor("#663399ff")
-        self.assertEqual(
-            trait.default_value,
-            (0.4, 0.2, 0.6, 1.0)
-        )
-
-    def test_init_color(self):
-        trait = RGBAColor(Color(rgba=(0.4, 0.2, 0.6, 1.0)))
-        self.assertEqual(
-            trait.default_value,
-            (0.4, 0.2, 0.6, 1.0)
-        )
-
-    def test_init_tuple(self):
-        trait = RGBAColor((0.4, 0.2, 0.6, 1.0))
-        self.assertEqual(
-            trait.default_value,
-            (0.4, 0.2, 0.6, 1.0)
-        )
-
-    def test_init_list(self):
-        trait = RGBAColor([0.4, 0.2, 0.6, 1.0])
-        self.assertEqual(
-            trait.default_value,
-            (0.4, 0.2, 0.6, 1.0)
-        )
-
-    def test_init_array(self):
-        trait = RGBAColor(np.array([0.4, 0.2, 0.6, 1.0]))
-        self.assertEqual(
-            trait.default_value,
-            (0.4, 0.2, 0.6, 1.0)
-        )
-
-    def test_init_array_structured_dtype(self):
-        """ Test if "typical" RGBA structured array value works. """
-        arr = np.array(
-            [(0.4, 0.2, 0.6, 1.0)],
-            dtype=np.dtype([
-                ('red', float),
-                ('green', float),
-                ('blue', float),
-                ('alpha', float),
-            ]),
-        )
-        trait = RGBAColor(arr[0])
-        self.assertEqual(
-            trait.default_value,
-            (0.4, 0.2, 0.6, 1.0)
-        )
+            [0.4, 0.2, 0.6, 1.0],
+            np.array([0.4, 0.2, 0.6, 1.0]),
+            np.array((0.4, 0.2, 0.6, 1.0), dtype=rgba_float_dtype),
+            (0x66, 0x33, 0x99, 0xff),
+            [0x66, 0x33, 0x99, 0xff],
+            np.array([0x66, 0x33, 0x99, 0xff], dtype='uint8'),
+            np.array((0x66, 0x33, 0x99, 0xff), dtype=rgba_int_dtype),
+            "#666633339999",
+            "#663399",
+            "#639",
+            0x663399,
+            (0.4, 0.2, 0.6),
+            [0.4, 0.2, 0.6],
+            np.array([0.4, 0.2, 0.6]),
+            np.array((0.4, 0.2, 0.6), dtype=rgb_float_dtype),
+            (0x66, 0x33, 0x99),
+            [0x66, 0x33, 0x99],
+            np.array([0x66, 0x33, 0x99], dtype='uint8'),
+            np.array((0x66, 0x33, 0x99), dtype=rgb_int_dtype),
+        ]
+        for value in values:
+            with self.subTest(value=value):
+                trait = RGBAColor(value)
+                self.assertEqual(trait.default_value, (0.4, 0.2, 0.6, 1.0))
 
     def test_init_invalid(self):
-        with self.assertRaises(TraitError):
-            RGBAColor((0.4, 0.2))
+        values = [
+            (0.4, 0.2),
+            (0.4, 0.2, 0.3, 1.0, 1.0),
+            "notacolor",
+            "#66666",
+            (0.0, 1.00001, 0.9, 1.0),
+            (0.0, -0.00001, 0.9, 1.0),
+            (0, -1, 250, 255),
+            None,
+        ]
+        for value in values:
+            with self.subTest(value=value):
+                with self.assertRaises(TraitError):
+                    RGBAColor(value)
 
-    def test_validate_color(self):
-        color = (0.4, 0.2, 0.6, 1.0)
+    def test_validate(self):
+        values = [
+            "rebeccapurple",
+            "rebecca purple",
+            "#666633339999ffff",
+            "#663399ff",
+            "#639f",
+            Color(rgba=(0.4, 0.2, 0.6, 1.0)),
+            Color(rgba=(0.4, 0.2, 0.6, 1.0)).to_toolkit(),
+            (0.4, 0.2, 0.6, 1.0),
+            [0.4, 0.2, 0.6, 1.0],
+            np.array([0.4, 0.2, 0.6, 1.0]),
+            np.array((0.4, 0.2, 0.6, 1.0), dtype=rgba_float_dtype),
+            (0x66, 0x33, 0x99, 0xff),
+            [0x66, 0x33, 0x99, 0xff],
+            np.array([0x66, 0x33, 0x99, 0xff], dtype='uint8'),
+            np.array((0x66, 0x33, 0x99, 0xff), dtype=rgba_int_dtype),
+            "#666633339999",
+            "#663399",
+            "#639",
+            0x663399,
+            (0.4, 0.2, 0.6),
+            [0.4, 0.2, 0.6],
+            np.array([0.4, 0.2, 0.6]),
+            np.array((0.4, 0.2, 0.6), dtype=rgb_float_dtype),
+            (0x66, 0x33, 0x99),
+            [0x66, 0x33, 0x99],
+            np.array([0x66, 0x33, 0x99], dtype='uint8'),
+            np.array((0x66, 0x33, 0x99), dtype=rgb_int_dtype),
+        ]
         trait = RGBAColor()
-        validated = trait.validate(None, None, Color(rgba=color))
-        self.assertIs(
-            validated, color
-        )
+        for value in values:
+            with self.subTest(value=value):
+                validated = trait.validate(None, None, value)
+                self.assertEqual(validated, (0.4, 0.2, 0.6, 1.0))
 
-    def test_validate_name(self):
-        color = (0.4, 0.2, 0.6, 1.0)
+    def test_validate_invalid(self):
+        values = [
+            (0.4, 0.2),
+            (0.4, 0.2, 0.3, 1.0, 1.0),
+            "notacolor",
+            "#66666",
+            (0.0, 1.00001, 0.9, 1.0),
+            (0.0, -0.00001, 0.9, 1.0),
+            (0, -1, 250, 255),
+            None,
+        ]
         trait = RGBAColor()
-        validated = trait.validate(None, None, "rebeccapurple")
-        self.assertEqual(
-            validated, color
-        )
-
-    def test_validate_hex(self):
-        color = (0.4, 0.2, 0.6, 1.0)
-        trait = RGBAColor()
-        validated = trait.validate(None, None, "#663399ff")
-        self.assertEqual(
-            validated, color
-        )
-
-    def test_validate_tuple(self):
-        color = (0.4, 0.2, 0.6, 0.8)
-        trait = RGBAColor()
-        validated = trait.validate(None, None, (0.4, 0.2, 0.6, 0.8))
-        self.assertEqual(
-            validated, color
-        )
-
-    def test_validate_list(self):
-        color = (0.4, 0.2, 0.6, 0.8)
-        trait = RGBAColor()
-        validated = trait.validate(None, None, [0.4, 0.2, 0.6, 0.8])
-        self.assertEqual(
-            validated, color
-        )
-
-    def test_validate_rgb_list(self):
-        color = (0.4, 0.2, 0.6, 1.0)
-        trait = RGBAColor()
-        validated = trait.validate(None, None, [0.4, 0.2, 0.6])
-        self.assertEqual(
-            validated, color
-        )
-
-    def test_validate_bad_string(self):
-        trait = RGBAColor()
-        with self.assertRaises(TraitError):
-            trait.validate(None, None, "not a color")
-
-    def test_validate_bad_object(self):
-        trait = RGBAColor()
-        with self.assertRaises(TraitError):
-            trait.validate(None, None, object())
+        for value in values:
+            with self.subTest(value=value):
+                with self.assertRaises(TraitError):
+                    trait.validate(None, None, value)
 
     def test_info(self):
         trait = RGBAColor()
@@ -160,52 +165,69 @@ class TestRGBAColor(unittest.TestCase):
         color_class = ColorClass()
         self.assertEqual(color_class.color, (1.0, 1.0, 1.0, 1.0))
 
-    def test_set_color(self):
-        color = (0.4, 0.2, 0.6, 1.0)
-        color_class = ColorClass(color=Color(rgba=color))
-        self.assertIs(color_class.color, color)
+    def test_trait_set(self):
+        values = [
+            "rebeccapurple",
+            "rebecca purple",
+            "#666633339999ffff",
+            "#663399ff",
+            "#639f",
+            Color(rgba=(0.4, 0.2, 0.6, 1.0)),
+            Color(rgba=(0.4, 0.2, 0.6, 1.0)).to_toolkit(),
+            (0.4, 0.2, 0.6, 1.0),
+            [0.4, 0.2, 0.6, 1.0],
+            np.array([0.4, 0.2, 0.6, 1.0]),
+            np.array((0.4, 0.2, 0.6, 1.0), dtype=rgba_float_dtype),
+            (0x66, 0x33, 0x99, 0xff),
+            [0x66, 0x33, 0x99, 0xff],
+            np.array([0x66, 0x33, 0x99, 0xff], dtype='uint8'),
+            np.array((0x66, 0x33, 0x99, 0xff), dtype=rgba_int_dtype),
+            "#666633339999",
+            "#663399",
+            "#639",
+            0x663399,
+            (0.4, 0.2, 0.6),
+            [0.4, 0.2, 0.6],
+            np.array([0.4, 0.2, 0.6]),
+            np.array((0.4, 0.2, 0.6), dtype=rgb_float_dtype),
+            (0x66, 0x33, 0x99),
+            [0x66, 0x33, 0x99],
+            np.array([0x66, 0x33, 0x99], dtype='uint8'),
+            np.array((0x66, 0x33, 0x99), dtype=rgb_int_dtype),
+        ]
+        trait = RGBAColor()
+        for value in values:
+            with self.subTest(value=value):
+                color_class = ColorClass(color=value)
+                self.assertEqual(color_class.color, (0.4, 0.2, 0.6, 1.0))
 
-    def test_set_name(self):
-        color = (0.4, 0.2, 0.6, 1.0)
-        color_class = ColorClass(color="rebeccapurple")
-        self.assertEqual(color_class.color, color)
-
-    def test_set_hex(self):
-        color = (0.4, 0.2, 0.6, 1.0)
-        color_class = ColorClass(color="#663399ff")
-        self.assertEqual(color_class.color, color)
-
-    def test_set_tuple(self):
-        color = (0.4, 0.2, 0.6, 1.0)
-        color_class = ColorClass(color=(0.4, 0.2, 0.6, 1.0))
-        self.assertEqual(color_class.color, color)
-
-    def test_set_list(self):
-        color = (0.4, 0.2, 0.6, 1.0)
-        color_class = ColorClass(color=[0.4, 0.2, 0.6, 1.0])
-        self.assertEqual(color_class.color, color)
-
-    def test_set_array(self):
-        color = (0.4, 0.2, 0.6, 1.0)
-        color_class = ColorClass(color=np.array([0.4, 0.2, 0.6, 1.0]))
-        self.assertEqual(color_class.color, color)
-
-    def test_set_structured_dtype(self):
-        color = (0.4, 0.2, 0.6, 1.0)
-        arr = np.array(
-            [(0.4, 0.2, 0.6, 1.0)],
-            dtype=np.dtype([
-                ('red', float),
-                ('green', float),
-                ('blue', float),
-                ('alpha', float),
-            ]),
-        )
         color_class = ColorClass(color=arr[0])
         self.assertEqual(color_class.color, color)
+
+    def test_trait_set_invalid(self):
+        values = [
+            (0.4, 0.2),
+            (0.4, 0.2, 0.3, 1.0, 1.0),
+            "notacolor",
+            "#66666",
+            (0.0, 1.00001, 0.9, 1.0),
+            (0.0, -0.00001, 0.9, 1.0),
+            (0, -1, 250, 255),
+            None,
+        ]
+        trait = RGBAColor()
+        for value in values:
+            with self.subTest(value=value):
+                with self.assertRaises(TraitError):
+                    ColorClass(color=value)
 
     def test_get_editor(self):
         trait = RGBAColor()
         editor = trait.get_editor()
 
         self.assertIsInstance(editor, EditorFactory)
+
+    def test_sys_window_color(self):
+        trait = RGBAColor()
+        # smoke-test: value depends on system and user preferences
+        trait.validate("sys_window")
