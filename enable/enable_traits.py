@@ -17,7 +17,7 @@ from numpy import array, ndarray
 # Enthought library imports
 from kiva.trait_defs.api import KivaFont
 from traits.api import (
-    List, PrefixList, PrefixMap, Range, Trait, TraitFactory, Union,
+    List, Map, PrefixList, PrefixMap, Range, Union,
 )
 from traitsui.api import ImageEnumEditor, EnumEditor
 
@@ -102,26 +102,23 @@ border_size_editor = ImageEnumEditor(
 # -----------------------------------------------------------------------------
 
 # Privates used for specification of line style trait.
-__line_style_trait_values = {
+_line_style_trait_values = {
     "solid": None,
     "dot dash": array([3.0, 5.0, 9.0, 5.0]),
     "dash": array([6.0, 6.0]),
     "dot": array([2.0, 2.0]),
     "long dash": array([9.0, 5.0]),
 }
-__line_style_trait_map_keys = list(__line_style_trait_values.keys())
-LineStyleEditor = EnumEditor(values=__line_style_trait_map_keys)
 
-
-def __line_style_trait(value="solid", **metadata):
-    return Trait(
-        value, __line_style_trait_values, editor=LineStyleEditor, **metadata
-    )
-
+# An editor preset for line styles.
+LineStyleEditor = EnumEditor(values=list(_line_style_trait_values))
 
 # A mapped trait for use in specification of line style attributes.
-LineStyle = TraitFactory(__line_style_trait)
-
+LineStyle = Map(
+    _line_style_trait_values,
+    default_value='solid',
+    editor=LineStyleEditor,
+)
 
 # -----------------------------------------------------------------------------
 #  Trait definitions:
@@ -133,9 +130,6 @@ font_trait = KivaFont(default_font_name)
 # Bounds trait
 bounds_trait = CList([0.0, 0.0])  # (w,h)
 coordinate_trait = CList([0.0, 0.0])  # (x,y)
-
-# bounds_trait = Trait((0.0, 0.0, 20.0, 20.0), valid_bounds,
-#                      editor=bounds_editor)
 
 # Component minimum size trait
 # PZW: Make these just floats, or maybe remove them altogether.

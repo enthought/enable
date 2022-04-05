@@ -12,7 +12,7 @@ from numpy import linspace, zeros
 # Enthought library imports
 from kiva.api import STROKE
 from traits.api import (
-    Any, Bool, Enum, Float, Int, Property, Trait, observe,
+    Any, Bool, Enum, Float, Int, Map, Property, observe,
 )
 from traitsui.api import EnumEditor
 
@@ -21,13 +21,9 @@ from .colors import ColorTrait
 from .component import Component
 from .markers import CustomMarker, MarkerNameDict, marker_names
 
-slider_marker_names = list(marker_names) + ["rect"]
-SliderMarkerTrait = Trait(
-    "rect",
-    "rect",
-    MarkerNameDict,
-    editor=EnumEditor(values=slider_marker_names),
-)
+slider_marker_map = {'rect': None}
+slider_marker_map.update(MarkerNameDict)
+SliderMarkerTrait = Map(slider_marker_map, default_value='rect')
 
 
 class Slider(Component):

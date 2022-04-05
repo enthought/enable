@@ -6,7 +6,7 @@ from numpy import array
 # Enthought library imports.
 from kiva.api import EOF_FILL_STROKE, FILL, FILL_STROKE, points_in_polygon
 from traits.api import (
-    Any, Event, Float, HasTraits, Instance, List, Property, Trait, Tuple
+    Any, Event, Float, HasTraits, Instance, List, Map, Property, Tuple
 )
 from traitsui.api import Group, View
 
@@ -48,8 +48,9 @@ class Polygon(Component):
     complete = Event
 
     # The rule to use to determine the inside of the polygon.
-    inside_rule = Trait(
-        "winding", {"winding": FILL_STROKE, "oddeven": EOF_FILL_STROKE}
+    inside_rule = Map(
+        {"winding": FILL_STROKE, "oddeven": EOF_FILL_STROKE},
+        default_value="winding",
     )
 
     # The points that make up this polygon.

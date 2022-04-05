@@ -81,10 +81,10 @@ class NativeScrollBar(Component):
     range = Trait((0.0, 100.0, 10.0, 1.0), valid_range)
 
     # The orientation of the scrollbar
-    orientation = Trait("horizontal", "vertical")
+    orientation = Enum("horizontal", "vertical")
 
     # Is y=0 at the top or bottom?
-    origin = Trait("bottom", "top")
+    origin = Enum("bottom", "top")
 
     # Determines if the scroll bar should be visible and respond to events
     enabled = Bool(True)

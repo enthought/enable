@@ -16,7 +16,7 @@ the standard WX one.
 import wx
 
 # Enthought Imports
-from traits.api import Property, Trait, TraitError, Any, Enum, Bool, Int
+from traits.api import Any, Bool, Enum, Int, Property, Trait, TraitError
 
 from enable.component import Component
 
@@ -79,10 +79,10 @@ class NativeScrollBar(Component):
     range = Trait((0.0, 100.0, 10.0, 1.0), valid_range)
 
     # The orientation of the scrollbar
-    orientation = Trait("horizontal", "vertical")
+    orientation = Enum("horizontal", "vertical")
 
     # The location of y=0
-    origin = Trait("bottom", "top")
+    origin = Enum("bottom", "top")
 
     # Determines if the scroll bar should be visible and respond to events
     enabled = Bool(True)
