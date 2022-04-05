@@ -17,7 +17,7 @@ from numpy import array, ndarray
 # Enthought library imports
 from kiva.trait_defs.api import KivaFont
 from traits.api import (
-    List, Map, PrefixList, PrefixMap, Range, Union,
+    BaseFloat, List, Map, PrefixList, PrefixMap, Range, TraitType, Union,
 )
 from traitsui.api import ImageEnumEditor, EnumEditor
 
@@ -153,3 +153,45 @@ TimeInterval = Union(None, Range(0.0, 3600.0))
 # Stretch traits:
 Stretch = Range(0.0, 1.0, value=1.0)
 NoStretch = Stretch(0.0)
+
+# Scrollbar traits
+class ScrollBarRange(TraitType):
+    """ Trait that holds a (low, high, page_size, line_size) range tuple.
+    """
+
+    def validate(self, object, name, value):
+        if isinstance(value, (tuple, list)) and (len(value) == 4):
+            low, high, page_size, line_size = value
+            if high < low:
+                low, high = high, low
+            elif high == low:
+                high = low + 1.0
+            page_size = max(min(page_size, high - low), 0.0)
+            line_size = max(min(line_size, page_size), 0.0)
+            return (
+                float(low),
+                float(high),
+                float(page_size),
+                float(line_size),
+            )
+        self.error(object, name, value)
+
+    def info(self):
+        return "a (low,high,page_size,line_size) range tuple"
+
+
+class ScrollPosition(BaseFloat):
+    """A Trait that ensures the position is within the scroll range.
+    """
+
+    #: the name of the trait holding the range information.
+    range_name = "range"
+
+    def validate(self, object, name, value):
+        value = super().validate(object, name, value)
+        try:
+            low, high, page_size, line_size = getattr(object, self.range_name)
+            x = max(min(float(value), high - page_size), low)
+            return x
+        except Exception:
+            self.error(object, name, value)
