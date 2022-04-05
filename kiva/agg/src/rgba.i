@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -30,7 +30,7 @@
    $result = PyArray_Return(ary_obj);
 }
 
-%typemap(check) (double r) 
+%typemap(check) (double r)
 {
     if ($1 < 0.0 || $1 > 1.0)
     {
@@ -39,7 +39,7 @@
     }
 }
 
-%apply (double r) {double g, double b, double a};  
+%apply (double r) {double g, double b, double a};
 
 
 namespace agg24
@@ -61,7 +61,7 @@ namespace agg24
 }
 
 %extend agg24::rgba
-{    
+{
     char *__repr__()
     {
         static char tmp[1024];
@@ -70,7 +70,7 @@ namespace agg24
     }
     int __eq__(agg24::rgba& o)
     {
-        return (self->r == o.r && self->g == o.g && 
+        return (self->r == o.r && self->g == o.g &&
                 self->b == o.b && self->a == o.a);
     }
     void asarray(double* out)
@@ -78,7 +78,7 @@ namespace agg24
         out[0] = self->r;
         out[1] = self->g;
         out[2] = self->b;
-        out[3] = self->a;    
+        out[3] = self->a;
     }
 }
 

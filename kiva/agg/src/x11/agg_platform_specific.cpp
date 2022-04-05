@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -132,16 +132,16 @@ namespace agg24
 
   XImage* x11_display::create_image(const rendering_buffer* rbuf) {
     DEBUG_MTH("x11_display::create_image");
-    unsigned width = rbuf->width(); 
-    unsigned height = rbuf->height(); 
-    return XCreateImage(m_display, 
-			m_visual, //CopyFromParent, 
-			m_depth, 
-			ZPixmap, 
+    unsigned width = rbuf->width();
+    unsigned height = rbuf->height();
+    return XCreateImage(m_display,
+			m_visual, //CopyFromParent,
+			m_depth,
+			ZPixmap,
 			0,
-			(char*)(rbuf->buf()), 
+			(char*)(rbuf->buf()),
 			width,
-			height, 
+			height,
 			m_sys_bpp,
 			width * (m_sys_bpp / 8));
   }
@@ -203,7 +203,7 @@ namespace agg24
       case pix_format_gray8:
 	m_bpp = 8;
 	break;
-	
+
       case pix_format_rgb565:
       case pix_format_rgb555:
 	m_bpp = 16;
@@ -260,15 +260,15 @@ namespace agg24
 		  m_sys_format = pix_format_rgba32;
 		  m_byte_order = LSBFirst;
 		  break;
-		  
+
 		case pix_format_abgr32:
 		  m_sys_format = pix_format_abgr32;
 		  m_byte_order = MSBFirst;
 		  break;
-		  
-		default:                            
+
+		default:
 		  m_byte_order = hw_byte_order;
-		  m_sys_format = 
+		  m_sys_format =
 		    (hw_byte_order == LSBFirst) ?
 		    pix_format_rgba32 :
 		    pix_format_abgr32;
@@ -283,15 +283,15 @@ namespace agg24
 		  m_sys_format = pix_format_argb32;
 		  m_byte_order = MSBFirst;
 		  break;
-		  
+
 		case pix_format_bgra32:
 		  m_sys_format = pix_format_bgra32;
 		  m_byte_order = LSBFirst;
 		  break;
-		  
-		default:                            
+
+		default:
 		  m_byte_order = hw_byte_order;
-		  m_sys_format = 
+		  m_sys_format =
 		    (hw_byte_order == MSBFirst) ?
 		    pix_format_argb32 :
 		    pix_format_bgra32;
@@ -359,7 +359,7 @@ namespace agg24
 	    UNHANDLED_PIX_FORMATS;
 	  }
 	break;
-                    
+
       case pix_format_rgb565:
 	switch(m_format)
 	  {
@@ -374,7 +374,7 @@ namespace agg24
 	    UNHANDLED_PIX_FORMATS;
 	  }
 	break;
-	
+
       case pix_format_rgba32:
 	switch(m_format)
 	  {
@@ -389,7 +389,7 @@ namespace agg24
 	    UNHANDLED_PIX_FORMATS;
 	  }
 	break;
-	
+
       case pix_format_abgr32:
 	switch(m_format)
 	  {
@@ -404,7 +404,7 @@ namespace agg24
 	    UNHANDLED_PIX_FORMATS;
 	  }
 	break;
-	
+
       case pix_format_argb32:
 	switch(m_format)
 	  {
@@ -419,7 +419,7 @@ namespace agg24
 	    UNHANDLED_PIX_FORMATS;
 	  }
 	break;
-	
+
       case pix_format_bgra32:
 	switch(m_format)
 	  {

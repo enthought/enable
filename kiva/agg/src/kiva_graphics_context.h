@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -477,7 +477,7 @@ namespace kiva
             typedef std::pair<double, double> point_type;
             std::vector<gradient_stop> stops_list;
             std::vector<point_type> points;
-            
+
             if (strcmp(units, "objectBoundingBox") == 0)
             {
                 // Transform from relative coordinates
@@ -485,7 +485,7 @@ namespace kiva
                 x1 = clip_rect.x + x1 * clip_rect.w;
                 x2 = clip_rect.x + x2 * clip_rect.w;
                 y1 = clip_rect.y + y1 * clip_rect.h;
-                y2 = clip_rect.y + y2 * clip_rect.h;                
+                y2 = clip_rect.y + y2 * clip_rect.h;
             }
 
             points.push_back(point_type(x1, y1));

@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -12,14 +12,14 @@
 
 namespace kiva
 {
-    bool point_in_polygon(double x, double y, 
+    bool point_in_polygon(double x, double y,
                           double* poly_pts, int Npoly_pts);
-    void points_in_polygon(double* pts, int Npts, 
+    void points_in_polygon(double* pts, int Npts,
                           double* poly_pts, int Npoly_pts,
                           unsigned char* results, int Nresults);
-    bool point_in_polygon_winding(double x, double y, 
+    bool point_in_polygon_winding(double x, double y,
                                   double* poly_pts, int Npoly_pts);
-    void points_in_polygon_winding(double* pts, int Npts, 
+    void points_in_polygon_winding(double* pts, int Npts,
                                    double* poly_pts, int Npoly_pts,
                                    unsigned char* results, int Nresults);
 

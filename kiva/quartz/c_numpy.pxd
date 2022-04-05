@@ -1,4 +1,4 @@
-# (C) Copyright 2004-2021 Enthought, Inc., Austin, TX
+# (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
@@ -15,15 +15,15 @@ cdef extern from "numpy/arrayobject.h":
         NPY_BYTE
         NPY_UBYTE
         NPY_SHORT
-        NPY_USHORT 
+        NPY_USHORT
         NPY_INT
-        NPY_UINT 
+        NPY_UINT
         NPY_LONG
         NPY_ULONG
         NPY_LONGLONG
         NPY_ULONGLONG
         NPY_FLOAT
-        NPY_DOUBLE 
+        NPY_DOUBLE
         NPY_LONGDOUBLE
         NPY_CFLOAT
         NPY_CDOUBLE
@@ -64,7 +64,7 @@ cdef extern from "numpy/arrayobject.h":
         NPY_OUT_FARRAY
         NPY_INOUT_FARRAY
 
-        NPY_UPDATE_ALL 
+        NPY_UPDATE_ALL
 
     cdef enum defines:
         # Note: as of Pyrex 0.9.5, enums are type-checked more strictly, so this
@@ -79,7 +79,7 @@ cdef extern from "numpy/arrayobject.h":
         double real
         double imag
 
-    ctypedef int npy_intp 
+    ctypedef int npy_intp
 
     ctypedef extern class numpy.dtype [object PyArray_Descr]:
         cdef int type_num, elsize, alignment
@@ -100,7 +100,7 @@ cdef extern from "numpy/arrayobject.h":
         cdef npy_intp index, size
         cdef ndarray ao
         cdef char *dataptr
-        
+
     ctypedef extern class numpy.broadcast [object PyArrayMultiIterObject]:
         cdef int numiter
         cdef npy_intp size, index
@@ -115,7 +115,7 @@ cdef extern from "numpy/arrayobject.h":
     dtype PyArray_DescrFromTypeNum(NPY_TYPES type_num)
     object PyArray_SimpleNew(int ndims, npy_intp* dims, NPY_TYPES type_num)
     int PyArray_Check(object obj)
-    object PyArray_ContiguousFromAny(object obj, NPY_TYPES type, 
+    object PyArray_ContiguousFromAny(object obj, NPY_TYPES type,
         int mindim, int maxdim)
     npy_intp PyArray_SIZE(ndarray arr)
     npy_intp PyArray_NBYTES(ndarray arr)

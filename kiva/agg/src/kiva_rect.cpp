@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -67,7 +67,7 @@ rect_list_type disjoint_intersect(const rect_list_type &original_list,
             result_list.push_back(result_rect);
         }
     }
-    
+
     return result_list;
 }
 
@@ -93,7 +93,7 @@ rect_list_type disjoint_union(const rect_list_type &rects)
         rlist = disjoint_union(rlist, rects[i]);
     }
     return rlist;
-    
+
 }
 
 rect_list_type disjoint_union(rect_list_type original_list,
@@ -110,7 +110,7 @@ rect_list_type disjoint_union(rect_list_type original_list,
     rect_list_type additional_rects;
     rect_list_type todo;
     todo.push_back(new_rect);
-    
+
     // Iterate over each item in the todo list:
     unsigned int todo_count = 0;
     bool use_leftover = true;
@@ -151,7 +151,7 @@ rect_list_type disjoint_union(rect_list_type original_list,
                 use_leftover = false;
                 break;
             }
-    
+
             // Test for existing rect being wholly contained in new rect
             bool x2inx1 = ((xl2 >= xl1) && (xr2 <= xr1));
             bool y2iny1 = ((yb2 >= yb1) && (yt2 <= yt1));
@@ -215,7 +215,7 @@ rect_list_type disjoint_union(rect_list_type original_list,
                 orig_count++;
                 continue;
             }
-            
+
             // Test for rect 2 being within rect 1 along the y-axis:
             if (y2iny1)
             {
@@ -245,7 +245,7 @@ rect_list_type disjoint_union(rect_list_type original_list,
                 xl = xr2;
                 xr = xr1;
             }
-            
+
             if (yb1 < yb2)
             {
                 yb  = yb2;
@@ -258,7 +258,7 @@ rect_list_type disjoint_union(rect_list_type original_list,
             }
 
             todo.push_back(rect_type(xl, yb, xr-xl, yt-yb));
-            
+
             orig_count++;
         }
 
@@ -330,7 +330,7 @@ void test_disjoint_2_3()
 void test_disjoint_corner()
 {
     bool all_pass = false;
-    
+
     rect_list_type cliprects;
     rect_type mainrect(40,40,20,20);
     rect_type ul(35,55,10,10);

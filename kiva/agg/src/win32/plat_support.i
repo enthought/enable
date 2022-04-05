@@ -1,5 +1,5 @@
 // -*- c++ -*-
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -57,7 +57,7 @@ namespace agg24
 
 %apply HDC { HWND };
 
-// More permissive unsigned typemap that converts any numeric type to an 
+// More permissive unsigned typemap that converts any numeric type to an
 // unsigned value.  It is cleared at the end of this file.
 %typemap(in) unsigned
 {
@@ -65,13 +65,13 @@ namespace agg24
     if (PyErr_Occurred()) SWIG_fail;
     $1 = (unsigned) PyLong_AsLong(obj);
     if (PyErr_Occurred()) SWIG_fail;
-}   
+}
 
 namespace agg24
 {
     enum pix_format_e
     {
-        pix_format_undefined = 0,  // By default. No conversions are applied 
+        pix_format_undefined = 0,  // By default. No conversions are applied
         pix_format_gray8,          // Simple 256 level grayscale
         pix_format_rgb555,         // 15 bit rgb. Depends on the byte ordering!
         pix_format_rgb565,         // 16 bit rgb. Depends on the byte ordering!
@@ -81,25 +81,25 @@ namespace agg24
         pix_format_argb32,         // A-R-G-B, native MAC format
         pix_format_abgr32,         // A-B-G-R, one byte per color component
         pix_format_bgra32,         // B-G-R-A, native win32 BMP format
-  
+
         end_of_pix_formats
     };
 
     %rename(PixelMap) pixel_map;
-    
+
     class pixel_map
     {
     public:
         ~pixel_map();
-        pixel_map(unsigned width, unsigned height, 
+        pixel_map(unsigned width, unsigned height,
                   pix_format_e format,
                   unsigned clear_val, bool bottom_up);
-                  
+
     public:
        %feature("shadow") draw(HDC h_dc, int x, int y, double scale) const
        %{
        def draw(self, h_dc, x=0, y=0, width=0, height=0):
-           # fix me: brittle becuase we are hard coding 
+           # fix me: brittle becuase we are hard coding
            # module and class name.  Done cause SWIG 1.3.24 does
            # some funky overloading stuff in it that breaks keyword
            # arguments.
@@ -131,7 +131,7 @@ PyObject* pixel_map_as_unowned_array(pixel_map& pix_map);
 }
 
 HDC GetDC(HWND hWnd);
-int ReleaseDC(HWND hWnd, HDC hDC);    
+int ReleaseDC(HWND hWnd, HDC hDC);
 
 // clear the "permissive" unsigned typemap we are using.
 %typemap(in) unsigned;

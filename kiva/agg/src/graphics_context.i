@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -350,7 +350,7 @@ namespace kiva {
                 # swig 1.3.28 does not have real thisown, thisown is mapped
                 # to this.own() but with previous 'self.this=obj' an
                 # attribute 'own' error is raised. Does this workaround
-                # work with pre-1.3.28 swig?				
+                # work with pre-1.3.28 swig?
                 self.thisown2 = 1
 
                 self.bmp_array = ary

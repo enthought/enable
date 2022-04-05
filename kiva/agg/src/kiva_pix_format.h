@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -11,7 +11,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //
 // This set of templatized functions return a kiva::pix_format_e value based
-// on the agg pixel format template parameter.  The function is called from 
+// on the agg pixel format template parameter.  The function is called from
 // the graphics_context<T>.format() method.
 //
 /////////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ namespace kiva
     // The default function returns "undefined", and the template
     // is specialized for each of the actual Agg pixel formats.
     template <class AggPixFmt> kiva::pix_format_e agg_pix_to_kiva(void *dummy=NULL)
-    { 
+    {
         return kiva::pix_format_undefined;
     }
 
@@ -45,7 +45,7 @@ namespace kiva
     // and all calls to agg_pix_to_kiva<T>() end up in an arbitrary one of the
     // following specializations (usually the first).  The obvious workaround is
     // to add optional function parameters corresponding to the template parameter.
-    // 
+    //
     // Furthermore, when calling these functions, MSVC will complain about
     // ambiguous overloading, so you have to create a dummy pointer and pass it
     // in.  Normally, you would be able to do this:

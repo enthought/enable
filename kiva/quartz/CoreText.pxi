@@ -1,4 +1,4 @@
-# (C) Copyright 2004-2021 Enthought, Inc., Austin, TX
+# (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
@@ -27,7 +27,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     cdef CFStringRef kCTUnderlineStyleAttributeName
     cdef CFStringRef kCTVerticalFormsAttributeName
     cdef CFStringRef kCTGlyphInfoAttributeName
-    
+
     ctypedef enum CTUnderlineStyle:
         kCTUnderlineStyleNone   = 0x00
         kCTUnderlineStyleSingle = 0x01
@@ -89,7 +89,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     cdef CFStringRef kCTFontFeatureSettingsAttribute
     cdef CFStringRef kCTFontFixedAdvanceAttribute
     cdef CFStringRef kCTFontOrientationAttribute
-    
+
     ctypedef enum CTFontOrientation:
         kCTFontDefaultOrientation       = 0
         kCTFontHorizontalOrientation    = 1
@@ -231,13 +231,13 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
         void *matrix)
     CTFontRef CTFontCreateWithFontDescriptor(CTFontDescriptorRef descriptor,
         CGFloat size, void *matrix)
-    
+
     #CTFontRef CTFontCreateUIFontForLanguage(CTFontUIFontType uiType,
     #    CGFloat size, CFStringRef language)
     #CTFontRef CTFontCreateCopyWithAttributes(CTFontRef font, CGFloat size,
     #    void *matrix, CTFontDescriptorRef attributes)
     CTFontRef CTFontCreateCopyWithSymbolicTraits(CTFontRef font, CGFloat size,
-        void *matrix, CTFontSymbolicTraits symTraitValue, 
+        void *matrix, CTFontSymbolicTraits symTraitValue,
         CTFontSymbolicTraits symTraitMask)
     #CTFontRef CTFontCreateCopyWithFamily(CTFontRef font, CGFloat size,
     #    void *matrix, CFStringRef family)
@@ -282,10 +282,10 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
         CGGlyph glyphs[], CGSize translations[], CFIndex count)
     CGPathRef CTFontCreatePathForGlyph(CTFontRef font, CGGlyph glyph,
         void * transform)
-    
+
     CFArrayRef CTFontCopyVariationAxes(CTFontRef font)
     CFDictionaryRef CTFontCopyVariation(CTFontRef font)
-    
+
     CFArrayRef CTFontCopyFeatures(CTFontRef font)
     CFArrayRef CTFontCopyFeatureSettings(CTFontRef font)
     CGFontRef CTFontCopyGraphicsFont(CTFontRef font, CTFontDescriptorRef *attributes)
@@ -296,7 +296,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     #    void *matrix, CTFontDescriptorRef attributes)
     #CTFontRef CTFontCreateWithQuickdrawInstance(ConstStr255Param name,
     #    int16_t identifier, uint8_t style, CGFloat size)
-    
+
     #CFArrayRef CTFontCopyAvailableTables(CTFontRef font,
     #    CTFontTableOptions options)
     #CFDataRef CTFontCopyTable(CTFontRef font, CTFontTableTag table,
@@ -322,7 +322,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
         CFDictionaryRef attributes)
     CTFontDescriptorRef CTFontDescriptorCreateCopyWithAttributes(
         CTFontDescriptorRef original, CFDictionaryRef attributes)
-    
+
     #CTFontDescriptorRef CTFontDescriptorCreateCopyWithVariation(
     #    CTFontDescriptorRef original, CFNumberRef variationIdentifier,
     #    CGFloat variationValue)

@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -12,7 +12,7 @@
 
 #include "kiva_constants.h"
 
-namespace kiva 
+namespace kiva
 {
 
 #ifdef _MSC_VER
@@ -65,7 +65,7 @@ namespace kiva
 
     // Determines whether or not two floating point numbers are
     // essentially equal.  This uses an aspect of the IEEE floating-
-    // point spec described in 
+    // point spec described in
     // http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
     // The code for both functions are from this same page.
     //

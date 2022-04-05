@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -22,14 +22,14 @@ namespace kiva
     {
         public:
             %mutable;
-            int size;              
+            int size;
             std::string name;
             int family;
-            int style;     
+            int style;
             int encoding;
             int face_index;
             std::string filename;
-            
+
             // constructor
             font_type(std::string _name="Arial",
                       int _size=12,
@@ -38,18 +38,18 @@ namespace kiva
                       int _encoding=0,
                       int _face_index=0,
                       bool validate=true);
-                      
+
             int change_filename(std::string _filename);
 
             bool is_loaded();
     };
 }
 %extend kiva::font_type
-{    
+{
     char *__repr__()
     {
         static char tmp[1024];
-        // !! We should work to make output formatting conform to 
+        // !! We should work to make output formatting conform to
         // !! whatever it Numeric does (which needs to be cleaned up also).
         sprintf(tmp,"Font(%s,%d,%d,%d,%d,%d)",
                 self->name.c_str(), self->family, self->size, self->style,
@@ -64,7 +64,7 @@ namespace kiva
                 self->style == other.style &&
                 self->encoding == other.encoding &&
                 self->face_index == other.face_index);
-    }    
+    }
 }
 
 %pythoncode
@@ -84,4 +84,4 @@ def unicode_safe_init(self, _name="Arial", _size=12, _family=0, _style=0,
 # This is a crappy way of overriding the constructor
 AggFontType.__init__ = unicode_safe_init
 %}
-    
+

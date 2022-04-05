@@ -1,5 +1,5 @@
 // -*- c++ -*-
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -20,7 +20,7 @@ namespace agg24
 
   enum pix_format_e
     {
-      pix_format_undefined = 0,  // By default. No conversions are applied 
+      pix_format_undefined = 0,  // By default. No conversions are applied
       pix_format_gray8,          // Simple 256 level grayscale
       pix_format_rgb555,         // 15 bit rgb. Depends on the byte ordering!
       pix_format_rgb565,         // 16 bit rgb. Depends on the byte ordering!
@@ -30,7 +30,7 @@ namespace agg24
       pix_format_argb32,         // A-R-G-B, native MAC format
       pix_format_abgr32,         // A-B-G-R, one byte per color component
       pix_format_bgra32,         // B-G-R-A, native win32 BMP format
-      
+
       end_of_pix_formats
     };
 
@@ -46,7 +46,7 @@ namespace agg24
     void destroy_image(XImage* ximg);
 
   public:
-    Display*             m_display;    
+    Display*             m_display;
     int                  m_screen;
     int                  m_depth;
     Visual*              m_visual;
@@ -60,7 +60,7 @@ namespace agg24
   //------------------------------------------------------------------------
   class platform_specific
   {
-    
+
     static x11_display x11;
 
   public:
@@ -84,7 +84,7 @@ namespace agg24
     int                  m_byte_order;  // init()
     unsigned             m_sys_bpp;     // init()
     pix_format_e         m_sys_format;  // init()
-    
+
   };
 
 }

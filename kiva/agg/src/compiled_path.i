@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -20,7 +20,7 @@
 %apply (double* point_array, int point_count) {(double* pts, int Npts)};
 %apply (double* point_array, int point_count) {(double* start, int Nstart)};
 %apply (double* point_array, int point_count) {(double* end, int Nend)};
-%apply (double* rect_array, int rect_count) {(double* all_rects, 
+%apply (double* rect_array, int rect_count) {(double* all_rects,
                                               int Nrects)};
 %apply (double *vertex_x, double* vertex_y) {(double* x, double *y)};
 
@@ -29,8 +29,8 @@
 namespace kiva
 {
     %rename(CompiledPath) compiled_path;
-    
-    class compiled_path 
+
+    class compiled_path
     {
         public:
             compiled_path();
@@ -39,10 +39,10 @@ namespace kiva
             void close_path();
             void move_to(double x, double y);
             void line_to(double x, double y);
-            void quad_curve_to(double x_ctrl,  double y_ctrl, 
-                               double x_to,    double y_to);            
-            void curve_to(double x_ctrl1, double y_ctrl1, 
-                          double x_ctrl2, double y_ctrl2, 
+            void quad_curve_to(double x_ctrl,  double y_ctrl,
+                               double x_to,    double y_to);
+            void curve_to(double x_ctrl1, double y_ctrl1,
+                          double x_ctrl2, double y_ctrl2,
                           double x_to,    double y_to);
             void arc(double x, double y, double radius, double start_angle,
 
@@ -59,7 +59,7 @@ namespace kiva
             void rects(double* all_rects, int Nrects);
             void translate_ctm(double x, double y);
             void rotate_ctm(double angle);
-            void scale_ctm(double sx, double sy);            
+            void scale_ctm(double sx, double sy);
             %rename(concat_ctm_agg) concat_ctm(agg24::trans_affine&);
             void concat_ctm(agg24::trans_affine& m);
             %rename(set_ctm_agg) set_ctm(agg24::trans_affine&);
@@ -83,21 +83,21 @@ namespace kiva
                     self.set_ctm_agg(self.kivaaffine_to_aggaffine(ctm))
             %}
             agg24::trans_affine get_ctm();
-            void save_ctm();           
+            void save_ctm();
             void restore_ctm();
-            
+
             // methods from agg24::path_storage that are used in testing
             unsigned total_vertices() const;
             %rename(_rewind) rewind(unsigned);
             void rewind(unsigned start=0);
-            
+
             %rename (_vertex) vertex(unsigned, double*, double*);
-            unsigned vertex(unsigned idx, double* x, double* y) const;            
-            
+            unsigned vertex(unsigned idx, double* x, double* y) const;
+
             %rename (_vertex) vertex(double*, double*);
             unsigned vertex(double* x, double* y);
 
-    };    
+    };
 }
 
 %pythoncode {
@@ -117,10 +117,10 @@ def _vertices(self):
         while cmd_flag != 0:
             pt, cmd_flag = self._vertex()
             cmd,flag = _agg.path_cmd(cmd_flag),_agg.path_flags(cmd_flag)
-            vertices.append((pt[0],pt[1], cmd, flag))        
+            vertices.append((pt[0],pt[1], cmd, flag))
         return array(vertices)
 
-CompiledPath._vertices = _vertices    
+CompiledPath._vertices = _vertices
 
 
 def get_kiva_ctm(self):
@@ -130,7 +130,7 @@ def get_kiva_ctm(self):
                       [aff[4], aff[5], 1]], float64)
 
 CompiledPath.get_kiva_ctm = get_kiva_ctm
-       
+
 }
 
 %clear (double *x, double *y);

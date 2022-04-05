@@ -1,5 +1,5 @@
 // -*- c++ -*-
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -25,7 +25,7 @@ namespace agg24
             void draw(HDC h_dc, int draw_x=-1, int draw_y=-1, int draw_width=-1,
             		  int draw_height=-1) const;
             pix_format_e get_pix_format() const;
-        
+
             unsigned char* buf();
             unsigned       width() const;
             unsigned       height() const;
@@ -34,19 +34,19 @@ namespace agg24
             rendering_buffer& rbuf() { return m_rbuf_window; }
             platform_specific*  m_specific;
             PyObject* convert_to_argb32string() const;
-        
+
         private:
             void        destroy();
-            void        create(unsigned width, 
+            void        create(unsigned width,
                                unsigned height,
                                unsigned clear_val=256);
-        
+
             unsigned char*   m_buf;
             unsigned         m_bpp;
             rendering_buffer m_rbuf_window;
-        
+
         public:
-        
+
     };
 
 }

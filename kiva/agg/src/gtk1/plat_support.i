@@ -1,5 +1,5 @@
 // -*- c++ -*-
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -24,11 +24,11 @@ namespace agg24
         npy_intp rows = pix_map.height();
         npy_intp cols = pix_map.width();
         npy_intp depth = pix_map.bpp() / 8;
-    
+
         dims[0] = rows;
         dims[1] = cols;
         dims[2] = depth;
-        
+
         return PyArray_SimpleNewFromData(3,dims,NPY_UINT8,(void*)pix_map.buf());
     }
 
@@ -41,7 +41,7 @@ namespace agg24
     $1 = (Window) PyInt_AsLong($input);
 }
 
-// More permissive unsigned typemap that converts any numeric type to an 
+// More permissive unsigned typemap that converts any numeric type to an
 // unsigned value.  It is cleared at the end of this file.
 %typemap(in) unsigned
 {
@@ -49,13 +49,13 @@ namespace agg24
     if (PyErr_Occurred()) SWIG_fail;
     $1 = (unsigned) PyLong_AsLong(obj);
     if (PyErr_Occurred()) SWIG_fail;
-}   
+}
 
 namespace agg24
 {
     enum pix_format_e
     {
-        pix_format_undefined = 0,  // By default. No conversions are applied 
+        pix_format_undefined = 0,  // By default. No conversions are applied
         pix_format_gray8,          // Simple 256 level grayscale
         pix_format_rgb555,         // 15 bit rgb. Depends on the byte ordering!
         pix_format_rgb565,         // 16 bit rgb. Depends on the byte ordering!
@@ -65,7 +65,7 @@ namespace agg24
         pix_format_argb32,         // A-R-G-B, native MAC format
         pix_format_abgr32,         // A-B-G-R, one byte per color component
         pix_format_bgra32,         // B-G-R-A, native win32 BMP format
-  
+
         end_of_pix_formats
     };
 
@@ -81,7 +81,7 @@ namespace agg24
         %feature("shadow") draw(Window h_dc, int x, int y, double scale) const
         %{
         def draw(self, h_dc, x=0, y=0, scale=1.0):
-            # fix me: brittle becuase we are hard coding 
+            # fix me: brittle becuase we are hard coding
             # module and class name.  Done cause SWIG 1.3.24 does
             # some funky overloading stuff in it that breaks keyword
             # arguments.

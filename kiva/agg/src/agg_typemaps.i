@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -39,7 +39,7 @@
 // Typemaps for (double x, double y) points
 //
 //    For: *
-//    
+//
 //    This is useful for places where ints may be passed in and need to
 //    be converted. Python 2.6 requires this
 // --------------------------------------------------------------------------
@@ -333,9 +333,9 @@
     {
         goto fail;
     }
-    
+
     std::vector<kiva::gradient_stop> stops;
-    
+
     for (int i = 0; i < ary->dimensions[0]; i++)
     {
         // the stop is offset, red, green, blue, alpha
@@ -343,8 +343,8 @@
         agg24::rgba8 color(data[5*i+1]*255, data[5*i+2]*255, data[5*i+3]*255, data[5*i+4]*255);
         stops.push_back(kiva::gradient_stop(data[5*i], color));
     }
-    
-    
+
+
     $1 = stops;
 }
 
