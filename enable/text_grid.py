@@ -16,7 +16,7 @@ from numpy import arange, array, dstack, repeat, newaxis
 
 # Enthought library imports
 from traits.api import (
-    Any, Array, Bool, Int, List, Property, Trait, Tuple, observe,
+    Any, Array, Bool, Int, List, Property, Tuple, observe,
 )
 from kiva.trait_defs.api import KivaFont
 

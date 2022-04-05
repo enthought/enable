@@ -11,7 +11,7 @@
 
 # Enthought library imports
 from kiva.api import affine_identity
-from traits.api import Any, Bool, HasTraits, List, Property, Str, Trait, Union
+from traits.api import Any, Bool, HasTraits, List, Property, Str, Union
 
 # Local relative imports
 from enable.colors import ColorTrait
