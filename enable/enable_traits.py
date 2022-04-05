@@ -16,7 +16,9 @@ from numpy import array, ndarray
 
 # Enthought library imports
 from kiva.trait_defs.api import KivaFont
-from traits.api import List, PrefixList, PrefixMap, Range, Trait, TraitFactory
+from traits.api import (
+    List, PrefixList, PrefixMap, Range, Trait, TraitFactory, Union,
+)
 from traitsui.api import ImageEnumEditor, EnumEditor
 
 # Try to get the CList trait; for traits 2 backwards compatibility, fall back
@@ -152,7 +154,7 @@ margin_trait = Range(0, 63)
 border_size_trait = Range(0, 8, editor=border_size_editor)
 
 # Time interval trait:
-TimeInterval = Trait(None, None, Range(0.0, 3600.0))
+TimeInterval = Union(None, Range(0.0, 3600.0))
 
 # Stretch traits:
 Stretch = Range(0.0, 1.0, value=1.0)

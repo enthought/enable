@@ -12,7 +12,7 @@
 from numpy import inf
 
 # Enthought library imports
-from traits.api import Bool, Enum, Float, Instance, Int, List, Trait, Tuple
+from traits.api import Bool, Enum, Float, Instance, Int, List, Tuple, Union
 
 # Enable imports
 from enable.base_tool import KeySpec
@@ -108,7 +108,7 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     # named colors from Enable, this attribute allows the specification of a
     # separate alpha value that replaces the alpha value of **color** at draw
     # time.
-    alpha = Trait(0.4, None, Float)
+    alpha = Union(None, Float, default_value=0.4)
 
     # The color of the outside selection rectangle.
     border_color = ColorTrait("dodgerblue")
@@ -136,14 +136,14 @@ class ViewportZoomTool(AbstractOverlay, ToolHistoryMixin, BaseZoomTool):
     _enabled = Bool(False)
 
     # the original numerical screen ranges
-    _orig_position = Trait(None, List, Float)
-    _orig_bounds = Trait(None, List, Float)
+    _orig_position = Union(None, List, Float)
+    _orig_bounds = Union(None, List, Float)
 
     # The (x,y) screen point where the mouse went down.
-    _screen_start = Trait(None, None, Tuple)
+    _screen_start = Union(None, Tuple)
 
     # The (x,,y) screen point of the last seen mouse move event.
-    _screen_end = Trait(None, None, Tuple)
+    _screen_end = Union(None, Tuple)
 
     def __init__(self, component=None, *args, **kw):
         # Support [Chaco's] AbstractController-style constructors which allow

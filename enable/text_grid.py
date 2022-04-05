@@ -87,7 +87,7 @@ class TextGrid(Component):
     _cached_cell_coords = Array
 
     # "auto" or a tuple
-    _cell_size = Trait("auto", Any)
+    _cell_size = Any("auto")
 
     # ------------------------------------------------------------------------
     # Public methods

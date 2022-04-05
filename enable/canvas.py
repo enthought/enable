@@ -10,7 +10,7 @@
 """ Defines the enable Canvas class """
 
 # Enthought library imports
-from traits.api import Bool, List, Trait, Tuple
+from traits.api import Bool, List, Tuple, Union
 from kiva.api import FILL
 
 
@@ -39,7 +39,7 @@ class Canvas(Container):
     # of the "region of interest" that it should use when computing its
     # notional bounds for clipping and event handling purposes.  If this trait
     # is None, then the canvas really does behave as if it has no bounds.
-    view_bounds = Trait(None, None, Tuple)
+    view_bounds = Union(None, Tuple)
 
     # The (x,y) position of the lower-left corner of the rectangle
     # corresponding to the dimensions in self.bounds.  Unlike self.position,
