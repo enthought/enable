@@ -7,11 +7,13 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 # Thanks for using Enthought open source!
+import logging
 import warnings
 
-from traits.etsconfig.api import ETSConfig
-
 from kiva.fonttools.font_manager import default_font_manager
+
+
+logger = logging.getLogger(__name__)
 
 
 def add_application_fonts(filenames):
@@ -25,16 +27,27 @@ def add_application_fonts(filenames):
     """
     if isinstance(filenames, str):
         filenames = [filenames]
+    logger.info(f"Installing additonal fonts: {filenames}")
 
     # Handle Kiva
     fm = default_font_manager()
     fm.update_fonts(filenames)
+    logger.debug("Additional fonts installed into Kiva backends.")
 
     # Handle the GUI toolkit
-    if ETSConfig.toolkit.startswith("qt"):
-        _qt_impl(filenames)
-    elif ETSConfig.toolkit == "wx":
-        _wx_impl(filenames)
+    try:
+        from pyface.toolkit import toolkit
+    except ImportError:
+        toolkit = None
+        logger.exception(
+            "Pyface not available, Kiva fonts not installed into toolkit."
+        )
+
+    if toolkit is not None:
+        if toolkit.toolkit.startswith("qt"):
+            _qt_impl(filenames)
+        elif toolkit.toolkit == "wx":
+            _wx_impl(filenames)
 
 
 def _qt_impl(filenames):
@@ -42,6 +55,7 @@ def _qt_impl(filenames):
 
     for fname in filenames:
         QtGui.QFontDatabase.addApplicationFont(fname)
+    logger.debug("Additional fonts installed into Qt toolkit.")
 
 
 def _wx_impl(filenames):
@@ -50,5 +64,6 @@ def _wx_impl(filenames):
     if hasattr(wx.Font, "CanUsePrivateFont") and wx.Font.CanUsePrivateFont():
         for fname in filenames:
             wx.Font.AddPrivateFont(fname)
+        logger.debug("Additional fonts installed into Wx toolkit.")
     else:
         warnings.warn("Wx does not support private fonts! Failed to add.")

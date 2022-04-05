@@ -10,22 +10,28 @@
 """ Trait definition for a wxPython-based Kiva font.
 """
 
-# -----------------------------------------------------------------------------
-#  Imports:
-# -----------------------------------------------------------------------------
-
-from traits.etsconfig.api import ETSConfig
-
-if ETSConfig.toolkit == "wx":
-    from .ui.wx.kiva_font_editor import KivaFontEditor
-elif ETSConfig.toolkit.startswith("qt"):
-    # FIXME
-    # from .ui.qt4.kiva_font_editor import KivaFontEditor
-    KivaFontEditor = None
-else:
-    KivaFontEditor = None
+import logging
 
 from traits.api import Trait, TraitError, TraitHandler, TraitFactory
+
+logger = logging.getLogger(__name__)
+
+try:
+    from traitsui.api import toolkit
+except ImportError:
+    toolkit = None
+    logger.exception("Could not import TraitsUI, KivaFontTrait has no editor")
+
+
+KivaFontEditor = None
+
+if toolkit is not None:
+    if toolkit().toolkit == "wx":
+        from .ui.wx.kiva_font_editor import KivaFontEditor
+    elif toolkit().toolkit.startswith("qt"):
+        # FIXME
+        # from .ui.qt4.kiva_font_editor import KivaFontEditor
+        pass
 
 
 # -----------------------------------------------------------------------------

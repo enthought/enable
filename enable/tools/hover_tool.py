@@ -15,12 +15,13 @@ components.
 # Enthought library imports
 from enable.base_tool import BaseTool
 from traits.api import Any, Callable, Enum, Float, Int
-from traits.etsconfig.api import ETSConfig
+from pyface.toolkit import toolkit
 from pyface.timer.api import DoLaterTimer
 
 
 # Define a toolkit-specific function for determining the global mouse position
-if ETSConfig.toolkit == "wx":
+# XXX this probably belongs in Pyface's SystemMetrics or something similar.
+if toolkit.toolkit == "wx":
     import wx
 
     def GetGlobalMousePosition():
@@ -33,7 +34,7 @@ if ETSConfig.toolkit == "wx":
             raise RuntimeError("Unable to determine mouse position")
 
 
-elif ETSConfig.toolkit.startswith("qt"):
+elif toolkit.toolkit.startswith("qt"):
     from pyface.qt import QtGui
 
     def GetGlobalMousePosition():
@@ -46,7 +47,7 @@ else:
     def GetGlobalMousePosition():
         raise NotImplementedError(
             "GetGlobalMousePosition is not defined for"
-            "toolkit '%s'." % ETSConfig.toolkit
+            "toolkit '%s'." % toolkit.toolkit
         )
 
 
