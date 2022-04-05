@@ -13,7 +13,7 @@ from numpy import array, resize
 
 # Enthought library imports.
 from kiva.api import FILL, FILL_STROKE, STROKE
-from traits.api import Any, Event, Float, List, Trait, Bool
+from traits.api import Any, Event, Float, List, Bool
 
 # Local imports.
 from enable.api import border_size_trait, Component
@@ -36,7 +36,7 @@ class Line(Component):
     line_dash = Any
 
     # The width of the line.
-    line_width = Trait(1, border_size_trait)
+    line_width = border_size_trait(1)
 
     # The points that make up this polygon.
     points = List  # List of Tuples
