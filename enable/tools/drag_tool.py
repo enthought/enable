@@ -1,4 +1,4 @@
-# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+# (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
@@ -116,7 +116,7 @@ class DragTool(BaseTool):
     def drag_end(self, event):
         """ Called when a mouse event causes the drag operation to end.
 
-        A drag is ended when a user releases the mouse, or by receiving a 
+        A drag is ended when a user releases the mouse, or by receiving a
         mouse_leave event when on_drag_leave is 'end'.
         """
         pass
