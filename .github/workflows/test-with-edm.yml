@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache
-          key: ${{ runner.os }}-${{ matrix.toolkit }}-${{ hashFiles('ci/edmtool.py') }}
+          key: ${{ runner.os }}-${{ matrix.toolkit }}-${{ matrix.runtime }}-${{ hashFiles('ci/edmtool.py') }}
       - name: Setup EDM
         uses: enthought/setup-edm-action@v1
         with:
