@@ -1,4 +1,4 @@
-# (C) Copyright 2004-2021 Enthought, Inc., Austin, TX
+# (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
@@ -65,19 +65,19 @@ cdef extern from "CoreFoundation/CoreFoundation.h":
         CFStringRef filePath, CFURLPathStyle pathStyle, bool isDirectory)
     void CFShow(CFTypeRef cf)
     CFTypeID CFGetTypeID(CFTypeRef cf)
-    
+
     ctypedef struct CFArrayCallBacks:
         CFIndex version
         #CFArrayRetainCallBack retain
         #CFArrayReleaseCallBack release
         #CFArrayCopyDescriptionCallBack copyDescription
         #CFArrayEqualCallBack equal
-    
+
     cdef CFArrayCallBacks kCFTypeArrayCallBacks
     #ctypedef void (*CFArrayApplierFunction)(void *value, void *context)
     ctypedef CFTypeRef CFArrayRef
     ctypedef CFTypeRef CFMutableArrayRef
-    
+
     CFArrayRef CFArrayCreate(void* allocator, void **values,
         CFIndex numValues, CFArrayCallBacks *callBacks)
     CFArrayRef CFArrayCreateCopy(void* allocator, CFArrayRef theArray)
@@ -127,7 +127,7 @@ cdef extern from "CoreFoundation/CoreFoundation.h":
         #CFDictionaryCopyDescriptionCallBack copyDescription
         #CFDictionaryEqualCallBack equal
         #CFDictionaryHashCallBack hash
-    
+
     ctypedef struct CFDictionaryValueCallBacks:
         CFIndex version
         #CFDictionaryRetainCallBack retain
@@ -141,7 +141,7 @@ cdef extern from "CoreFoundation/CoreFoundation.h":
     CFDictionaryRef CFDictionaryCreate(void* allocator,
         void** keys, void** values, CFIndex numValues,
         CFDictionaryKeyCallBacks* keyCallBacks,
-        CFDictionaryValueCallBacks* valueCallBacks)    
+        CFDictionaryValueCallBacks* valueCallBacks)
     CFMutableDictionaryRef CFDictionaryCreateMutable(void* allocator,
         CFIndex capacity, CFDictionaryKeyCallBacks *keyCallBacks,
         CFDictionaryValueCallBacks *valueCallBacks)
@@ -161,7 +161,7 @@ cdef extern from "CoreFoundation/CoreFoundation.h":
         CFRange range, CFStringRef attrName, CFTypeRef value)
 
     ctypedef CFTypeRef CFNumberRef
-    
+
     ctypedef enum CFNumberType_:
         kCFNumberSInt8Type = 1
         kCFNumberSInt16Type = 2

@@ -1,4 +1,4 @@
-// (C) Copyright 2004-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -17,12 +17,12 @@ extern "C"
     void initmacport(void);
 }
 
-/* This converts a string of hex digits into an unsigned long.  It reads 
+/* This converts a string of hex digits into an unsigned long.  It reads
    This code is a modified version of SWIG_UnpackData from weave/swigptr2.py,
    and which I believe originated from the SWIG sources. */
 unsigned long hexstr_to_long(const char *c, char bytesize = 4) {
     unsigned long retval = 0;
-    
+
     unsigned char *u = reinterpret_cast<unsigned char*>(&retval);
     const unsigned char *eu =  u + bytesize;
     for (; u != eu; ++u) {
@@ -32,14 +32,14 @@ unsigned long hexstr_to_long(const char *c, char bytesize = 4) {
             uu = ((d - '0') << 4);
         else if ((d >= 'a') && (d <= 'f'))
             uu = ((d - ('a'-10)) << 4);
-        else 
+        else
             return 0;
         d = *(c++);
         if ((d >= '0') && (d <= '9'))
             uu |= (d - '0');
         else if ((d >= 'a') && (d <= 'f'))
             uu |= (d - ('a'-10));
-        else 
+        else
             return 0;
         *u = uu;
     }
@@ -49,15 +49,15 @@ unsigned long hexstr_to_long(const char *c, char bytesize = 4) {
 PyObject* get_macport(PyObject *self, PyObject *args)
 {
     const char err_string[] = "get_macport() requires a SWIG 'this' string.";
-    
+
     // the string representing the address embedded in the SWIG this ptr
     char *dc_addr_str = NULL;
     int length = 0;
     int err = 0;
     wxDC *p_dc = NULL;
-    
-    
-    
+
+
+
     err = PyArg_ParseTuple(args, "s#", &dc_addr_str, &length);
     if (err != 1)
     {

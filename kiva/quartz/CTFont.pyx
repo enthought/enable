@@ -1,4 +1,4 @@
-# (C) Copyright 2004-2021 Enthought, Inc., Austin, TX
+# (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
@@ -75,7 +75,7 @@ cdef class CTFontStyle:
     cdef CFDictionaryRef attribute_dictionary
     cdef readonly object family_name
     cdef readonly object style
-    
+
     def __cinit__(self, *args, **kwargs):
         self.ct_font_descriptor = NULL
         self.attribute_dictionary = NULL
@@ -110,7 +110,7 @@ cdef class CTFontStyle:
         """ Get a CTFont matching the descriptor at the given size.
         """
         cdef CTFontRef ct_font
-        
+
         ct_font = CTFontCreateWithFontDescriptor(self.ct_font_descriptor,
                     font_size, NULL)
         font = CTFont()

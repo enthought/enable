@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -31,7 +31,7 @@ namespace kiva
             int face_index;
 
             // Constructors
-            
+
             // Creates a font object.  By default, searches the hardcoded
             // font paths for a file named like the face name; to override
             // this, set validate=false.
@@ -45,23 +45,23 @@ namespace kiva
 
             font_type(const font_type &font);
             font_type &operator=(const font_type& font);
-        
+
             int change_filename(std::string _filename);
-            
+
             // Is the font loaded properly?
             inline bool is_loaded() const { return _is_loaded; }
-        
+
         private:
             bool _is_loaded;
     };
 
     inline bool operator==(font_type &a, font_type &b)
     {
-        return (a.size == b.size) && (a.name == b.name) && 
+        return (a.size == b.size) && (a.name == b.name) &&
                (a.style == b.style) && (a.encoding == b.encoding) &&
                (a.family == b.family) && (a.face_index == b.face_index);
     }
-    
-    
+
+
 }
 #endif

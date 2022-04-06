@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -15,20 +15,20 @@
 // 3) Provides python dictionaries to map back and forth between enumerated
 //    types and more descriptive strings that can be used in python.
 //
-// A number of constants (and some functions and types) are defined in 
+// A number of constants (and some functions and types) are defined in
 // agg_basics.h and kiva_constants.h.
 //
-// agg_renderer_markers.h is used for rendering simple shapes at multiple 
+// agg_renderer_markers.h is used for rendering simple shapes at multiple
 // data points.  It is useful for generating scatter plots in simple cases.
 // This wrapper is used to pick up the enumerated types for markers such
 // as marker_square, marker_circle, etc.  The only classes in the header are
 // template definitions so they are all ignored by swig.
 //
-// 
+//
 /////////////////////////////////////////////////////////////////////////////
 
 %{
-#include "agg_basics.h"    
+#include "agg_basics.h"
 #include "kiva_constants.h"
 #include "agg_renderer_markers.h"
 %}

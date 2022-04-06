@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -28,14 +28,14 @@
       PyObject *o = PySequence_GetItem($input,i);
       if (PyFloat_Check(o)) {
          temp[i] = PyFloat_AsDouble(o);
-      }  
+      }
       else {
          PyObject* converted = PyNumber_Float(o);
          if (!converted) {
              PyErr_SetString(PyExc_TypeError,"Expecting a sequence of floats");
              return NULL;
          }
-         temp[i] = PyFloat_AsDouble(converted);  
+         temp[i] = PyFloat_AsDouble(converted);
          Py_DECREF(converted);
       }
   }

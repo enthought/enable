@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -40,7 +40,7 @@ namespace agg24
 
     {
         DEBUG_MTH("dib_display::create_image");
-        unsigned width = rbuf->width(); 
+        unsigned width = rbuf->width();
         unsigned height = rbuf->height();
         unsigned line_len = platform_specific::calc_row_len(width, bits_per_pixel);
         unsigned img_size = line_len * height;
@@ -68,8 +68,8 @@ namespace agg24
         {
             brightness = (255 * i) / (rgb_size - 1);
             rgb->rgbBlue =
-            rgb->rgbGreen =  
-            rgb->rgbRed = (unsigned char)brightness; 
+            rgb->rgbGreen =
+            rgb->rgbRed = (unsigned char)brightness;
             rgb->rgbReserved = 0;
             rgb++;
         }
@@ -123,11 +123,11 @@ namespace agg24
 
         }
     }
-    
+
     unsigned dib_display::calc_palette_size(unsigned  clr_used, unsigned bits_per_pixel)
     {
         int palette_size = 0;
-        
+
         if(bits_per_pixel <= 8)
         {
             palette_size = clr_used;
@@ -149,7 +149,7 @@ namespace agg24
         // If specified, only do a partial blit of the image
         int dest_x, dest_y, src_x, src_y, src_width, src_height;
 
-        
+
         if (draw_x != -1 &&
             draw_y != -1 &&
             draw_width != -1 &&
@@ -169,10 +169,10 @@ namespace agg24
 	        src_width = image->bmp->bmiHeader.biWidth;
 	        src_height = -image->bmp->bmiHeader.biHeight;
         }
-	        
+
         ::SetDIBitsToDevice(
 	        dc,                           // handle to device context
-	        dest_x,                       // x-coordinate of upper-left corner of dest 
+	        dest_x,                       // x-coordinate of upper-left corner of dest
 	        dest_y,                       // y-coordinate of upper-left corner of  dest
 	        src_width,                    // source rectangle width
 	        src_height,                  // source rectangle height
@@ -189,7 +189,7 @@ namespace agg24
 
 
     dib_display platform_specific::dib;
-    
+
     //------------------------------------------------------------------------
     platform_specific::platform_specific(pix_format_e format, bool flip_y) :
                                             m_bpp(0),
@@ -198,7 +198,7 @@ namespace agg24
                                             m_format(format),
                                             m_sys_format(pix_format_undefined),
                                             m_sys_bpp(0)
-    {  
+    {
         switch(m_format)
         {
         case pix_format_gray8:
@@ -206,14 +206,14 @@ namespace agg24
             m_bpp = 8;
             m_sys_bpp = 8;
             break;
-            
+
         case pix_format_rgb565:
         case pix_format_rgb555:
             m_sys_format = pix_format_rgb555;
             m_bpp = 16;
             m_sys_bpp = 16;
             break;
-            
+
         case pix_format_rgb24:
         case pix_format_bgr24:
             m_sys_format = pix_format_bgr24;
@@ -262,35 +262,35 @@ namespace agg24
             dib.put_image(dc, m_bimage, draw_x, draw_y, draw_width, draw_height);
             return;
         }
-        
+
         // Optimization hint: make pmap_tmp as a private class member and reused it when possible.
         pixel_map pmap_tmp(rbuf->width(), rbuf->height(), m_sys_format, 256, m_flip_y);
         rendering_buffer* rbuf2 = &pmap_tmp.rbuf();
-        
+
         switch(m_format)
         {
         case pix_format_rgb565:
             color_conv(rbuf2, rbuf, color_conv_rgb565_to_rgb555());
             break;
-            
+
         case pix_format_rgb24:
             color_conv(rbuf2, rbuf, color_conv_rgb24_to_bgr24());
             break;
-            
+
         case pix_format_abgr32:
             color_conv(rbuf2, rbuf, color_conv_abgr32_to_bgra32());
             break;
-            
+
         case pix_format_argb32:
             color_conv(rbuf2, rbuf, color_conv_argb32_to_bgra32());
             break;
-            
+
         case pix_format_rgba32:
             color_conv(rbuf2, rbuf, color_conv_rgba32_to_bgra32());
             break;
-            
+
         case pix_format_gray8:
-        case end_of_pix_formats: 
+        case end_of_pix_formats:
         case pix_format_undefined:
             ;
         }
@@ -298,29 +298,29 @@ namespace agg24
         // This will ultimately call back to us, going to the top if branch since
         // the pix_format is compatible.
         pmap_tmp.draw(dc, draw_x, draw_y, draw_width, draw_height);
-        
+
     }
-    
+
     //------------------------------------------------------------------------
     unsigned platform_specific::calc_row_len(unsigned width, unsigned bits_per_pixel)
     {
         unsigned n = width;
-        unsigned k; 
+        unsigned k;
         switch(bits_per_pixel)
         {
         case  1: k = n;
             n = n >> 3;
-            if(k & 7) n++; 
+            if(k & 7) n++;
             break;
         case  4: k = n;
             n = n >> 1;
-            if(k & 3) n++; 
+            if(k & 3) n++;
             break;
         case  8:
             break;
         case 16: n = n << 1;
             break;
-        case 24: n = (n << 1) + n; 
+        case 24: n = (n << 1) + n;
             break;
         case 32: n = n << 2;
             break;

@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
+// (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
 // All rights reserved.
 //
 // This software is provided without warranty under the terms of the BSD
@@ -204,7 +204,7 @@ namespace kiva
             {
                 // length is the distance between the two points
                 d2 = sqrt(dx * dx + dy * dy);
-                
+
                 if (points[0].first == points[1].first)
                 {
                     // gradient_y. handle flips
