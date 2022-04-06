@@ -18,7 +18,7 @@
 # Enthought library imports
 from enable.primitives.api import Box
 from enable.enable_traits import Pointer
-from traits.api import Event, Float, Union, Tuple
+from traits.api import Event, Float, Tuple, Union
 
 # Application specific imports.
 

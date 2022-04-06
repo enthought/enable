@@ -154,6 +154,7 @@ TimeInterval = Union(None, Range(0.0, 3600.0))
 Stretch = Range(0.0, 1.0, value=1.0)
 NoStretch = Stretch(0.0)
 
+
 # Scrollbar traits
 class ScrollBarRange(TraitType):
     """ Trait that holds a (low, high, page_size, line_size) range tuple.
@@ -162,22 +163,26 @@ class ScrollBarRange(TraitType):
     def validate(self, object, name, value):
         if isinstance(value, (tuple, list)) and (len(value) == 4):
             low, high, page_size, line_size = value
-            if high < low:
-                low, high = high, low
-            elif high == low:
-                high = low + 1.0
-            page_size = max(min(page_size, high - low), 0.0)
-            line_size = max(min(line_size, page_size), 0.0)
-            return (
-                float(low),
-                float(high),
-                float(page_size),
-                float(line_size),
-            )
+            try:
+                if high < low:
+                    low, high = high, low
+                elif high == low:
+                    high = low + 1.0
+                page_size = max(min(page_size, high - low), 0.0)
+                line_size = max(min(line_size, page_size), 0.0)
+                return (
+                    float(low),
+                    float(high),
+                    float(page_size),
+                    float(line_size),
+                )
+            except Exception:
+                self.error(object, name, value)
+
         self.error(object, name, value)
 
     def info(self):
-        return "a (low,high,page_size,line_size) range tuple"
+        return "a (low, high, page_size, line_size) range tuple"
 
 
 class ScrollPosition(BaseFloat):
