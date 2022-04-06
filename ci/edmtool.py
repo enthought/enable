@@ -373,9 +373,9 @@ def test(runtime, toolkit, environment):
     environ["PYTHONUNBUFFERED"] = "1"
     environ["PYTHONFAULTHANDLER"] = "1"
     commands = [
-        ("edm run -e {environment} -- python -W default -m"
+        ("edm run -e {environment} -- python -W default -Xfaulthandler -m"
          "coverage run -m unittest discover enable -v"),
-        ("edm run -e {environment} -- python -W default -m"
+        ("edm run -e {environment} -- python -W default -Xfaulthandler -m"
          "coverage run -a -m unittest discover kiva -v"),
     ]
 

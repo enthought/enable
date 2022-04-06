@@ -61,6 +61,7 @@ jobs:
       matrix:
         os: [macos-latest, windows-latest]
         toolkit: ['pyqt5', 'pyside2', 'wx']
+        runtime: ['3.6']
         include:
           - toolkit: 'pyside6'
             runtime: '3.8'
