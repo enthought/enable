@@ -18,8 +18,8 @@ jobs:
         toolkit: ['null', 'pyqt5', 'pyside2', 'wx']
         runtime: ['3.6']
         include:
-          - toolkit: '3.8'
-            runtime: 'pyside6'
+          - runtime: '3.8'
+            toolkit: 'pyside6'
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
