@@ -16,6 +16,10 @@ jobs:
     strategy:
       matrix:
         toolkit: ['null', 'pyqt5', 'pyside2', 'wx']
+        runtime: ['3.6']
+        include:
+          - toolkit: 'pyside6'
+            runtime: '3.8'
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -35,7 +39,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache
-          key: ${{ runner.os }}-${{ matrix.toolkit }}-${{ hashFiles('ci/edmtool.py') }}
+          key: ${{ runner.os }}-${{ matrix.toolkit }}-${{ matrix.runtime }}-${{ hashFiles('ci/edmtool.py') }}
       - name: Setup EDM
         uses: enthought/setup-edm-action@v1
         with:
@@ -43,13 +47,13 @@ jobs:
       - name: Install click to the default EDM environment
         run: edm --config ci/.edm.yaml install -y wheel click coverage
       - name: Install test environment
-        run: edm run -- python ci/edmtool.py install --toolkit=${{ matrix.toolkit }}
+        run: edm run -- python ci/edmtool.py install --toolkit=${{ matrix.toolkit }} --runtime=${{ matrix.runtime }}
       - name: Run tests
         uses: GabrielBB/xvfb-action@v1
         with:
           # kiva agg requires at least 15-bit color depth.
           # The --server-args assumes xvfb-run is called, hence Linux only.
-          run: --server-args="-screen 0 1024x768x24" edm run -- python ci/edmtool.py test --toolkit=${{ matrix.toolkit }}
+          run: --server-args="-screen 0 1024x768x24" edm run -- python ci/edmtool.py test --toolkit=${{ matrix.toolkit }} --runtime=${{ matrix.runtime }}
 
   # Test against EDM packages on Windows and OSX
   test-with-edm:
@@ -57,6 +61,14 @@ jobs:
       matrix:
         os: [macos-latest, windows-latest]
         toolkit: ['pyqt5', 'pyside2', 'wx']
+        runtime: ['3.6']
+        include:
+          - os: macos-latest
+            toolkit: 'pyside6'
+            runtime: '3.8'
+          - os: windows-latest
+            toolkit: 'pyside6'
+            runtime: '3.8'
     runs-on: ${{ matrix.os }}
     env:
       # Set root directory, mainly for Windows, so that the EDM Python
@@ -70,7 +82,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache
-          key: ${{ runner.os }}-${{ matrix.toolkit }}-${{ hashFiles('ci/edmtool.py') }}
+          key: ${{ runner.os }}-${{ matrix.toolkit }}-${{ matrix.runtime }}-${{ hashFiles('ci/edmtool.py') }}
       - name: Setup EDM
         uses: enthought/setup-edm-action@v1
         with:
@@ -78,6 +90,6 @@ jobs:
       - name: Install click to the default EDM environment
         run: edm --config ci/.edm.yaml install -y wheel click coverage
       - name: Install test environment
-        run: edm run -- python ci/edmtool.py install --toolkit=${{ matrix.toolkit }}
+        run: edm run -- python ci/edmtool.py install --toolkit=${{ matrix.toolkit }} --runtime=${{ matrix.runtime }}
       - name: Run tests
-        run: edm run -- python ci/edmtool.py test --toolkit=${{ matrix.toolkit }}
+        run: edm run -- python ci/edmtool.py test --toolkit=${{ matrix.toolkit }} --runtime=${{ matrix.runtime }}
