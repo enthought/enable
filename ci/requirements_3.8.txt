@@ -1,0 +1,4 @@
+pygarrayimage
+pyglet
+pypdf2
+reportlab

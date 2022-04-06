@@ -1,4 +1,4 @@
-# (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
+# (C) Copyright 2005-2021 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
@@ -86,25 +86,44 @@ import click
 
 supported_combinations = {
     '3.6': {'pyside2', 'pyqt5', 'wx', 'null'},
+    '3.8': {'pyside6', 'pyqt6', 'wx', 'null'},
 }
 
 dependencies = {
-    "apptools",
-    "celiagg",
-    "coverage",
-    "Cython",
-    "fonttools",
-    "kiwisolver",
-    "numpy",
-    "pillow",
-    "pyface",
-    "pygments",
-    "pyparsing",
-    "pypdf2",
-    "reportlab",
-    "swig",
-    "traits",
-    "traitsui",
+    '3.6': {
+        "apptools",
+        "celiagg",
+        "coverage",
+        "Cython",
+        "fonttools",
+        "kiwisolver",
+        "numpy",
+        "pillow",
+        "pyface",
+        "pygments",
+        "pyparsing",
+        "pypdf2",
+        "reportlab",
+        "swig",
+        "traits",
+        "traitsui",
+    },
+    '3.8': {
+        "apptools",
+        "celiagg",
+        "coverage",
+        "Cython",
+        "fonttools",
+        "kiwisolver",
+        "numpy",
+        "pillow_simd",
+        "pyface",
+        "pygments",
+        "pyparsing",
+        "swig",
+        "traits",
+        "traitsui",
+    }
 }
 
 # Dependencies we install from source for cron tests
@@ -119,7 +138,9 @@ source_dependencies = [
 
 extra_dependencies = {
     'pyqt5': {'pyqt5'},
+    'pyqt6': {'pyqt6'},
     'pyside2': {'pyside2'},
+    'pyside6': {'pyside6'},
     # XXX once wxPython 4 is available in EDM, we will want it here
     "wx": set(),
     'null': set()
@@ -127,7 +148,9 @@ extra_dependencies = {
 
 environment_vars = {
     'pyside2': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyside2'},
+    'pyside6': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyside6'},
     'pyqt5': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyqt5'},
+    'pyqt6': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyqt6'},
     'wx': {'ETS_TOOLKIT': 'wx'},
     'null': {'ETS_TOOLKIT': 'null.image'},
 }
@@ -168,14 +191,14 @@ def install(runtime, toolkit, environment, source):
     """
     parameters = get_parameters(runtime, toolkit, environment)
     parameters['packages'] = ' '.join(
-        dependencies | extra_dependencies.get(toolkit, set()))
+        dependencies[runtime] | extra_dependencies.get(toolkit, set()))
     # edm commands to setup the development environment
     commands = [
         ("edm --config {edm_config} environments create {environment} "
          "--force --version={runtime}"),
         ("edm --config {edm_config} install -y -e {environment} {packages} "
          "--add-repository enthought/lgpl"),
-        ("edm run -e {environment} -- pip install -r ci/requirements.txt"
+        ("edm run -e {environment} -- pip install -r ci/requirements_{runtime}.txt"
          " --no-dependencies"),
     ]
 
