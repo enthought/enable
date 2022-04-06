@@ -18,8 +18,8 @@ jobs:
         toolkit: ['null', 'pyqt5', 'pyside2', 'wx']
         runtime: ['3.6']
         include:
-          - runtime: '3.8'
-            toolkit: 'pyside6'
+          - toolkit: 'pyside6'
+            runtime: '3.8'
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache
-          key: ${{ runner.os }}-${{ matrix.toolkit }}-${{ matrix.runtime }}-${{ hashFiles('ci/edmtool.py') }}
+          key: ${{ runner.os }}-${{ matrix.toolkit }}-${{ hashFiles('ci/edmtool.py') }}
       - name: Setup EDM
         uses: enthought/setup-edm-action@v1
         with:
@@ -62,8 +62,8 @@ jobs:
         os: [macos-latest, windows-latest]
         toolkit: ['pyqt5', 'pyside2', 'wx']
         include:
-          - runtime: '3.8'
-            toolkit: 'pyside6'
+          - toolkit: 'pyside6'
+            runtime: '3.8'
     runs-on: ${{ matrix.os }}
     env:
       # Set root directory, mainly for Windows, so that the EDM Python
