@@ -16,7 +16,7 @@ from numpy import arange, array, dstack, repeat, newaxis
 
 # Enthought library imports
 from traits.api import (
-    Any, Array, Bool, Int, List, Property, Trait, Tuple, observe,
+    Any, Array, Bool, Int, List, Property, Tuple, observe,
 )
 from kiva.trait_defs.api import KivaFont
 
@@ -87,7 +87,7 @@ class TextGrid(Component):
     _cached_cell_coords = Array
 
     # "auto" or a tuple
-    _cell_size = Trait("auto", Any)
+    _cell_size = Any("auto")
 
     # ------------------------------------------------------------------------
     # Public methods

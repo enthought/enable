@@ -14,7 +14,7 @@ from numpy import dot
 
 # Enthought library imports
 from traits.api import (
-    Any, Bool, Event, Float, HasTraits, Instance, List, Property, Trait, Tuple,
+    Any, Bool, Event, Float, HasTraits, Instance, List, Property, Tuple, Union,
 )
 
 
@@ -54,7 +54,7 @@ class AbstractWindow(HasTraits):
 
     # When a component captures the mouse, it can optionally store a
     # dispatch order for events (until it releases the mouse).
-    mouse_owner_dispatch_history = Trait(None, None, List, transient=True)
+    mouse_owner_dispatch_history = Union(None, List, transient=True)
 
     # A scaling constant applied to any GraphicsContext used for drawing the
     # window's component.
@@ -89,7 +89,7 @@ class AbstractWindow(HasTraits):
     _prev_event_handler = Instance(Component, transient=True)
 
     # (dx, dy) integer size of the Window.
-    _size = Trait(None, Tuple, transient=True)
+    _size = Union(None, Tuple, transient=True)
 
     # The regions to update upon redraw
     _update_region = Any(transient=True)

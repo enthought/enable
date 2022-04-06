@@ -11,7 +11,7 @@
 
 # Enthought library imports
 from kiva.api import affine_identity
-from traits.api import Any, Bool, HasTraits, List, Property, Str, Trait
+from traits.api import Any, Bool, HasTraits, List, Property, Str, Union
 
 # Local relative imports
 from enable.colors import ColorTrait
@@ -62,7 +62,7 @@ class Interactor(HasTraits):
     pointer = Pointer
 
     # The "tooltip" to display if a user mouse-overs this interactor
-    tooltip = Trait(None, None, Str)
+    tooltip = Union(None, Str)
 
     # The cursor "style" to use
     cursor_style = cursor_style_trait

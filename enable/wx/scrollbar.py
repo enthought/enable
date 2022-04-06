@@ -16,48 +16,10 @@ the standard WX one.
 import wx
 
 # Enthought Imports
-from traits.api import Property, Trait, TraitError, Any, Enum, Bool, Int
+from traits.api import Any, Bool, Enum, Int, Property
 
 from enable.component import Component
-
-
-def valid_range(object, name, value):
-    "Verify that a set of range values for a scrollbar is valid"
-    try:
-        if (type(value) in (tuple, list)) and (len(value) == 4):
-            low, high, page_size, line_size = value
-            if high < low:
-                low, high = high, low
-            elif high == low:
-                high = low + 1.0
-            page_size = max(min(page_size, high - low), 0.0)
-            line_size = max(min(line_size, page_size), 0.0)
-            return (
-                float(low),
-                float(high),
-                float(page_size),
-                float(line_size),
-            )
-    except Exception:
-        raise
-    raise TraitError
-
-
-valid_range.info = "a (low,high,page_size,line_size) range tuple"
-
-
-def valid_scroll_position(object, name, value):
-    "Verify that a specified scroll bar position is valid"
-    try:
-        low, high, page_size, line_size = object.range
-        if value > high - page_size:
-            value = high - page_size
-        elif value < low:
-            value = low
-        return value
-    except Exception:
-        raise
-    raise TraitError
+from enable.enable_traits import ScrollBarRange, ScrollPosition
 
 
 class NativeScrollBar(Component):
@@ -69,20 +31,20 @@ class NativeScrollBar(Component):
 
     # The current position of the scroll bar.  This must be within the range
     # (self.low, self.high)
-    scroll_position = Trait(0.0, valid_scroll_position)
+    scroll_position = ScrollPosition()
 
     # A tuple (low, high, page_size, line_size).  Can be accessed using
     # convenience properties (see below).  Low and High refer to the conceptual
     # bounds of the region represented by the full scroll bar.  Note that
     # the maximum value of scroll_position is actually (high - page_size), and
     # not just the value of high.
-    range = Trait((0.0, 100.0, 10.0, 1.0), valid_range)
+    range = ScrollBarRange((0.0, 100.0, 10.0, 1.0))
 
     # The orientation of the scrollbar
-    orientation = Trait("horizontal", "vertical")
+    orientation = Enum("horizontal", "vertical")
 
     # The location of y=0
-    origin = Trait("bottom", "top")
+    origin = Enum("bottom", "top")
 
     # Determines if the scroll bar should be visible and respond to events
     enabled = Bool(True)

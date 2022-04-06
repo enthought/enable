@@ -18,7 +18,7 @@
 # Enthought library imports
 from enable.primitives.api import Box
 from enable.enable_traits import Pointer
-from traits.api import Event, Float, Trait, Tuple
+from traits.api import Event, Float, Tuple, Union
 
 # Application specific imports.
 
@@ -43,8 +43,8 @@ class DragBox(Box):
     complete = Event
 
     # Constraints on size:
-    x_bounds = Trait(None, None, Tuple(Float, Float))
-    y_bounds = Trait(None, None, Tuple(Float, Float))
+    x_bounds = Union(None, Tuple(Float, Float))
+    y_bounds = Union(None, Tuple(Float, Float))
 
     # Pointers. ####
 

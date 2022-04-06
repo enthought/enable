@@ -15,7 +15,7 @@ Defines markers classes, used by a variety of renderers.
 from numpy import array, pi
 
 # Enthought library imports
-from traits.api import HasTraits, Bool, Instance, Trait
+from traits.api import HasTraits, Bool, Instance, Map
 from traitsui.api import EnumEditor
 from kiva.api import (
     CIRCLE_MARKER, CROSS_MARKER, DIAMOND_MARKER, DOT_MARKER, FILL_STROKE,
@@ -470,8 +470,6 @@ MarkerNameDict = {
 }
 
 #: A mapped trait that allows string naming of marker classes.
-MarkerTrait = Trait(
-    "square", MarkerNameDict, editor=EnumEditor(values=marker_names)
-)
+MarkerTrait = Map(MarkerNameDict, default_value="square")
 
 marker_trait = MarkerTrait

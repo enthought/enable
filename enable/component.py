@@ -13,7 +13,7 @@ from uuid import uuid4
 
 # Enthought library imports
 from traits.api import (
-    Any, Bool, Delegate, Enum, Float, Instance, Int, List, Property, Str, Trait
+    Any, Bool, Delegate, Enum, Float, Instance, Int, List, Property, Str, Union
 )
 from kiva.api import FILL, STROKE
 
@@ -93,7 +93,7 @@ class Component(CoordinateBox, Interactor):
     # The ratio of the component's width to its height.  This is used by
     # the component itself to maintain bounds when the bounds are changed
     # independently, and is also used by the layout system.
-    aspect_ratio = Trait(None, None, Float)
+    aspect_ratio = Union(None, Float)
 
     # When the component's bounds are set to a (width,height) tuple that does
     # not conform to the set aspect ratio, does the component center itself
@@ -113,7 +113,7 @@ class Component(CoordinateBox, Interactor):
     # component specifies, say, a fixed preferred width of 50 and another one
     # specifies a fixed preferred width of 100, then the latter component will
     # always be twice as wide as the former.
-    fixed_preferred_size = Trait(None, None, bounds_trait)
+    fixed_preferred_size = Union(None, bounds_trait)
 
     # ------------------------------------------------------------------------
     # Overlays and underlays

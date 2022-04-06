@@ -16,7 +16,9 @@ from numpy import array, ndarray
 
 # Enthought library imports
 from kiva.trait_defs.api import KivaFont
-from traits.api import List, PrefixList, PrefixMap, Range, Trait, TraitFactory
+from traits.api import (
+    BaseFloat, List, Map, PrefixList, PrefixMap, Range, TraitType, Union,
+)
 from traitsui.api import ImageEnumEditor, EnumEditor
 
 # Try to get the CList trait; for traits 2 backwards compatibility, fall back
@@ -100,26 +102,23 @@ border_size_editor = ImageEnumEditor(
 # -----------------------------------------------------------------------------
 
 # Privates used for specification of line style trait.
-__line_style_trait_values = {
+_line_style_trait_values = {
     "solid": None,
     "dot dash": array([3.0, 5.0, 9.0, 5.0]),
     "dash": array([6.0, 6.0]),
     "dot": array([2.0, 2.0]),
     "long dash": array([9.0, 5.0]),
 }
-__line_style_trait_map_keys = list(__line_style_trait_values.keys())
-LineStyleEditor = EnumEditor(values=__line_style_trait_map_keys)
 
-
-def __line_style_trait(value="solid", **metadata):
-    return Trait(
-        value, __line_style_trait_values, editor=LineStyleEditor, **metadata
-    )
-
+# An editor preset for line styles.
+LineStyleEditor = EnumEditor(values=list(_line_style_trait_values))
 
 # A mapped trait for use in specification of line style attributes.
-LineStyle = TraitFactory(__line_style_trait)
-
+LineStyle = Map(
+    _line_style_trait_values,
+    default_value='solid',
+    editor=LineStyleEditor,
+)
 
 # -----------------------------------------------------------------------------
 #  Trait definitions:
@@ -131,9 +130,6 @@ font_trait = KivaFont(default_font_name)
 # Bounds trait
 bounds_trait = CList([0.0, 0.0])  # (w,h)
 coordinate_trait = CList([0.0, 0.0])  # (x,y)
-
-# bounds_trait = Trait((0.0, 0.0, 20.0, 20.0), valid_bounds,
-#                      editor=bounds_editor)
 
 # Component minimum size trait
 # PZW: Make these just floats, or maybe remove them altogether.
@@ -152,8 +148,55 @@ margin_trait = Range(0, 63)
 border_size_trait = Range(0, 8, editor=border_size_editor)
 
 # Time interval trait:
-TimeInterval = Trait(None, None, Range(0.0, 3600.0))
+TimeInterval = Union(None, Range(0.0, 3600.0))
 
 # Stretch traits:
 Stretch = Range(0.0, 1.0, value=1.0)
 NoStretch = Stretch(0.0)
+
+
+# Scrollbar traits
+class ScrollBarRange(TraitType):
+    """ Trait that holds a (low, high, page_size, line_size) range tuple.
+    """
+
+    def validate(self, object, name, value):
+        if isinstance(value, (tuple, list)) and (len(value) == 4):
+            low, high, page_size, line_size = value
+            try:
+                if high < low:
+                    low, high = high, low
+                elif high == low:
+                    high = low + 1.0
+                page_size = max(min(page_size, high - low), 0.0)
+                line_size = max(min(line_size, page_size), 0.0)
+                return (
+                    float(low),
+                    float(high),
+                    float(page_size),
+                    float(line_size),
+                )
+            except Exception:
+                self.error(object, name, value)
+
+        self.error(object, name, value)
+
+    def info(self):
+        return "a (low, high, page_size, line_size) range tuple"
+
+
+class ScrollPosition(BaseFloat):
+    """A Trait that ensures the position is within the scroll range.
+    """
+
+    #: the name of the trait holding the range information.
+    range_name = "range"
+
+    def validate(self, object, name, value):
+        value = super().validate(object, name, value)
+        try:
+            low, high, page_size, line_size = getattr(object, self.range_name)
+            x = max(min(float(value), high - page_size), low)
+            return x
+        except Exception:
+            self.error(object, name, value)
