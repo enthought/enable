@@ -11,7 +11,7 @@ import math
 
 from traits.api import Float, Property, List, Str, Range
 from enable.api import Component
-from kiva.trait_defs.api import KivaFont
+from enable.trait_defs.kiva_font_trait import KivaFont
 from kiva import affine
 
 

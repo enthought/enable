@@ -13,3 +13,4 @@
 """
 
 from .rgba_color_trait import RGBAColor
+from .kiva_font_trait import KivaFont

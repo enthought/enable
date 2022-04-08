@@ -18,7 +18,7 @@ the form of an HTML color name ("blue" or "#0000FF").
 
 font_trait
 ----------
-:class:`~.font_trait` is a synonym for :class:`kiva.trait_defs.api.KivaFont`.
+:class:`~.font_trait` is a synonym for :class:`enable.trait_defs.kiva_font_trait.KivaFont`.
 The trait maps a font-description string to a valid :class:`kiva.fonttools.Font`
 instance which can be passed to :py:meth:`AbstractGraphicsContext.set_font`
 

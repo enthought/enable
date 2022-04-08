@@ -13,7 +13,7 @@ from traits.api import Enum, Float, Int, Str, Tuple
 from enable.api import ColorTrait
 from enable.examples._example_support import DemoFrame, demo_main
 from enable.tools.api import DragTool
-from kiva.trait_defs.api import KivaFont
+from enable.trait_defs.api import KivaFont
 
 
 class Region(PlotComponent, DragTool):

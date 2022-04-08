@@ -23,6 +23,20 @@ from enable.window import Window
 from .editor_with_component import EditorWithLabelComponent
 
 
+WEIGHTS = {
+    kc.WEIGHT_THIN: ' Thin',
+    kc.WEIGHT_EXTRALIGHT: ' Extra-light',
+    kc.WEIGHT_LIGHT: ' Light',
+    kc.WEIGHT_NORMAL: '',
+    kc.WEIGHT_MEDIUM: ' Medium',
+    kc.WEIGHT_SEMIBOLD: ' Demi-bold',
+    kc.WEIGHT_BOLD: ' Bold',
+    kc.WEIGHT_EXTRABOLD: ' Extra-bold',
+    kc.WEIGHT_HEAVY: ' Heavy',
+    kc.WEIGHT_EXTRAHEAVY: ' Extra-heavy',
+}
+
+
 def face_name(font):
     """ Returns a Font's typeface name.
     """
@@ -37,7 +51,7 @@ def str_font(font):
     """ Returns the text representation of the specified font trait value
     """
 
-    weight = " Bold" if font.is_bold() else ""
+    weight = WEIGHTS[font.weight]
     style = " Italic" if font.style in kc.italic_styles else ""
     underline = " Underline" if font.underline else ""
 

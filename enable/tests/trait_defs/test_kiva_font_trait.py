@@ -12,28 +12,12 @@ import unittest
 
 from traits.api import HasTraits, TraitError
 
-from kiva.fonttools.font import Font
+from kiva.fonttools.font import Font, FAMILIES
 from kiva import constants
-from ..kiva_font_trait import KivaFont
+from enable.trait_defs.kiva_font_trait import (
+    KivaFont, font_families, font_styles, font_weights
+)
 
-# XXX This test is kept to validate backwards compatibility of the new
-# KivaTrait added in Enable and will eventually be removed.
-
-# Mapping of strings to valid Kiva font families:
-font_families = {
-    "default": constants.DEFAULT,
-    "decorative": constants.DECORATIVE,
-    "roman": constants.ROMAN,
-    "script": constants.SCRIPT,
-    "swiss": constants.SWISS,
-    "modern": constants.MODERN,
-}
-
-# Mapping of strings to Kiva font styles:
-font_styles = {"italic": constants.ITALIC}
-
-# Mapping of strings to Kiva font weights:
-font_weights = {"bold": constants.WEIGHT_BOLD}
 
 class FontExample(HasTraits):
 
@@ -58,7 +42,7 @@ class TestKivaFont(unittest.TestCase):
         expected_outcomes["18 pt"] = Font(size=18, family=constants.DEFAULT)
         expected_outcomes["18 point"] = Font(size=18, family=constants.DEFAULT)
 
-        for family, kiva_family in font_families.items():
+        for family, kiva_family in FAMILIES.items():
             expected_outcomes[family] = Font(family=kiva_family, size=10)
 
         expected_outcomes["Courier"] = Font("Courier", size=10, family=constants.DEFAULT)
@@ -78,6 +62,16 @@ class TestKivaFont(unittest.TestCase):
                 self.assertEqual(result, expected)
 
     def test_validate_font(self):
+        font = Font("Comic Sans", 18)
+        example = FontExample(font=font)
+
+        result = example.font
+
+        # test we get expected font
+        self.assertIsInstance(result, Font)
+        self.assertIs(result, font)
+
+    def test_validate_pyface_font(self):
         font = Font("Comic Sans", 18)
         example = FontExample(font=font)
 
