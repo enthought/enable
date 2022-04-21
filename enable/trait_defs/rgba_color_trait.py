@@ -25,7 +25,7 @@ import numpy as np
 from pyface.color import Color as PyfaceColor
 from pyface.util.color_helpers import ints_to_channels
 from pyface.util.color_parser import color_table, parse_text
-from traits.api import TraitType
+from traits.api import DefaultValue, TraitType
 from traits.trait_base import SequenceTypes
 
 # Placeholders for system- and toolkit-specific UI colors; the
