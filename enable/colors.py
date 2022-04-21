@@ -35,7 +35,7 @@ if toolkit.toolkit == "wx":
 elif toolkit.toolkit.startswith("qt"):
     from pyface.qt import QtGui
 
-    # XXX to-do: this will not work if dark mode changes
+    # XXX to-do: this will not work if dark mode changes (see #923)
     window_color = QtGui.QApplication.palette().window().color()
     color_table["syswindow"] = (
         window_color.red() / 255.0,

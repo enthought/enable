@@ -43,8 +43,7 @@ def convert_to_color_tuple(value):
     with either float 0.0 to 1.0 or int 0 to 255, Pyface Color objects, and
     toolkit color objects.
     """
-    if type(value) is int:
-        value = int(value)
+    if isinstance(value, int):
         if 0 <= value <= 0xFFFFFF:
             return (
                 (value >> 16) / 255.0,
