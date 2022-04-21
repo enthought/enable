@@ -13,9 +13,6 @@ the wxPython user interface toolkit.
 
 import wx
 
-from enable.colors import color_table
-from enable.label import Label
-from enable.window import Window
 from traits.api import Bool
 from traits.trait_base import SequenceTypes
 
@@ -178,6 +175,9 @@ class SimpleColorEditor(Editor):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
+        from enable.label import Label
+        from enable.window import Window
+
         window = Window(
             parent, component=Label("", border_size=1, font="modern 9")
         )
@@ -338,6 +338,9 @@ class ReadonlyColorEditor(ReadonlyEditor):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
+        from enable.label import Label
+        from enable.window import Window
+
         window = Window(
             parent, component=Label("", border_size=1, font="modern 9")
         )
@@ -374,6 +377,8 @@ class ReadonlyColorEditor(ReadonlyEditor):
 def set_color(editor):
     """  Sets the color of the specified color control.
     """
+    from enable.colors import color_table
+
     color = editor.factory.get_color(editor)
     control = editor._swatch
     control.bg_color = color
