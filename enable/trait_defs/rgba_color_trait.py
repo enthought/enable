@@ -92,12 +92,11 @@ class RGBAColor(TraitType):
     """ A Trait which casts Pyface Colors, strings and tuples to RGBA tuples.
     """
 
-    def __init__(self, value="white", **metadata):
-        try:
-            default_value = convert_to_color_tuple(value)
-        except Exception:
-            self.error(None, None, value)
+    #: Default values should be a tuple of floats.
+    default_value_type = DefaultValue.constant
 
+    def __init__(self, value="white", **metadata):
+        default_value = convert_to_color_tuple(value)
         super().__init__(default_value, **metadata)
 
     def validate(self, object, name, value):

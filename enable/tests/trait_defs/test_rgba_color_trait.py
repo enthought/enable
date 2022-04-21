@@ -20,10 +20,10 @@ from traitsui.api import EditorFactory
 from enable.trait_defs.rgba_color_trait import RGBAColor
 
 rgba_float_dtype = np.dtype([
-    ('red', float),
-    ('green', float),
-    ('blue', float),
-    ('alpha', float),
+    ('red', "float64"),
+    ('green', "float64"),
+    ('blue', "float64"),
+    ('alpha', "float64"),
 ])
 rgba_uint8_dtype = np.dtype([
     ('red', "uint8"),
@@ -32,9 +32,9 @@ rgba_uint8_dtype = np.dtype([
     ('alpha', "uint8"),
 ])
 rgb_float_dtype = np.dtype([
-    ('red', float),
-    ('green', float),
-    ('blue', float),
+    ('red', "float64"),
+    ('green', "float64"),
+    ('blue', "float64"),
 ])
 rgb_uint8_dtype = np.dtype([
     ('red', "uint8"),
@@ -230,4 +230,6 @@ class TestRGBAColor(unittest.TestCase):
     def test_sys_window_color(self):
         trait = RGBAColor()
         # smoke-test: value depends on system and user preferences
+        trait.validate("syswindow")
+        # older code used with an underscore is also OK
         trait.validate("sys_window")

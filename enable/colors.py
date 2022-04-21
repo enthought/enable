@@ -12,12 +12,14 @@
 
 from pyface.toolkit import toolkit
 
-from enable.trait_defs.rgba_color_trait import (
+from enable.trait_defs.rgba_color_trait import (  # noqa: F401
     ColorTrait, black_color_trait, color_table,
     convert_to_color_tuple as convert_to_color,
     transparent_color_trait, white_color_trait
 )
-from enable.trait_defs.ui.rgba_color_editor import RGBAColorEditor as ColorEditorFactory
+from enable.trait_defs.ui.rgba_color_editor import (
+    RGBAColorEditor as ColorEditorFactory,
+)
 
 
 transparent_color = color_table["transparent"]
