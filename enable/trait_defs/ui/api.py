@@ -7,4 +7,6 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 # Thanks for using Enthought open source!
+
+from .kiva_font_editor import KivaFontEditor
 from .rgba_color_editor import RGBAColorEditor

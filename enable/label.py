@@ -17,7 +17,7 @@ from numpy import asarray
 # Enthought library imports
 from kiva.api import FILL, STROKE
 from kiva.trait_defs.api import KivaFont
-from traits.api import Bool, Enum, Float, HasTraits, Int, List, Str
+from traits.api import Bool, Enum, Float, HasTraits, Int, List, Str, observe
 
 # Local, relative imports
 from .colors import black_color_trait, transparent_color_trait
@@ -92,11 +92,11 @@ class Label(Component):
                 for line in self.text.split("\n")[::-1]:
                     if line != "":
                         (
-                            width,
-                            height,
                             descent,
                             leading,
-                        ) = gc.get_full_text_extent(line)
+                            width,
+                            height,
+                        ) = gc.get_text_extent(line)
                         if width > max_width:
                             max_width = width
                         new_y_pos = (
@@ -191,25 +191,6 @@ class Label(Component):
         with gc:
             gc.translate_ctm(*self.position)
 
-            # Draw border and fill background
-            width, height = self._bounding_box
-            if self.bgcolor != "transparent":
-                gc.set_fill_color(self.bgcolor_)
-                gc.draw_rect((0, 0, width, height), FILL)
-            if self.border_width > 0:
-                gc.set_stroke_color(self.border_color_)
-                gc.set_line_width(self.border_width)
-                border_offset = (self.border_width - 1) / 2.0
-                gc.draw_rect(
-                    (
-                        border_offset,
-                        border_offset,
-                        width - 2 * border_offset,
-                        height - 2 * border_offset,
-                    ),
-                    STROKE,
-                )
-
             gc.set_fill_color(self.color_)
             gc.set_stroke_color(self.color_)
             gc.set_font(self.font)
@@ -253,4 +234,8 @@ class Label(Component):
         self._position_cache_valid = False
 
     def _rotate_angle_changed(self):
+        self._position_cache_valid = False
+
+    @observe('bounds.items')
+    def _update_bounds(self, event):
         self._position_cache_valid = False
