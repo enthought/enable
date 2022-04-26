@@ -34,7 +34,12 @@ class Demo(HasStrictTraits):
         Item('font', style='custom', label="Custom"),
         Item('font', style='text', label="Text"),
         Item('font', style='readonly', label="Readonly"),
-        Item('font', editor=KivaFontEditor(sample_text=sample_text), style='readonly', label="sample text"),
+        Item(
+            'font',
+            editor=KivaFontEditor(sample_text=sample_text),
+            style='readonly',
+            label="sample text",
+        ),
         resizable=True,
         width=size[0],
         height=size[1],
