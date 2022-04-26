@@ -19,6 +19,7 @@ from enable.enable_traits import font_trait
 
 Editor = toolkit_object("editor:Editor")
 if not issubclass(Editor, BaseEditor):
+    # if the toolkit is "null" make these at least instantiatable
     Editor = object
 
 
@@ -109,7 +110,7 @@ class EditorWithLabelComponent(EditorWithComponent):
     def set_size_policy(self, direction, resizable, springy, stretch):
         """Set the size policy of the editor's component.
 
-        This is only used by the Qt backend.  This is always spring and
+        This is only used by the Qt backend.  This is always springy and
         resizable.
         """
         from pyface.qt import QtGui

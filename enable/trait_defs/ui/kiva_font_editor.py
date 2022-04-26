@@ -48,14 +48,24 @@ class ReadOnlyEditor(EditorWithLabelComponent):
     """An Editor which displays a label using the font."""
 
     def init(self, parent):
+        """Initialize the editor.
+
+        The Label font should match the value for a font editor.
+        """
         self.font = self.value
         super().init(parent)
 
     def update_editor(self):
+        """Handle the content of the editor changing."""
         self.font = self.value
         super().update_editor()
 
     def string_value(self, value, format_func=None):
+        """Get a string value to display in the editor.
+
+        If the factory provides sample text, use that, otherwise follow the
+        usual path, but default to using the `str_font` function.
+        """
         if self.factory.sample_text:
             return self.factory.sample_text
 
@@ -69,6 +79,7 @@ class SimpleEditor(ReadOnlyEditor):
     button = Instance(ButtonTool)
 
     def create_component(self):
+        """Create and configure the Label component."""
         component = super().create_component()
         # add a grey border to indicate interactivity
         component.border_visible = True
@@ -89,6 +100,7 @@ class SimpleEditor(ReadOnlyEditor):
 
     @observe('button:clicked')
     def button_clicked(self, event):
+        """Display a Pyface FontDialog when the button tool is clicked."""
         if self.window is None:
             return
         pyface_font = PyfaceFont(

@@ -16,7 +16,7 @@ from enable.examples._example_support import demo_main
 
 from kiva.api import Font
 from kiva.constants import ITALIC, SWISS, WEIGHT_BOLD
-from kiva.trait_defs.api import KivaFont
+
 
 size = (500, 200)
 
