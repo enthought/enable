@@ -94,13 +94,40 @@ class TestFontCache(unittest.TestCase):
                 with patch_font_cache(self.temp_dir, []):
                     pass
 
+    def test_default_font(self):
+        with change_ets_app_dir(self.temp_dir) as cache_file:
+            # ensure we get predictable list of system .ttf files
+            with patch_global_font_manager(None), \
+                    patch_system_fonts(self.ttf_files):
+                font_manager = FontManager()
+                self.assertEqual(
+                    font_manager.default_font["ttf"],
+                    self.ttf_files[0],
+                )
+
+    # regression test for enthought/enable#930
+    def test_default_font_fallback_fonts(self):
+        with change_ets_app_dir(self.temp_dir) as cache_file:
+            # ensure we get empty list of system .ttf files
+            with patch_global_font_manager(None), patch_system_fonts([]):
+                with self.assertWarns(UserWarning):
+                    font_manager = FontManager()
+                self.assertTrue("ttf" in font_manager.default_font)
+                self.assertEqual(
+                    os.path.basename(font_manager.default_font["ttf"]),
+                    "Montserrat-Regular.ttf",
+                )
+                self.assertTrue(
+                    os.path.exists(font_manager.default_font["ttf"]),
+                )
+
 
 class TestFontManager(unittest.TestCase):
     """ Test API of the font manager module."""
 
     def test_default_font_manager(self):
-        font_manager = default_font_manager()
-        self.assertIsInstance(font_manager, FontManager)
+       font_manager = default_font_manager()
+       self.assertIsInstance(font_manager, FontManager)
 
 
 @contextlib.contextmanager

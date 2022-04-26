@@ -18,6 +18,7 @@ from enable.examples._example_support import demo_main
 from kiva.api import Font
 from kiva.constants import ITALIC, SWISS, WEIGHT_BOLD
 
+
 size = (500, 200)
 
 sample_text = "Sphinx of black quartz, judge my vow."

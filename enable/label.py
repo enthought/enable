@@ -16,7 +16,11 @@ from numpy import asarray
 
 # Enthought library imports
 from kiva.api import FILL, STROKE
+<<<<<<< HEAD
 from enable.trait_defs.kiva_font_trait import KivaFont
+=======
+from kiva.trait_defs.api import KivaFont
+>>>>>>> main
 from traits.api import Bool, Enum, Float, HasTraits, Int, List, Str, observe
 
 # Local, relative imports

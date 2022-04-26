@@ -120,7 +120,7 @@ class FontManager:
                 data_dir = pkg_resources.resource_filename(
                     "kiva.fonttools", "data"
                 )
-                path = os.path.join(data_dir, " Montserrat-Regular.ttf")
+                path = os.path.join(data_dir, "Montserrat-Regular.ttf")
                 self.default_font["ttf"] = path
 
         self.ttf_db = create_font_database(ttffiles, fontext="ttf")

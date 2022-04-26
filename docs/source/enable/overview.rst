@@ -80,7 +80,7 @@ something that doesn't draw but does respond to events, subclass
 Container
 ~~~~~~~~~
 
-All components have a :class:`Container`. They can only have a single 
+All components have a :class:`Container`. They can only have a single
 container. One component can't be contained by two objects.
 
 Whenever you request a component to redraw itself, it actually requests its
@@ -321,7 +321,7 @@ which are of interest to users:
 bgcolor
 ^^^^^^^
 ``bgcolor`` is a :class:`ColorTrait` which can be used to specify the background
-color of the component. The default value is ``"sys_window"``, which may or may
+color of the component. The default value is ``"syswindow"``, which may or may
 not match the default window background color of the GUI toolkit you are using.
 
 high_resolution

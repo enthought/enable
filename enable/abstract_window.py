@@ -66,7 +66,7 @@ class AbstractWindow(HasTraits):
 
     # The background window of the window.  The entire window first gets
     # painted with this color before the component gets to draw.
-    bgcolor = ColorTrait("sys_window")
+    bgcolor = ColorTrait("syswindow")
 
     alt_pressed = Bool(False, transient=True)
     ctrl_pressed = Bool(False, transient=True)
