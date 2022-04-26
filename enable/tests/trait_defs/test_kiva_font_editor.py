@@ -10,20 +10,16 @@
 """ Test the interaction between traitsui and enable's ComponentEditor.
 """
 import unittest
-from unittest import mock
 
-from pyface.font import Font as PyfaceFont
-import pyface.font_dialog
-from traits.api import Any, HasTraits
+from traits.api import HasTraits
 from traits.testing.api import UnittestTools
 from traitsui.api import Item, View
 
 from kiva.api import Font
 from enable.enable_traits import font_trait
 from enable.trait_defs.ui.kiva_font_editor import KivaFontEditor
-from enable.tests._testing import (
-    get_dialog_size, skip_if_null, skip_if_not_qt, skip_if_not_wx
-)
+from enable.tests._testing import skip_if_null
+
 
 ITEM_WIDTH, ITEM_HEIGHT = 700, 200
 
@@ -46,7 +42,7 @@ class TestKivaFontEditor(UnittestTools, unittest.TestCase):
         obj = KivaFontView()
 
         ui = obj.edit_traits(
-            view = View(
+            view=View(
                 Item("font", editor=KivaFontEditor(), style='readonly'),
                 resizable=True,
             )
@@ -83,7 +79,7 @@ class TestKivaFontEditor(UnittestTools, unittest.TestCase):
         obj = KivaFontView()
 
         ui = obj.edit_traits(
-            view = View(
+            view=View(
                 Item("font", editor=KivaFontEditor()),
                 resizable=True,
             )
@@ -104,7 +100,7 @@ class TestKivaFontEditor(UnittestTools, unittest.TestCase):
         obj = KivaFontView()
 
         ui = obj.edit_traits(
-            view = View(
+            view=View(
                 Item("font", editor=KivaFontEditor()),
                 resizable=True,
             )
@@ -134,7 +130,7 @@ class TestKivaFontEditor(UnittestTools, unittest.TestCase):
         obj = KivaFontView()
 
         ui = obj.edit_traits(
-            view = View(
+            view=View(
                 Item("font", editor=KivaFontEditor()),
                 resizable=True,
             )
@@ -166,7 +162,7 @@ class TestKivaFontEditor(UnittestTools, unittest.TestCase):
         obj = KivaFontView()
 
         ui = obj.edit_traits(
-            view = View(
+            view=View(
                 Item(
                     "font",
                     editor=KivaFontEditor(sample_text="sample text"),
