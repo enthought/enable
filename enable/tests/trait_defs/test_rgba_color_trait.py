@@ -10,10 +10,8 @@
 
 import unittest
 
-import numpy as np
-
 from pyface.color import Color
-from traits.api import DefaultValue, HasTraits, TraitError
+from traits.api import HasTraits, TraitError
 from traits.testing.optional_dependencies import numpy as np, requires_numpy
 from traitsui.api import EditorFactory
 
@@ -42,6 +40,7 @@ rgb_uint8_dtype = np.dtype([
     ('blue', "uint8"),
 ])
 
+
 class ColorClass(HasTraits):
 
     color = RGBAColor()
@@ -53,6 +52,7 @@ class TestRGBAColor(unittest.TestCase):
         trait = RGBAColor()
         self.assertEqual(trait.default_value, (1.0, 1.0, 1.0, 1.0))
 
+    @requires_numpy
     def test_default_value(self):
         values = [
             "rebeccapurple",
@@ -65,11 +65,11 @@ class TestRGBAColor(unittest.TestCase):
             (0.4, 0.2, 0.6, 1.0),
             [0.4, 0.2, 0.6, 1.0],
             np.array([0.4, 0.2, 0.6, 1.0]),
-            np.array((0.4, 0.2, 0.6, 1.0), dtype=rgba_float_dtype),
+            np.array([(0.4, 0.2, 0.6, 1.0)], dtype=rgba_float_dtype)[0],
             (0x66, 0x33, 0x99, 0xff),
             [0x66, 0x33, 0x99, 0xff],
             np.array([0x66, 0x33, 0x99, 0xff], dtype='uint8'),
-            np.array((0x66, 0x33, 0x99, 0xff), dtype=rgba_int_dtype),
+            np.array([(0x66, 0x33, 0x99, 0xff)], dtype=rgba_uint8_dtype)[0],
             "#666633339999",
             "#663399",
             "#639",
@@ -77,11 +77,11 @@ class TestRGBAColor(unittest.TestCase):
             (0.4, 0.2, 0.6),
             [0.4, 0.2, 0.6],
             np.array([0.4, 0.2, 0.6]),
-            np.array((0.4, 0.2, 0.6), dtype=rgb_float_dtype),
+            np.array([(0.4, 0.2, 0.6)], dtype=rgb_float_dtype)[0],
             (0x66, 0x33, 0x99),
             [0x66, 0x33, 0x99],
             np.array([0x66, 0x33, 0x99], dtype='uint8'),
-            np.array((0x66, 0x33, 0x99), dtype=rgb_int_dtype),
+            np.array([(0x66, 0x33, 0x99)], dtype=rgb_uint8_dtype)[0],
         ]
         for value in values:
             with self.subTest(value=value):
@@ -101,7 +101,7 @@ class TestRGBAColor(unittest.TestCase):
         ]
         for value in values:
             with self.subTest(value=value):
-                with self.assertRaises(TraitError):
+                with self.assertRaises((ValueError, AttributeError)):
                     RGBAColor(value)
 
     def test_validate(self):
@@ -116,11 +116,11 @@ class TestRGBAColor(unittest.TestCase):
             (0.4, 0.2, 0.6, 1.0),
             [0.4, 0.2, 0.6, 1.0],
             np.array([0.4, 0.2, 0.6, 1.0]),
-            np.array((0.4, 0.2, 0.6, 1.0), dtype=rgba_float_dtype),
+            np.array([(0.4, 0.2, 0.6, 1.0)], dtype=rgba_float_dtype)[0],
             (0x66, 0x33, 0x99, 0xff),
             [0x66, 0x33, 0x99, 0xff],
             np.array([0x66, 0x33, 0x99, 0xff], dtype='uint8'),
-            np.array((0x66, 0x33, 0x99, 0xff), dtype=rgba_int_dtype),
+            np.array([(0x66, 0x33, 0x99, 0xff)], dtype=rgba_uint8_dtype)[0],
             "#666633339999",
             "#663399",
             "#639",
@@ -128,11 +128,11 @@ class TestRGBAColor(unittest.TestCase):
             (0.4, 0.2, 0.6),
             [0.4, 0.2, 0.6],
             np.array([0.4, 0.2, 0.6]),
-            np.array((0.4, 0.2, 0.6), dtype=rgb_float_dtype),
+            np.array([(0.4, 0.2, 0.6)], dtype=rgb_float_dtype)[0],
             (0x66, 0x33, 0x99),
             [0x66, 0x33, 0x99],
             np.array([0x66, 0x33, 0x99], dtype='uint8'),
-            np.array((0x66, 0x33, 0x99), dtype=rgb_int_dtype),
+            np.array([(0x66, 0x33, 0x99)], dtype=rgb_uint8_dtype)[0],
         ]
         trait = RGBAColor()
         for value in values:
@@ -177,11 +177,11 @@ class TestRGBAColor(unittest.TestCase):
             (0.4, 0.2, 0.6, 1.0),
             [0.4, 0.2, 0.6, 1.0],
             np.array([0.4, 0.2, 0.6, 1.0]),
-            np.array((0.4, 0.2, 0.6, 1.0), dtype=rgba_float_dtype),
+            np.array([(0.4, 0.2, 0.6, 1.0)], dtype=rgba_float_dtype)[0],
             (0x66, 0x33, 0x99, 0xff),
             [0x66, 0x33, 0x99, 0xff],
             np.array([0x66, 0x33, 0x99, 0xff], dtype='uint8'),
-            np.array((0x66, 0x33, 0x99, 0xff), dtype=rgba_int_dtype),
+            np.array([(0x66, 0x33, 0x99, 0xff)], dtype=rgba_uint8_dtype)[0],
             "#666633339999",
             "#663399",
             "#639",
@@ -189,20 +189,16 @@ class TestRGBAColor(unittest.TestCase):
             (0.4, 0.2, 0.6),
             [0.4, 0.2, 0.6],
             np.array([0.4, 0.2, 0.6]),
-            np.array((0.4, 0.2, 0.6), dtype=rgb_float_dtype),
+            np.array([(0.4, 0.2, 0.6)], dtype=rgb_float_dtype)[0],
             (0x66, 0x33, 0x99),
             [0x66, 0x33, 0x99],
             np.array([0x66, 0x33, 0x99], dtype='uint8'),
-            np.array((0x66, 0x33, 0x99), dtype=rgb_int_dtype),
+            np.array([(0x66, 0x33, 0x99)], dtype=rgb_uint8_dtype)[0],
         ]
-        trait = RGBAColor()
         for value in values:
             with self.subTest(value=value):
                 color_class = ColorClass(color=value)
                 self.assertEqual(color_class.color, (0.4, 0.2, 0.6, 1.0))
-
-        color_class = ColorClass(color=arr[0])
-        self.assertEqual(color_class.color, color)
 
     def test_trait_set_invalid(self):
         values = [
@@ -215,7 +211,6 @@ class TestRGBAColor(unittest.TestCase):
             (0, -1, 250, 255),
             None,
         ]
-        trait = RGBAColor()
         for value in values:
             with self.subTest(value=value):
                 with self.assertRaises(TraitError):
@@ -230,6 +225,6 @@ class TestRGBAColor(unittest.TestCase):
     def test_sys_window_color(self):
         trait = RGBAColor()
         # smoke-test: value depends on system and user preferences
-        trait.validate("syswindow")
+        trait.validate(None, None, "syswindow")
         # older code used with an underscore is also OK
-        trait.validate("sys_window")
+        trait.validate(None, None, "sys_window")
