@@ -17,10 +17,12 @@ import kiva.constants as kc
 from kiva.fonttools.font import Font, FontParseError, simple_parser
 
 
+#: Expected attributes on the Font class.
 font_attrs = [
     'face_name', 'size', 'family', 'weight', 'style', 'underline', 'encoding',
 ]
 
+#: Mapping from Pyface Font generic family names to corresponding constants.
 pyface_family_to_kiva_family = {
     'default': kc.DEFAULT,
     'fantasy': kc.DECORATIVE,
@@ -77,7 +79,8 @@ class KivaFont(TraitType):
 
     #: The parser to use when converting text to keyword args.  This should
     #: accept a string and return a dictionary of Font class trait values (ie.
-    #: "family", "size", "weight", etc.).
+    #: "family", "size", "weight", etc.).  If it can't parse the string, it
+    #: should raise FontParseError.
     parser = None
 
     def __init__(self, default_value=None, *, parser=simple_parser, **metadata):
@@ -108,9 +111,11 @@ class KivaFont(TraitType):
         return KivaFontEditor()
 
     def clone(self, default_value=NoDefaultSpecified, **metadata):
+        # Need to override clone due to Traits issue #1629
         new = super().clone(NoDefaultSpecified, **metadata)
         if default_value is not NoDefaultSpecified:
             new.default_value = self._get_default_value(default_value)
+            new.default_value_type = DefaultValue.callable_and_args
         return new
 
     def _get_default_value(self, default_value):

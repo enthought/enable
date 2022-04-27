@@ -12,14 +12,11 @@ from pyface.font import Font as PyfaceFont
 from pyface.font_dialog import get_font
 from traits.api import Bool, Callable, Instance, Str, observe
 from traits.trait_base import SequenceTypes
-from traitsui.api import EditorFactory, Editor as BaseEditor, toolkit_object
+from traitsui.api import EditorFactory
 
 from kiva.fonttools.font import Font
 import kiva.constants as kc
-from enable.component import Component
-from enable.label import Label
 from enable.tools.button_tool import ButtonTool
-from enable.window import Window
 from .editor_with_component import EditorWithLabelComponent
 
 
@@ -55,7 +52,7 @@ def str_font(font):
     style = " Italic" if font.style in kc.italic_styles else ""
     underline = " Underline" if font.underline else ""
 
-    return f"{font.size} point {face_name(font)}{weight}{style}{underline}".strip()
+    return f"{font.size} point {face_name(font)}{weight}{style}{underline}".strip()  # noqa: E501
 
 
 class ReadOnlyEditor(EditorWithLabelComponent):

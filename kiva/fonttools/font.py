@@ -24,18 +24,18 @@ from kiva.fonttools.font_manager import default_font_manager
 
 FAMILIES = {
     'default': DEFAULT,
-    'fantasy': DECORATIVE,
-    'decorative': DECORATIVE,
-    'serif': ROMAN,
-    'roman': ROMAN,
     'cursive': SCRIPT,
-    'script': SCRIPT,
-    'sans-serif': SWISS,
-    'swiss': SWISS,
-    'monospace': MODERN,
+    'decorative': DECORATIVE,
+    'fantasy': DECORATIVE,
     'modern': MODERN,
-    'typewriter': TELETYPE,
+    'monospace': MODERN,
+    'roman': ROMAN,
+    'sans-serif': SWISS,
+    'script': SCRIPT,
+    'serif': ROMAN,
+    'swiss': SWISS,
     'teletype': TELETYPE,
+    'typewriter': TELETYPE,
 }
 WEIGHTS = {
     'thin': WEIGHT_THIN,
@@ -83,9 +83,9 @@ def simple_parser(description):
         The following decoration term is accepted: 'underline'
 
     Generic Families
-        The following generic family terms are accepted: 'default', 'fantasy',
-        'decorative', 'serif', 'roman', 'cursive', 'script', 'sans-serif',
-        'swiss', 'monospace', 'modern', 'typewriter', 'teletype'.
+        The following generic family terms are accepted: 'default', 'cursive',
+        'decorative', 'fantasy', 'modern', 'monospace', 'roman', 'sans-serif',
+        'script', 'serif', 'swiss', 'teletype', 'typewriter'.
 
     In addition, the parser ignores the terms 'pt', 'point', 'px', and 'family'.
     Any remaining terms are combined into the typeface name.  There is no

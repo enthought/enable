@@ -117,7 +117,7 @@ class ToolkitEditorFactory(EditorFactory):
         import kiva.constants as kc
 
         weight = " Bold" if font.is_bold() else ""
-        style = " Italic" if font.style in italic_styles else ""
+        style = " Italic" if font.style in kc.italic_styles else ""
         underline = " Underline" if font.underline else ""
 
         return "%s point %s%s%s%s" % (
@@ -136,7 +136,7 @@ class ToolkitEditorFactory(EditorFactory):
         """ Returns a list of all available font typeface names.
         """
         font_manager = default_font_manager()
-        return sorted({f.name for f in font_manager.ttflist})
+        return sorted({f.fname for f in font_manager.ttf_db._entries})
 
 
 def KivaFontEditor(*args, **traits):

@@ -10,7 +10,6 @@
 from traits.api import HasStrictTraits
 from traitsui.api import View, Item
 
-from enable.api import Container, TextField
 from enable.trait_defs.api import KivaFont
 from enable.trait_defs.ui.api import KivaFontEditor
 from enable.examples._example_support import demo_main
