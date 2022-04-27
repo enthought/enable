@@ -20,6 +20,7 @@ from enable.tools.button_tool import ButtonTool
 from .editor_with_component import EditorWithLabelComponent
 
 
+#: A mapping of Kiva weight constants to strings.
 WEIGHTS = {
     kc.WEIGHT_THIN: ' Thin',
     kc.WEIGHT_EXTRALIGHT: ' Extra-light',
@@ -83,6 +84,7 @@ class SimpleEditor(ReadOnlyEditor):
     """An Editor which displays a label using the font, click for font dialog.
     """
 
+    #: Button tool connected to the Label component.
     button = Instance(ButtonTool)
 
     def create_component(self):
@@ -113,7 +115,7 @@ class SimpleEditor(ReadOnlyEditor):
         pyface_font = PyfaceFont(
             family=[self.value.face_name],
             weight=str(self.value.weight),
-            style='italic' if self.value.style in kc.italic_styles else 'normal',
+            style='italic' if self.value.style in kc.italic_styles else 'normal',  # noqa: E501
             size=self.value.size,
         )
         pyface_font = get_font(self.window.control, pyface_font)
@@ -121,7 +123,7 @@ class SimpleEditor(ReadOnlyEditor):
             font = Font(
                 face_name=pyface_font.family[0],
                 weight=pyface_font.weight_,
-                style=kc.ITALIC if pyface_font.style == 'italic' else kc.NORMAL,
+                style=kc.ITALIC if pyface_font.style == 'italic' else kc.NORMAL,  # noqa: E501
                 size=int(pyface_font.size),
             )
             self.update_object(font)

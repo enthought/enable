@@ -83,7 +83,7 @@ class KivaFont(TraitType):
     #: should raise FontParseError.
     parser = None
 
-    def __init__(self, default_value=None, *, parser=simple_parser, **metadata):
+    def __init__(self, default_value=None, *, parser=simple_parser, **metadata):  # noqa: E501
         self.parser = parser
         default_value = self._get_default_value(default_value)
         super().__init__(default_value, **metadata)

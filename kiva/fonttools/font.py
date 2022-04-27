@@ -43,7 +43,7 @@ WEIGHTS = {
     'light': WEIGHT_LIGHT,
     'regular': WEIGHT_NORMAL,
     'medium': WEIGHT_MEDIUM,
-    'demi-bold': WEIGHT_SEMIBOLD,
+    'semi-bold': WEIGHT_SEMIBOLD,
     'bold': WEIGHT_BOLD,
     'extra-bold': WEIGHT_EXTRABOLD,
     'heavy': WEIGHT_HEAVY,
@@ -73,7 +73,7 @@ def simple_parser(description):
 
     Weight
         The following weight terms are accepted: 'thin', 'extra-light',
-        'light', 'regular', 'medium', 'demi-bold', 'bold', 'extra-bold',
+        'light', 'regular', 'medium', 'semi-bold', 'bold', 'extra-bold',
         'heavy', 'extra-heavy'.
 
     Style
