@@ -80,14 +80,14 @@ def simple_parser(description):
         The following style terms are accepted: 'italic', 'oblique'.
 
     Decorations
-        The following decoration terms is accepted: 'underline'
+        The following decoration term is accepted: 'underline'
 
     Generic Families
         The following generic family terms are accepted: 'default', 'fantasy',
         'decorative', 'serif', 'roman', 'cursive', 'script', 'sans-serif',
         'swiss', 'monospace', 'modern', 'typewriter', 'teletype'.
 
-    In addtion, the parser ignores the terms 'pt', 'point', 'px', and 'family'.
+    In addition, the parser ignores the terms 'pt', 'point', 'px', and 'family'.
     Any remaining terms are combined into the typeface name.  There is no
     expected order to the terms.
 
@@ -123,7 +123,7 @@ def simple_parser(description):
     style = NORMAL
     underline = False
     for word in description.split():
-        lower_word = word.lower()
+        lower_word = word.casefold()
         if lower_word in NOISE:
             continue
         elif lower_word in FAMILIES:
@@ -198,23 +198,22 @@ class Font(object):
                 f"Expected face name to be a str, got {face_name!r}")
         if not isinstance(size, int):
             raise RuntimeError(
-                f"Excected size to be an int, got {size!r}")
+                f"Expected size to be an int, got {size!r}")
         if not isinstance(family, int):
             raise RuntimeError(
-                f"Excected family to be an int, got {family!r}")
+                f"Expected family to be an int, got {family!r}")
         if not isinstance(weight, int):
             raise RuntimeError(
-                f"Excected weight to be an int, got {weight!r}")
+                f"Expected weight to be an int, got {weight!r}")
         if not isinstance(style, int):
             raise RuntimeError(
-                f"Excected style to be an int, got {style!r}")
+                f"Expected style to be an int, got {style!r}")
         if not isinstance(underline, int):
             raise RuntimeError(
-                f"Excected underline to be a int, got {underline!r}")
+                f"Expected underline to be a int, got {underline!r}")
         if not isinstance(encoding, int):
             raise RuntimeError(
-                f"Excected encoding to be a bool, got {encoding!r}")
-            raise RuntimeError("Bad value in Font() constructor.")
+                f"Expected encoding to be an int, got {encoding!r}")
 
         self.face_name = face_name
         self.size = size

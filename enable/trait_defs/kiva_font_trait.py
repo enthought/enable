@@ -14,7 +14,7 @@ from pyface.font import Font as PyfaceFont
 from traits.api import DefaultValue, TraitError, TraitType, NoDefaultSpecified
 
 import kiva.constants as kc
-from kiva.fonttools.font import Font, simple_parser
+from kiva.fonttools.font import Font, FontParseError, simple_parser
 
 
 font_attrs = [
@@ -63,7 +63,7 @@ def pyface_font_to_font(font):
         family = kc.DEFAULT
     size = int(font.size)
     weight = font.weight_
-    style = kc.NORMAL if font.style is 'normal' else kc.ITALIC
+    style = kc.NORMAL if font.style == 'normal' else kc.ITALIC
     underline = 'underline' in font.decorations
     return Font(face_name, size, family, weight, style, underline)
 
@@ -120,8 +120,7 @@ class KivaFont(TraitType):
                 font = self.validate(None, None, default_value)
             except TraitError:
                 raise ValueError(
-                    "expected " + self.info()
-                    + f", but got {default_value!r}"
+                    f"expected {self.info()}, but got {default_value!r}"
                 )
             klass = font.__class__
             kwargs = {attr: getattr(font, attr) for attr in font_attrs}

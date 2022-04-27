@@ -29,7 +29,7 @@ WEIGHTS = {
     kc.WEIGHT_LIGHT: ' Light',
     kc.WEIGHT_NORMAL: '',
     kc.WEIGHT_MEDIUM: ' Medium',
-    kc.WEIGHT_SEMIBOLD: ' Demi-bold',
+    kc.WEIGHT_SEMIBOLD: ' Semi-bold',
     kc.WEIGHT_BOLD: ' Bold',
     kc.WEIGHT_EXTRABOLD: ' Extra-bold',
     kc.WEIGHT_HEAVY: ' Heavy',
