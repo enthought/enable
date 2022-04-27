@@ -14,4 +14,13 @@ if toolkit().toolkit == "wx":
 elif toolkit().toolkit.startswith("qt"):
     from .qt4.rgba_color_editor import RGBAColorEditor
 else:
-    RGBAColorEditor = None
+    class RGBAColorEditor(object):
+        """ An unimplemented toolkit object
+
+        This is returned if an object isn't implemented by the selected
+        toolkit.  It raises an exception if it is ever instantiated.
+        """
+
+        def __init__(self, *args, **kwargs):
+            msg = "the %s backend doesn't implement RGBAColorEditor"
+            raise NotImplementedError(msg % (toolkit().toolkit,))

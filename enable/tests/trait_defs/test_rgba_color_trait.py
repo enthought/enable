@@ -15,7 +15,9 @@ from traits.api import HasTraits, TraitError
 from traits.testing.optional_dependencies import numpy as np, requires_numpy
 from traitsui.api import EditorFactory
 
+from enable.tests._testing import skip_if_null
 from enable.trait_defs.rgba_color_trait import RGBAColor
+
 
 rgba_float_dtype = np.dtype([
     ('red', "float64"),
@@ -101,7 +103,7 @@ class TestRGBAColor(unittest.TestCase):
         ]
         for value in values:
             with self.subTest(value=value):
-                with self.assertRaises((ValueError, AttributeError)):
+                with self.assertRaises(Exception):
                     RGBAColor(value)
 
     def test_validate(self):
@@ -216,6 +218,7 @@ class TestRGBAColor(unittest.TestCase):
                 with self.assertRaises(TraitError):
                     ColorClass(color=value)
 
+    @skip_if_null
     def test_get_editor(self):
         trait = RGBAColor()
         editor = trait.get_editor()
