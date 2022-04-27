@@ -1,6 +1,58 @@
 Enable CHANGELOG
 ================
 
+This release focused on support for PySide6, modernization of Traits code,
+and improving font handling.
+
+Enable 5.3.0
+============
+
+Thanks to:
+
+* Aaron Ayres
+* Mark Dickinson
+* Frank Fishburn
+* Rahul Poruri
+* Joris Vankerschaver
+* Corran Webster
+* John Wiggins
+
+Enhancements
+------------
+
+* A new font trait, including support for Pyface Font objects, including
+  support for more font weights (#929)
+* A new cross-toolkit Font editor that uses Enable internally (#928)
+* Unification of the various color traits (#917, #924)
+* Support for PySide6 (#897, #900)
+
+Fixes
+-----
+
+* Fix incorrect fallback font path (#931)
+* Ensure toolkits are initialized before they are used (#921)
+* Fix incorrect trait definitions for mouse pointer traits (#911)
+* Validate line dash arguments (#910)
+* Fixes for font file parsing and discovery (#906, #918, #919)
+* Support pyparsing >= 3 for SVG parsing (#888)
+
+Documentation
+-------------
+
+* Improvements to Kiva documentation (#914)
+
+Maintenance
+-----------
+
+* Modernization of trait definitions (#925)
+
+Build and Continuous Integration
+--------------------------------
+
+* CI is now run on Python 3.8 and PySide 6 (#927)
+* Replace use of Hypothesis by unittest subTest (#912)
+* Use Ubuntu 18.04 for CI (#889)
+
 Enable 5.2.1
 ============
 
