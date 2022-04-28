@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.trait_defs.ui.kiva_font_editor &mdash; enable 5.3.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '5.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/img/favicon.png">
+    <link rel="index" title="Index" href="../../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../../search.html" >
+    <link rel="top" title="enable 5.3.0 documentation" href="../../../../index.html" >
+    <link rel="up" title="Module code" href="../../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../../index.html">enable 5.3.0 documentation</a></li>
+	
+          <li class="active"><a href="../../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.trait_defs.ui.kiva_font_editor</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2022 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="kn">from</span> <span class="nn">pyface.font</span> <span class="kn">import</span> <span class="n">Font</span> <span class="k">as</span> <span class="n">PyfaceFont</span>
+<span class="kn">from</span> <span class="nn">pyface.font_dialog</span> <span class="kn">import</span> <span class="n">get_font</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">observe</span>
+<span class="kn">from</span> <span class="nn">traits.trait_base</span> <span class="kn">import</span> <span class="n">SequenceTypes</span>
+<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">EditorFactory</span>
+
+<span class="kn">from</span> <span class="nn">kiva.fonttools.font</span> <span class="kn">import</span> <span class="n">Font</span>
+<span class="kn">import</span> <span class="nn">kiva.constants</span> <span class="k">as</span> <span class="nn">kc</span>
+<span class="kn">from</span> <span class="nn">enable.tools.button_tool</span> <span class="kn">import</span> <span class="n">ButtonTool</span>
+<span class="kn">from</span> <span class="nn">.editor_with_component</span> <span class="kn">import</span> <span class="n">EditorWithLabelComponent</span>
+
+
+<span class="c1">#: A mapping of Kiva weight constants to strings.</span>
+<span class="n">WEIGHTS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">kc</span><span class="o">.</span><span class="n">WEIGHT_THIN</span><span class="p">:</span> <span class="s1">&#39; Thin&#39;</span><span class="p">,</span>
+    <span class="n">kc</span><span class="o">.</span><span class="n">WEIGHT_EXTRALIGHT</span><span class="p">:</span> <span class="s1">&#39; Extra-light&#39;</span><span class="p">,</span>
+    <span class="n">kc</span><span class="o">.</span><span class="n">WEIGHT_LIGHT</span><span class="p">:</span> <span class="s1">&#39; Light&#39;</span><span class="p">,</span>
+    <span class="n">kc</span><span class="o">.</span><span class="n">WEIGHT_NORMAL</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">kc</span><span class="o">.</span><span class="n">WEIGHT_MEDIUM</span><span class="p">:</span> <span class="s1">&#39; Medium&#39;</span><span class="p">,</span>
+    <span class="n">kc</span><span class="o">.</span><span class="n">WEIGHT_SEMIBOLD</span><span class="p">:</span> <span class="s1">&#39; Semi-bold&#39;</span><span class="p">,</span>
+    <span class="n">kc</span><span class="o">.</span><span class="n">WEIGHT_BOLD</span><span class="p">:</span> <span class="s1">&#39; Bold&#39;</span><span class="p">,</span>
+    <span class="n">kc</span><span class="o">.</span><span class="n">WEIGHT_EXTRABOLD</span><span class="p">:</span> <span class="s1">&#39; Extra-bold&#39;</span><span class="p">,</span>
+    <span class="n">kc</span><span class="o">.</span><span class="n">WEIGHT_HEAVY</span><span class="p">:</span> <span class="s1">&#39; Heavy&#39;</span><span class="p">,</span>
+    <span class="n">kc</span><span class="o">.</span><span class="n">WEIGHT_EXTRAHEAVY</span><span class="p">:</span> <span class="s1">&#39; Extra-heavy&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="face_name"><a class="viewcode-back" href="../../../../api/enable.trait_defs.ui.kiva_font_editor.html#enable.trait_defs.ui.kiva_font_editor.face_name">[docs]</a><span class="k">def</span> <span class="nf">face_name</span><span class="p">(</span><span class="n">font</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns a Font&#39;s typeface name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">face_name</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">face_name</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">face_name</span><span class="p">,</span> <span class="n">SequenceTypes</span><span class="p">):</span>
+        <span class="n">face_name</span> <span class="o">=</span> <span class="n">face_name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">face_name</span></div>
+
+
+<div class="viewcode-block" id="str_font"><a class="viewcode-back" href="../../../../api/enable.trait_defs.ui.kiva_font_editor.html#enable.trait_defs.ui.kiva_font_editor.str_font">[docs]</a><span class="k">def</span> <span class="nf">str_font</span><span class="p">(</span><span class="n">font</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns the text representation of the specified font trait value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">weight</span> <span class="o">=</span> <span class="n">WEIGHTS</span><span class="p">[</span><span class="n">font</span><span class="o">.</span><span class="n">weight</span><span class="p">]</span>
+    <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot; Italic&quot;</span> <span class="k">if</span> <span class="n">font</span><span class="o">.</span><span class="n">style</span> <span class="ow">in</span> <span class="n">kc</span><span class="o">.</span><span class="n">italic_styles</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">underline</span> <span class="o">=</span> <span class="s2">&quot; Underline&quot;</span> <span class="k">if</span> <span class="n">font</span><span class="o">.</span><span class="n">underline</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">font</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> point </span><span class="si">{</span><span class="n">face_name</span><span class="p">(</span><span class="n">font</span><span class="p">)</span><span class="si">}{</span><span class="n">weight</span><span class="si">}{</span><span class="n">style</span><span class="si">}{</span><span class="n">underline</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># noqa: E501</span></div>
+
+
+<div class="viewcode-block" id="ReadOnlyEditor"><a class="viewcode-back" href="../../../../api/enable.trait_defs.ui.kiva_font_editor.html#enable.trait_defs.ui.kiva_font_editor.ReadOnlyEditor">[docs]</a><span class="k">class</span> <span class="nc">ReadOnlyEditor</span><span class="p">(</span><span class="n">EditorWithLabelComponent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An Editor which displays a label using the font.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ReadOnlyEditor.init"><a class="viewcode-back" href="../../../../api/enable.trait_defs.ui.kiva_font_editor.html#enable.trait_defs.ui.kiva_font_editor.ReadOnlyEditor.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ReadOnlyEditor.update_editor"><a class="viewcode-back" href="../../../../api/enable.trait_defs.ui.kiva_font_editor.html#enable.trait_defs.ui.kiva_font_editor.ReadOnlyEditor.update_editor">[docs]</a>    <span class="k">def</span> <span class="nf">update_editor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handle the content of the editor changing.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update_editor</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ReadOnlyEditor.string_value"><a class="viewcode-back" href="../../../../api/enable.trait_defs.ui.kiva_font_editor.html#enable.trait_defs.ui.kiva_font_editor.ReadOnlyEditor.string_value">[docs]</a>    <span class="k">def</span> <span class="nf">string_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">format_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a string value to display in the editor.</span>
+
+<span class="sd">        If the factory provides sample text, use that, otherwise follow the</span>
+<span class="sd">        usual path, but default to using the `str_font` function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">sample_text</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">sample_text</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">string_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">str_font</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SimpleEditor"><a class="viewcode-back" href="../../../../api/enable.trait_defs.ui.kiva_font_editor.html#enable.trait_defs.ui.kiva_font_editor.SimpleEditor">[docs]</a><span class="k">class</span> <span class="nc">SimpleEditor</span><span class="p">(</span><span class="n">ReadOnlyEditor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An Editor which displays a label using the font, click for font dialog.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: Button tool connected to the Label component.</span>
+    <span class="n">button</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">ButtonTool</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SimpleEditor.create_component"><a class="viewcode-back" href="../../../../api/enable.trait_defs.ui.kiva_font_editor.html#enable.trait_defs.ui.kiva_font_editor.SimpleEditor.create_component">[docs]</a>    <span class="k">def</span> <span class="nf">create_component</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create and configure the Label component.&quot;&quot;&quot;</span>
+        <span class="n">component</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">create_component</span><span class="p">()</span>
+        <span class="c1"># add a grey border to indicate interactivity</span>
+        <span class="n">component</span><span class="o">.</span><span class="n">border_visible</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">component</span><span class="o">.</span><span class="n">border_width</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">component</span><span class="o">.</span><span class="n">border_color</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="c1"># add a button tool to make the label respond to clicks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">button</span> <span class="o">=</span> <span class="n">ButtonTool</span><span class="p">(</span><span class="n">component</span><span class="o">=</span><span class="n">component</span><span class="p">)</span>
+        <span class="n">component</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">button</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">component</span></div>
+
+<div class="viewcode-block" id="SimpleEditor.update_object"><a class="viewcode-back" href="../../../../api/enable.trait_defs.ui.kiva_font_editor.html#enable.trait_defs.ui.kiva_font_editor.SimpleEditor.update_object">[docs]</a>    <span class="k">def</span> <span class="nf">update_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handle changes to the font due to user action.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="c1"># force a refresh of the component&#39;s settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_editor</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SimpleEditor.button_clicked"><a class="viewcode-back" href="../../../../api/enable.trait_defs.ui.kiva_font_editor.html#enable.trait_defs.ui.kiva_font_editor.SimpleEditor.button_clicked">[docs]</a>    <span class="nd">@observe</span><span class="p">(</span><span class="s1">&#39;button:clicked&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">button_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Display a Pyface FontDialog when the button tool is clicked.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">pyface_font</span> <span class="o">=</span> <span class="n">PyfaceFont</span><span class="p">(</span>
+            <span class="n">family</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">face_name</span><span class="p">],</span>
+            <span class="n">weight</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">weight</span><span class="p">),</span>
+            <span class="n">style</span><span class="o">=</span><span class="s1">&#39;italic&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">style</span> <span class="ow">in</span> <span class="n">kc</span><span class="o">.</span><span class="n">italic_styles</span> <span class="k">else</span> <span class="s1">&#39;normal&#39;</span><span class="p">,</span>  <span class="c1"># noqa: E501</span>
+            <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">pyface_font</span> <span class="o">=</span> <span class="n">get_font</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">control</span><span class="p">,</span> <span class="n">pyface_font</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pyface_font</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">font</span> <span class="o">=</span> <span class="n">Font</span><span class="p">(</span>
+                <span class="n">face_name</span><span class="o">=</span><span class="n">pyface_font</span><span class="o">.</span><span class="n">family</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">weight</span><span class="o">=</span><span class="n">pyface_font</span><span class="o">.</span><span class="n">weight_</span><span class="p">,</span>
+                <span class="n">style</span><span class="o">=</span><span class="n">kc</span><span class="o">.</span><span class="n">ITALIC</span> <span class="k">if</span> <span class="n">pyface_font</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="s1">&#39;italic&#39;</span> <span class="k">else</span> <span class="n">kc</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">,</span>  <span class="c1"># noqa: E501</span>
+                <span class="n">size</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">pyface_font</span><span class="o">.</span><span class="n">size</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_object</span><span class="p">(</span><span class="n">font</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="KivaFontEditor"><a class="viewcode-back" href="../../../../api/enable.trait_defs.ui.kiva_font_editor.html#enable.trait_defs.ui.kiva_font_editor.KivaFontEditor">[docs]</a><span class="k">class</span> <span class="nc">KivaFontEditor</span><span class="p">(</span><span class="n">EditorFactory</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Editor factory for KivaFontEditors</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: Alternative text to display instead of the font description.</span>
+    <span class="n">sample_text</span> <span class="o">=</span> <span class="n">Str</span><span class="p">()</span>
+
+    <span class="c1">#: Switch to turn off high resolution rendering if needed.</span>
+    <span class="n">high_resolution</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1">#: The default format func displays a description of the font.</span>
+    <span class="n">format_func</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">(</span><span class="n">str_font</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_simple_editor_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SimpleEditor</span>
+
+    <span class="k">def</span> <span class="nf">_get_readonly_editor_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ReadOnlyEditor</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2022 Enthought
+      </li>
+      <li>
+      Last updated on Apr 28, 2022.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

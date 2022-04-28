@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.trait_defs.kiva_font_trait &mdash; enable 5.3.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '5.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../_static/img/favicon.png">
+    <link rel="index" title="Index" href="../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../search.html" >
+    <link rel="top" title="enable 5.3.0 documentation" href="../../../index.html" >
+    <link rel="up" title="Module code" href="../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../index.html">enable 5.3.0 documentation</a></li>
+	
+          <li class="active"><a href="../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.trait_defs.kiva_font_trait</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2022 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+<span class="sd">&quot;&quot;&quot; Trait definition for a wxPython-based Kiva font.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">pyface.font</span> <span class="kn">import</span> <span class="n">Font</span> <span class="k">as</span> <span class="n">PyfaceFont</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">DefaultValue</span><span class="p">,</span> <span class="n">TraitError</span><span class="p">,</span> <span class="n">TraitType</span><span class="p">,</span> <span class="n">NoDefaultSpecified</span>
+
+<span class="kn">import</span> <span class="nn">kiva.constants</span> <span class="k">as</span> <span class="nn">kc</span>
+<span class="kn">from</span> <span class="nn">kiva.fonttools.font</span> <span class="kn">import</span> <span class="n">Font</span><span class="p">,</span> <span class="n">FontParseError</span><span class="p">,</span> <span class="n">simple_parser</span>
+
+
+<span class="c1">#: Expected attributes on the Font class.</span>
+<span class="n">font_attrs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;face_name&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="s1">&#39;family&#39;</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="s1">&#39;style&#39;</span><span class="p">,</span> <span class="s1">&#39;underline&#39;</span><span class="p">,</span> <span class="s1">&#39;encoding&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="c1">#: Mapping from Pyface Font generic family names to corresponding constants.</span>
+<span class="n">pyface_family_to_kiva_family</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="n">kc</span><span class="o">.</span><span class="n">DEFAULT</span><span class="p">,</span>
+    <span class="s1">&#39;fantasy&#39;</span><span class="p">:</span> <span class="n">kc</span><span class="o">.</span><span class="n">DECORATIVE</span><span class="p">,</span>
+    <span class="s1">&#39;decorative&#39;</span><span class="p">:</span> <span class="n">kc</span><span class="o">.</span><span class="n">DECORATIVE</span><span class="p">,</span>
+    <span class="s1">&#39;serif&#39;</span><span class="p">:</span> <span class="n">kc</span><span class="o">.</span><span class="n">ROMAN</span><span class="p">,</span>
+    <span class="s1">&#39;roman&#39;</span><span class="p">:</span> <span class="n">kc</span><span class="o">.</span><span class="n">ROMAN</span><span class="p">,</span>
+    <span class="s1">&#39;cursive&#39;</span><span class="p">:</span> <span class="n">kc</span><span class="o">.</span><span class="n">SCRIPT</span><span class="p">,</span>
+    <span class="s1">&#39;script&#39;</span><span class="p">:</span> <span class="n">kc</span><span class="o">.</span><span class="n">SCRIPT</span><span class="p">,</span>
+    <span class="s1">&#39;sans-serif&#39;</span><span class="p">:</span> <span class="n">kc</span><span class="o">.</span><span class="n">SWISS</span><span class="p">,</span>
+    <span class="s1">&#39;swiss&#39;</span><span class="p">:</span> <span class="n">kc</span><span class="o">.</span><span class="n">SWISS</span><span class="p">,</span>
+    <span class="s1">&#39;monospace&#39;</span><span class="p">:</span> <span class="n">kc</span><span class="o">.</span><span class="n">MODERN</span><span class="p">,</span>
+    <span class="s1">&#39;modern&#39;</span><span class="p">:</span> <span class="n">kc</span><span class="o">.</span><span class="n">MODERN</span><span class="p">,</span>
+    <span class="s1">&#39;typewriter&#39;</span><span class="p">:</span> <span class="n">kc</span><span class="o">.</span><span class="n">TELETYPE</span><span class="p">,</span>
+    <span class="s1">&#39;teletype&#39;</span><span class="p">:</span> <span class="n">kc</span><span class="o">.</span><span class="n">TELETYPE</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="pyface_font_to_font"><a class="viewcode-back" href="../../../api/enable.trait_defs.kiva_font_trait.html#enable.trait_defs.kiva_font_trait.pyface_font_to_font">[docs]</a><span class="k">def</span> <span class="nf">pyface_font_to_font</span><span class="p">(</span><span class="n">font</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert a Pyface font to an equivalent Kiva Font.</span>
+
+<span class="sd">    This ignores stretch and some options like small caps and strikethrough</span>
+<span class="sd">    as the Kiva font object can&#39;t represent these at the moment.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    font : Pyface Font instance</span>
+<span class="sd">        The font to convert.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    font : Kiva Font instance</span>
+<span class="sd">        The resulting Kiva Font object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">face_name</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">family</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">font</span><span class="o">.</span><span class="n">family</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">pyface_family_to_kiva_family</span><span class="p">:</span>
+            <span class="n">family</span> <span class="o">=</span> <span class="n">pyface_family_to_kiva_family</span><span class="p">[</span><span class="n">face</span><span class="p">]</span>
+            <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">family</span> <span class="o">=</span> <span class="n">kc</span><span class="o">.</span><span class="n">DEFAULT</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">font</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">weight</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">weight_</span>
+    <span class="n">style</span> <span class="o">=</span> <span class="n">kc</span><span class="o">.</span><span class="n">NORMAL</span> <span class="k">if</span> <span class="n">font</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="s1">&#39;normal&#39;</span> <span class="k">else</span> <span class="n">kc</span><span class="o">.</span><span class="n">ITALIC</span>
+    <span class="n">underline</span> <span class="o">=</span> <span class="s1">&#39;underline&#39;</span> <span class="ow">in</span> <span class="n">font</span><span class="o">.</span><span class="n">decorations</span>
+    <span class="k">return</span> <span class="n">Font</span><span class="p">(</span><span class="n">face_name</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">family</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">style</span><span class="p">,</span> <span class="n">underline</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="KivaFont"><a class="viewcode-back" href="../../../api/enable.trait_defs.kiva_font_trait.html#enable.trait_defs.kiva_font_trait.KivaFont">[docs]</a><span class="k">class</span> <span class="nc">KivaFont</span><span class="p">(</span><span class="n">TraitType</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A Trait which casts strings to a Kiva Font value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: The default value should be a tuple (factory, args, kwargs)</span>
+    <span class="n">default_value_type</span> <span class="o">=</span> <span class="n">DefaultValue</span><span class="o">.</span><span class="n">callable_and_args</span>
+
+    <span class="c1">#: The parser to use when converting text to keyword args.  This should</span>
+    <span class="c1">#: accept a string and return a dictionary of Font class trait values (ie.</span>
+    <span class="c1">#: &quot;family&quot;, &quot;size&quot;, &quot;weight&quot;, etc.).  If it can&#39;t parse the string, it</span>
+    <span class="c1">#: should raise FontParseError.</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="n">simple_parser</span><span class="p">,</span> <span class="o">**</span><span class="n">metadata</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">parser</span>
+        <span class="n">default_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_default_value</span><span class="p">(</span><span class="n">default_value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">default_value</span><span class="p">,</span> <span class="o">**</span><span class="n">metadata</span><span class="p">)</span>
+
+<div class="viewcode-block" id="KivaFont.validate"><a class="viewcode-back" href="../../../api/enable.trait_defs.kiva_font_trait.html#enable.trait_defs.kiva_font_trait.KivaFont.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Font</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">PyfaceFont</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">pyface_font_to_font</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Font</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">FontParseError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KivaFont.info"><a class="viewcode-back" href="../../../api/enable.trait_defs.kiva_font_trait.html#enable.trait_defs.kiva_font_trait.KivaFont.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;a Kiva Font, a Pyface Font, or a string describing a font&quot;</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="KivaFont.get_editor"><a class="viewcode-back" href="../../../api/enable.trait_defs.kiva_font_trait.html#enable.trait_defs.kiva_font_trait.KivaFont.get_editor">[docs]</a>    <span class="k">def</span> <span class="nf">get_editor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">enable.trait_defs.ui.kiva_font_editor</span> <span class="kn">import</span> <span class="n">KivaFontEditor</span>
+        <span class="k">return</span> <span class="n">KivaFontEditor</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="KivaFont.clone"><a class="viewcode-back" href="../../../api/enable.trait_defs.kiva_font_trait.html#enable.trait_defs.kiva_font_trait.KivaFont.clone">[docs]</a>    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="n">NoDefaultSpecified</span><span class="p">,</span> <span class="o">**</span><span class="n">metadata</span><span class="p">):</span>
+        <span class="c1"># Need to override clone due to Traits issue #1629</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">NoDefaultSpecified</span><span class="p">,</span> <span class="o">**</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">default_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">NoDefaultSpecified</span><span class="p">:</span>
+            <span class="n">new</span><span class="o">.</span><span class="n">default_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_default_value</span><span class="p">(</span><span class="n">default_value</span><span class="p">)</span>
+            <span class="n">new</span><span class="o">.</span><span class="n">default_value_type</span> <span class="o">=</span> <span class="n">DefaultValue</span><span class="o">.</span><span class="n">callable_and_args</span>
+        <span class="k">return</span> <span class="n">new</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_default_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct a default value suitable for callable_and_args.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">default_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">font</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">default_value</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">TraitError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">()</span><span class="si">}</span><span class="s2">, but got </span><span class="si">{</span><span class="n">default_value</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="n">klass</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="vm">__class__</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">attr</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">font</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">font_attrs</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">klass</span> <span class="o">=</span> <span class="n">Font</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="p">(),</span> <span class="n">kwargs</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2022 Enthought
+      </li>
+      <li>
+      Last updated on Apr 28, 2022.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>

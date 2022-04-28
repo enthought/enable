@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>enable.savage.trait_defs.ui.svg_button &mdash; enable 5.3.0 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '5.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../../../_static/img/favicon.png">
+    <link rel="index" title="Index" href="../../../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../../../search.html" >
+    <link rel="top" title="enable 5.3.0 documentation" href="../../../../../index.html" >
+    <link rel="up" title="Module code" href="../../../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../../../index.html">enable 5.3.0 documentation</a></li>
+	
+          <li class="active"><a href="../../../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for enable.savage.trait_defs.ui.svg_button</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2005-2022 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="c1"># ETS imports</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Event</span>
+
+<span class="c1"># Local imports</span>
+<span class="kn">from</span> <span class="nn">.svg_button_editor</span> <span class="kn">import</span> <span class="n">SVGButtonEditor</span>
+
+
+<div class="viewcode-block" id="SVGButton"><a class="viewcode-back" href="../../../../../api/enable.savage.trait_defs.ui.svg_button.html#enable.savage.trait_defs.ui.svg_button.SVGButton">[docs]</a><span class="k">class</span> <span class="nc">SVGButton</span><span class="p">(</span><span class="n">Event</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Defines a trait whose UI editor is a button.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">toggle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">toggle_state</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">toggle_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">toggle_label</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+                 <span class="n">toggle_tooltip</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+                 <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">,</span> <span class="n">width_padding</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                 <span class="n">height_padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">metadata</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a trait event whose editor is a button.</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            label : string</span>
+<span class="sd">                The label for the button</span>
+<span class="sd">            filename : string</span>
+<span class="sd">                Path to SVG file to be displayed on the button</span>
+<span class="sd">            orientation : one of: &#39;horizontal&#39;, &#39;vertical&#39;</span>
+<span class="sd">                The orientation of the label relative to the image</span>
+<span class="sd">            width_padding : integer between 0 and 31</span>
+<span class="sd">                Extra padding (in pixels) added to the left and right sides of</span>
+<span class="sd">                the button</span>
+<span class="sd">            height_padding : integer between 0 and 31</span>
+<span class="sd">                Extra padding (in pixels) added to the top and bottom of the</span>
+<span class="sd">                button</span>
+<span class="sd">            tooltip : string</span>
+<span class="sd">                What to display when the mouse hovers over the button. An</span>
+<span class="sd">                empty string implies no tooltip</span>
+<span class="sd">            toggle : boolean</span>
+<span class="sd">                Whether the button is a toggle with 2 states, or a regular</span>
+<span class="sd">                button with 1 state</span>
+<span class="sd">            toggle_filename : string</span>
+<span class="sd">                Path to SVG file to be displayed on the button</span>
+<span class="sd">            toggle_label:</span>
+<span class="sd">                Label to display when button is in toggled state</span>
+<span class="sd">            toggle_tooltip:</span>
+<span class="sd">                Tooltip to display when button is in toggled state</span>
+
+<span class="sd">            Default Value</span>
+<span class="sd">            -------------</span>
+<span class="sd">            No default value because events do not store values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">editor</span> <span class="o">=</span> <span class="n">SVGButtonEditor</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">tooltip</span><span class="p">,</span>
+            <span class="n">toggle</span><span class="o">=</span><span class="n">toggle</span><span class="p">,</span>
+            <span class="n">toggle_state</span><span class="o">=</span><span class="n">toggle_state</span><span class="p">,</span>
+            <span class="n">toggle_filename</span><span class="o">=</span><span class="n">toggle_filename</span><span class="p">,</span>
+            <span class="n">toggle_tooltip</span><span class="o">=</span><span class="n">toggle_tooltip</span><span class="p">,</span>
+            <span class="n">toggle_label</span><span class="o">=</span><span class="n">toggle_label</span><span class="p">,</span>
+            <span class="n">orientation</span><span class="o">=</span><span class="n">orientation</span><span class="p">,</span>
+            <span class="n">width_padding</span><span class="o">=</span><span class="n">width_padding</span><span class="p">,</span>
+            <span class="n">height_padding</span><span class="o">=</span><span class="n">height_padding</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span>
+            <span class="n">view</span><span class="o">=</span><span class="n">view</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">metadata</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../../index.html">
+              <img class="logo" src="../../../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2022 Enthought
+      </li>
+      <li>
+      Last updated on Apr 28, 2022.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
