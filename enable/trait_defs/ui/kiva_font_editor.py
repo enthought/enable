@@ -12,15 +12,27 @@ from pyface.font import Font as PyfaceFont
 from pyface.font_dialog import get_font
 from traits.api import Bool, Callable, Instance, Str, observe
 from traits.trait_base import SequenceTypes
-from traitsui.api import EditorFactory, Editor as BaseEditor, toolkit_object
+from traitsui.api import EditorFactory
 
 from kiva.fonttools.font import Font
 import kiva.constants as kc
-from enable.component import Component
-from enable.label import Label
 from enable.tools.button_tool import ButtonTool
-from enable.window import Window
 from .editor_with_component import EditorWithLabelComponent
+
+
+#: A mapping of Kiva weight constants to strings.
+WEIGHTS = {
+    kc.WEIGHT_THIN: ' Thin',
+    kc.WEIGHT_EXTRALIGHT: ' Extra-light',
+    kc.WEIGHT_LIGHT: ' Light',
+    kc.WEIGHT_NORMAL: '',
+    kc.WEIGHT_MEDIUM: ' Medium',
+    kc.WEIGHT_SEMIBOLD: ' Semi-bold',
+    kc.WEIGHT_BOLD: ' Bold',
+    kc.WEIGHT_EXTRABOLD: ' Extra-bold',
+    kc.WEIGHT_HEAVY: ' Heavy',
+    kc.WEIGHT_EXTRAHEAVY: ' Extra-heavy',
+}
 
 
 def face_name(font):
@@ -37,21 +49,17 @@ def str_font(font):
     """ Returns the text representation of the specified font trait value
     """
 
-    weight = " Bold" if font.is_bold() else ""
+    weight = WEIGHTS[font.weight]
     style = " Italic" if font.style in kc.italic_styles else ""
     underline = " Underline" if font.underline else ""
 
-    return f"{font.size} point {face_name(font)}{weight}{style}{underline}".strip()
+    return f"{font.size} point {face_name(font)}{weight}{style}{underline}".strip()  # noqa: E501
 
 
 class ReadOnlyEditor(EditorWithLabelComponent):
     """An Editor which displays a label using the font."""
 
     def init(self, parent):
-        """Initialize the editor.
-
-        The Label font should match the value for a font editor.
-        """
         self.font = self.value
         super().init(parent)
 
@@ -76,6 +84,7 @@ class SimpleEditor(ReadOnlyEditor):
     """An Editor which displays a label using the font, click for font dialog.
     """
 
+    #: Button tool connected to the Label component.
     button = Instance(ButtonTool)
 
     def create_component(self):
@@ -106,7 +115,7 @@ class SimpleEditor(ReadOnlyEditor):
         pyface_font = PyfaceFont(
             family=[self.value.face_name],
             weight=str(self.value.weight),
-            style='italic' if self.value.style in kc.italic_styles else 'normal',
+            style='italic' if self.value.style in kc.italic_styles else 'normal',  # noqa: E501
             size=self.value.size,
         )
         pyface_font = get_font(self.window.control, pyface_font)
@@ -114,7 +123,7 @@ class SimpleEditor(ReadOnlyEditor):
             font = Font(
                 face_name=pyface_font.family[0],
                 weight=pyface_font.weight_,
-                style=kc.ITALIC if pyface_font.style == 'italic' else kc.NORMAL,
+                style=kc.ITALIC if pyface_font.style == 'italic' else kc.NORMAL,  # noqa: E501
                 size=int(pyface_font.size),
             )
             self.update_object(font)

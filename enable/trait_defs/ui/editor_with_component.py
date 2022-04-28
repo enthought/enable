@@ -8,19 +8,17 @@
 #
 # Thanks for using Enthought open source!
 
-from traits.api import Bool, Instance, Str, observe
-from traitsui.api import BasicEditorFactory, Editor as BaseEditor, toolkit_object
+from traits.api import Instance, observe
+from traitsui.api import toolkit_object
 
 from enable.component import Component
+from enable.enable_traits import font_trait
 from enable.label import Label
 from enable.window import Window
-from enable.enable_traits import font_trait
 
 
+#: The toolkit's Editor base class
 Editor = toolkit_object("editor:Editor")
-if not issubclass(Editor, BaseEditor):
-    # if the toolkit is "null" make these at least instantiatable
-    Editor = object
 
 
 class EditorWithComponent(Editor):

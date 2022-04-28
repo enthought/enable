@@ -9,7 +9,9 @@
 # Thanks for using Enthought open source!
 """ API for enable.trait_defs subpackage.
 
+- :attr:`~.KivaFont`
 - :attr:`~.RGBAColor`
 """
 
+from .kiva_font_trait import KivaFont
 from .rgba_color_trait import RGBAColor

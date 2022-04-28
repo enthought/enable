@@ -69,7 +69,8 @@ class TestKivaFontEditor(UnittestTools, unittest.TestCase):
 
             self.assertIs(editor.value, new_font)
             self.assertIs(component.font, new_font)
-            self.assertEqual(editor.str_value, "24 point Helvetica Bold Italic")
+            self.assertEqual(
+                editor.str_value, "24 point Helvetica Bold Italic")
             self.assertEqual(component.text, "24 point Helvetica Bold Italic")
         finally:
             ui.dispose()
@@ -120,7 +121,8 @@ class TestKivaFontEditor(UnittestTools, unittest.TestCase):
             self.assertIs(editor.value, new_font)
             self.assertIs(editor.font, new_font)
             self.assertIs(component.font, new_font)
-            self.assertEqual(editor.str_value, "24 point Helvetica Bold Italic")
+            self.assertEqual(
+                editor.str_value, "24 point Helvetica Bold Italic")
             self.assertEqual(component.text, "24 point Helvetica Bold Italic")
         finally:
             ui.dispose()
@@ -151,7 +153,8 @@ class TestKivaFontEditor(UnittestTools, unittest.TestCase):
             self.assertIs(editor.value, new_font)
             self.assertIs(editor.font, new_font)
             self.assertIs(component.font, new_font)
-            self.assertEqual(editor.str_value, "24 point Helvetica Bold Italic")
+            self.assertEqual(
+                editor.str_value, "24 point Helvetica Bold Italic")
             self.assertEqual(component.text, "24 point Helvetica Bold Italic")
         finally:
             ui.dispose()

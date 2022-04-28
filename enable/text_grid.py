@@ -18,7 +18,7 @@ from numpy import arange, array, dstack, repeat, newaxis
 from traits.api import (
     Any, Array, Bool, Int, List, Property, Tuple, observe,
 )
-from kiva.trait_defs.api import KivaFont
+from enable.trait_defs.kiva_font_trait import KivaFont
 
 # Relative imports
 from .component import Component

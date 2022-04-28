@@ -280,9 +280,9 @@ The ``KivaFont`` trait and ``set_font``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you're already doing your drawing within an application using traits, you can
-use the :class:`~kiva.trait_defs.kiva_font_trait.KivaFont` trait.
+use the :class:`~enable.trait_defs.kiva_font_trait.KivaFont` trait.
 
-:class:`~kiva.trait_defs.kiva_font_trait.KivaFont` traits are initialized with
+:class:`~enable.trait_defs.kiva_font_trait.KivaFont` traits are initialized with
 a string which describes the font: "Times Italic 18", "Courier Bold 10", etc.
 The *value* of the trait is a :class:`~kiva.fonttools.font.Font` instance which
 can be passed to the :py:meth:`~.AbstractGraphicsContext.set_font` method.
@@ -290,7 +290,7 @@ can be passed to the :py:meth:`~.AbstractGraphicsContext.set_font` method.
 *Supported backends*: all backends
 
 .. note::
-    The :class:`~kiva.trait_defs.kiva_font_trait.KivaFont` parser is very
+    The :class:`~enable.trait_defs.kiva_font_trait.KivaFont` parser is very
     simplistic and special-cases some words.  For example "roman" means a
     generic serif-style font family, so for example a face name of "Times New
     Roman" will not resolve as expected.  In these cases, use a

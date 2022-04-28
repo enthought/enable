@@ -14,62 +14,157 @@ import copy
 import warnings
 
 from kiva.constants import (
-    BOLD, DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN,
-    SCRIPT, SWISS, TELETYPE, WEIGHT_BOLD, WEIGHT_MEDIUM, WEIGHT_NORMAL,
-    bold_styles, italic_styles
+    BOLD, DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN, SCRIPT, SWISS,
+    TELETYPE, WEIGHT_BOLD, WEIGHT_EXTRABOLD, WEIGHT_EXTRAHEAVY,
+    WEIGHT_EXTRALIGHT, WEIGHT_HEAVY, WEIGHT_LIGHT, WEIGHT_MEDIUM,
+    WEIGHT_NORMAL, WEIGHT_SEMIBOLD, WEIGHT_THIN, bold_styles, italic_styles,
 )
 from kiva.fonttools._query import FontQuery
 from kiva.fonttools.font_manager import default_font_manager
 
-# Various maps used by str_to_font
-font_families = {
-    "default": DEFAULT,
-    "decorative": DECORATIVE,
-    "roman": ROMAN,
-    "script": SCRIPT,
-    "swiss": SWISS,
-    "modern": MODERN,
+FAMILIES = {
+    'default': DEFAULT,
+    'cursive': SCRIPT,
+    'decorative': DECORATIVE,
+    'fantasy': DECORATIVE,
+    'modern': MODERN,
+    'monospace': MODERN,
+    'roman': ROMAN,
+    'sans-serif': SWISS,
+    'script': SCRIPT,
+    'serif': ROMAN,
+    'swiss': SWISS,
+    'teletype': TELETYPE,
+    'typewriter': TELETYPE,
 }
-font_styles = {"italic": ITALIC}
-font_weights = {"bold": WEIGHT_BOLD}
-font_noise = {"pt", "point", "family"}
+WEIGHTS = {
+    'thin': WEIGHT_THIN,
+    'extra-light': WEIGHT_EXTRALIGHT,
+    'light': WEIGHT_LIGHT,
+    'regular': WEIGHT_NORMAL,
+    'medium': WEIGHT_MEDIUM,
+    'semi-bold': WEIGHT_SEMIBOLD,
+    'bold': WEIGHT_BOLD,
+    'extra-bold': WEIGHT_EXTRABOLD,
+    'heavy': WEIGHT_HEAVY,
+    'extra-heavy': WEIGHT_EXTRAHEAVY
+}
+STYLES = {
+    'italic': ITALIC,
+    'oblique': ITALIC,
+}
+DECORATIONS = {'underline'}
+NOISE = {'pt', 'point', 'px', 'family'}
 
 
-def str_to_font(fontspec):
+class FontParseError(ValueError):
+    """An exception raised when font parsing fails."""
+    pass
+
+
+def simple_parser(description):
+    """An extremely simple font description parser.
+
+    The parser is simple, and works by splitting the description on whitespace
+    and examining each resulting token for understood terms:
+
+    Size
+        The first numeric term is treated as the font size.
+
+    Weight
+        The following weight terms are accepted: 'thin', 'extra-light',
+        'light', 'regular', 'medium', 'semi-bold', 'bold', 'extra-bold',
+        'heavy', 'extra-heavy'.
+
+    Style
+        The following style terms are accepted: 'italic', 'oblique'.
+
+    Decorations
+        The following decoration term is accepted: 'underline'
+
+    Generic Families
+        The following generic family terms are accepted: 'default', 'cursive',
+        'decorative', 'fantasy', 'modern', 'monospace', 'roman', 'sans-serif',
+        'script', 'serif', 'swiss', 'teletype', 'typewriter'.
+
+    In addition, the parser ignores the terms 'pt', 'point', 'px', and 'family'.
+    Any remaining terms are combined into the typeface name.  There is no
+    expected order to the terms.
+
+    This parser is roughly compatible with the various ad-hoc parsers in
+    TraitsUI and Kiva, allowing for the slight differences between them and
+    adding support for additional options supported by Pyface fonts, such as
+    stretch and variants.
+
+    Parameters
+    ----------
+    description : str
+        The font description to be parsed.
+
+    Returns
+    -------
+    properties : dict
+        Font properties suitable for use in creating a Pyface Font.
+
+    Notes
+    -----
+    This is not a particularly good parser, as it will fail to properly
+    parse something like "10 pt times new roman" or "14 pt computer modern"
+    since they have generic font names as part of the font face name.
+
+    This is derived from Pyface's equivalent simple_parser.  Eventually both
+    will be replaced by better parsers that can parse something closer to a
+    CSS font definition.
+    """
+    face = []
+    family = DEFAULT
+    size = None
+    weight = WEIGHT_NORMAL
+    style = NORMAL
+    underline = False
+    for word in description.split():
+        lower_word = word.casefold()
+        if lower_word in NOISE:
+            continue
+        elif lower_word in FAMILIES:
+            family = FAMILIES[lower_word]
+        elif lower_word in WEIGHTS:
+            weight = WEIGHTS[lower_word]
+        elif lower_word in STYLES:
+            style = STYLES[lower_word]
+        elif lower_word in DECORATIONS:
+            underline = True
+        else:
+            if size is None:
+                try:
+                    size = int(lower_word)
+                    continue
+                except ValueError:
+                    pass
+            face.append(word)
+
+    face_name = " ".join(face)
+    if size is None:
+        size = 10
+
+    return {
+        'face_name': face_name,
+        'size': size,
+        'family': family,
+        'weight': weight,
+        'style': style,
+        'underline': underline,
+    }
+
+
+def str_to_font(fontspec, parser=simple_parser):
     """
     Converts a string specification of a font into a Font instance.
     string specifications are of the form: "modern 12", "9 roman italic",
     and so on.
     """
-    point_size = 10
-    family = DEFAULT
-    style = NORMAL
-    weight = WEIGHT_NORMAL
-    underline = 0
-    facename = []
-    for word in fontspec.split():
-        lword = word.lower()
-        if lword in font_families:
-            family = font_families[lword]
-        elif lword in font_styles:
-            style = font_styles[lword]
-        elif lword in font_weights:
-            weight = font_weights[lword]
-        elif lword == "underline":
-            underline = 1
-        elif lword not in font_noise:
-            try:
-                point_size = int(lword)
-            except Exception:
-                facename.append(word)
-    return Font(
-        size=point_size,
-        family=family,
-        weight=weight,
-        style=style,
-        underline=underline,
-        face_name=" ".join(facename),
-    )
+    font_properties = parser(fontspec)
+    return Font(**font_properties)
 
 
 class Font(object):
@@ -98,21 +193,34 @@ class Font(object):
     def __init__(self, face_name="", size=12, family=SWISS,
                  weight=WEIGHT_NORMAL, style=NORMAL, underline=0,
                  encoding=DEFAULT):
-        if (not isinstance(face_name, str)
-                or not isinstance(size, int)
-                or not isinstance(family, int)
-                or not isinstance(weight, int)
-                or not isinstance(style, int)
-                or not isinstance(underline, int)
-                or not isinstance(encoding, int)):
-            raise RuntimeError("Bad value in Font() constructor.")
+        if not isinstance(face_name, str):
+            raise RuntimeError(
+                f"Expected face name to be a str, got {face_name!r}")
+        if not isinstance(size, int):
+            raise RuntimeError(
+                f"Expected size to be an int, got {size!r}")
+        if not isinstance(family, int):
+            raise RuntimeError(
+                f"Expected family to be an int, got {family!r}")
+        if not isinstance(weight, int):
+            raise RuntimeError(
+                f"Expected weight to be an int, got {weight!r}")
+        if not isinstance(style, int):
+            raise RuntimeError(
+                f"Expected style to be an int, got {style!r}")
+        if not isinstance(underline, int):
+            raise RuntimeError(
+                f"Expected underline to be a int, got {underline!r}")
+        if not isinstance(encoding, int):
+            raise RuntimeError(
+                f"Expected encoding to be an int, got {encoding!r}")
 
         self.face_name = face_name
         self.size = size
         self.family = family
         self.weight = weight
         self.style = style
-        self.underline = underline
+        self.underline = bool(underline)
         self.encoding = encoding
 
         # correct the style and weight if needed (can be removed in Enable 7)

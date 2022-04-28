@@ -9,18 +9,23 @@
 # Thanks for using Enthought open source!
 """ Tests for kiva.fonttools.font
 """
+from itertools import chain, combinations
 import os
 import unittest
 
-from kiva.api import (
-    BOLD, BOLD_ITALIC, Font, ITALIC, MODERN, NORMAL, ROMAN, WEIGHT_BOLD,
-    WEIGHT_LIGHT
+from kiva.constants import (
+    BOLD, BOLD_ITALIC, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN, WEIGHT_BOLD,
+    WEIGHT_LIGHT, WEIGHT_NORMAL, SWISS,
 )
-from kiva.fonttools import str_to_font
 from kiva.fonttools.tests._testing import patch_global_font_manager
+from kiva.fonttools.font import (
+    DECORATIONS, FAMILIES, NOISE, STYLES, WEIGHTS, Font, str_to_font,
+    simple_parser,
+)
 
 
 class TestFont(unittest.TestCase):
+
     def setUp(self):
         # Invalidate the global font manager cache to avoid test interaction
         # as well as catching erroneous assumption on an existing cache.
@@ -86,6 +91,18 @@ class TestFont(unittest.TestCase):
             "Times",
             family=ROMAN,
             weight=WEIGHT_BOLD,
+            style=ITALIC,
+            size=72,
+            underline=1,
+        )
+        self.assertEqual(from_ctor, from_str)
+
+        # Using extra font weights
+        from_str = str_to_font("Times roman light italic underline 72")
+        from_ctor = Font(
+            "Times",
+            family=ROMAN,
+            weight=WEIGHT_LIGHT,
             style=ITALIC,
             size=72,
             underline=1,
@@ -175,3 +192,136 @@ class TestFont(unittest.TestCase):
             query = font._make_font_query()
         self.assertEqual(query.get_weight(), WEIGHT_LIGHT)
         self.assertEqual(query.get_style(), "italic")
+
+
+class TestSimpleParser(unittest.TestCase):
+
+    def test_empty(self):
+        properties = simple_parser("")
+        self.assertEqual(
+            properties,
+            {
+                'face_name': "",
+                'family': DEFAULT,
+                'size': 10,
+                'weight': WEIGHT_NORMAL,
+                'style': NORMAL,
+                'underline': False,
+            },
+        )
+
+    def test_typical(self):
+        properties = simple_parser(
+            "10 pt bold italic underline Helvetica sans-serif")
+        self.assertEqual(
+            properties,
+            {
+                'face_name': "Helvetica",
+                'family': SWISS,
+                'size': 10,
+                'weight': WEIGHT_BOLD,
+                'style': ITALIC,
+                'underline': True,
+            },
+        )
+
+    def test_noise(self):
+        for noise in NOISE:
+            with self.subTest(noise=noise):
+                properties = simple_parser(noise)
+                self.assertEqual(
+                    properties,
+                    {
+                        'face_name': "",
+                        'family': DEFAULT,
+                        'size': 10,
+                        'weight': WEIGHT_NORMAL,
+                        'style': NORMAL,
+                        'underline': False,
+                    },
+                )
+
+    def test_generic_families(self):
+        for family, constant in FAMILIES.items():
+            with self.subTest(family=family):
+                properties = simple_parser(family)
+                self.assertEqual(
+                    properties,
+                    {
+                        'face_name': "",
+                        'family': constant,
+                        'size': 10,
+                        'weight': WEIGHT_NORMAL,
+                        'style': NORMAL,
+                        'underline': False,
+                    },
+                )
+
+    def test_size(self):
+        for size in [12, 24]:
+            with self.subTest(size=size):
+                properties = simple_parser(str(size))
+                self.assertEqual(
+                    properties,
+                    {
+                        'face_name': "",
+                        'family': DEFAULT,
+                        'size': size,
+                        'weight': WEIGHT_NORMAL,
+                        'style': NORMAL,
+                        'underline': False,
+                    },
+                )
+
+    def test_weight(self):
+        for weight, constant in WEIGHTS.items():
+            with self.subTest(weight=weight):
+                properties = simple_parser(weight)
+                self.assertEqual(
+                    properties,
+                    {
+                        'face_name': "",
+                        'family': DEFAULT,
+                        'size': 10,
+                        'weight': constant,
+                        'style': NORMAL,
+                        'underline': False,
+                    },
+                )
+
+    def test_style(self):
+        for style, constant in STYLES.items():
+            with self.subTest(style=style):
+                properties = simple_parser(style)
+                self.assertEqual(
+                    properties,
+                    {
+                        'face_name': "",
+                        'family': DEFAULT,
+                        'size': 10,
+                        'weight': WEIGHT_NORMAL,
+                        'style': constant,
+                        'underline': False,
+                    },
+                )
+
+    def test_decorations(self):
+        # get powerset iterator of DECORATIONS
+        all_decorations = chain.from_iterable(
+            combinations(DECORATIONS, n)
+            for n in range(len(DECORATIONS) + 1)
+        )
+        for decorations in all_decorations:
+            with self.subTest(decorations=decorations):
+                properties = simple_parser(" ".join(decorations))
+                self.assertEqual(
+                    properties,
+                    {
+                        'face_name': "",
+                        'family': DEFAULT,
+                        'size': 10,
+                        'weight': WEIGHT_NORMAL,
+                        'style': NORMAL,
+                        'underline': 'underline' in decorations,
+                    },
+                )

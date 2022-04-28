@@ -7,4 +7,12 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 # Thanks for using Enthought open source!
+
+from warnings import warn
+
 from .kiva_font_trait import KivaFont
+
+warn(
+    "KivaFont should be imported from enable.trait_defs.api",
+    DeprecationWarning,
+)
