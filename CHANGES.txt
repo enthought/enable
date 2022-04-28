@@ -52,7 +52,7 @@ Build and Continuous Integration
 * CI is now run on Python 3.8 and PySide 6 (#927)
 * Replace use of Hypothesis by unittest subTest (#912)
 * Use Ubuntu 18.04 for CI (#889)
-* Some tests were not being run in CI (#929, #937)
+* Some tests were not being run in CI (#929, #938)
 
 Enable 5.2.1
 ============
