@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>traitsui.qt4.editor &mdash; enable 5.4.0.dev1 documentation</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/spc-extend.css">
+    <link rel="stylesheet" href="../../../_static/enthought.css" type="text/css" >
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" >
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '5.4.0.dev1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        LINK_SUFFIX: '.html',
+        SOURCELINK_SUFFIX: '.txt',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../../_static/js/wrap_on_dot.js"></script>
+    <link rel="shortcut icon" href="../../../_static/img/favicon.png">
+    <link rel="index" title="Index" href="../../../genindex.html" >
+    <link rel="search" title="Search" href="../../../search.html" >
+    <link rel="top" title="enable 5.4.0.dev1 documentation" href="../../../index.html" >
+    <link rel="up" title="Module code" href="../../index.html" > 
+  </head>
+  <body>
+  <div class="container">
+    <div class="header">
+    </div>
+  </div>
+
+    <div class="container">
+      <div class="main">
+        
+	<div class="row-fluid">
+	  <div class="span12">
+	    <div class="spc-navbar">
+              
+    <ul class="nav nav-pills pull-left">
+	
+        <li class="active"><a href="../../../index.html">enable 5.4.0.dev1 documentation</a></li>
+	
+          <li class="active"><a href="../../index.html" accesskey="U">Module code</a></li> 
+    </ul>
+              
+              
+    <ul class="nav nav-pills pull-right">
+      <li class="active">
+        <a href="../../../genindex.html" title="General Index"
+           accesskey="I">index</a>
+      </li>
+      <li class="active">
+        <a href="../../../py-modindex.html" title="Python Module Index"
+           >modules</a>
+      </li>
+    </ul>
+              
+	    </div>
+	  </div>
+	</div>
+        
+
+	<div class="row-fluid">
+          <div class="span9">
+            
+        <div class="bodywrapper">
+          <div class="body" id="spc-section-body" role="main">
+            
+  <h1>Source code for traitsui.qt4.editor</h1><div class="highlight"><pre>
+<span></span><span class="c1"># (C) Copyright 2008-2022 Enthought, Inc., Austin, TX</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD</span>
+<span class="c1"># license included in LICENSE.txt and may be redistributed only under</span>
+<span class="c1"># the conditions described in the aforementioned license. The license</span>
+<span class="c1"># is also available online at http://www.enthought.com/licenses/BSD.txt</span>
+<span class="c1">#</span>
+<span class="c1"># Thanks for using Enthought open source!</span>
+
+<span class="c1"># ------------------------------------------------------------------------------</span>
+<span class="c1"># Copyright (c) 2007, Riverbank Computing Limited</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This software is provided without warranty under the terms of the BSD license.</span>
+<span class="c1"># However, when used with the GPL version of PyQt the additional terms</span>
+<span class="c1"># described in the PyQt GPL exception also apply</span>
+
+<span class="c1">#</span>
+<span class="c1"># Author: Riverbank Computing Limited</span>
+<span class="c1"># ------------------------------------------------------------------------------</span>
+
+<span class="sd">&quot;&quot;&quot; Defines the base class for PyQt editors.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">pyface.qt</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span>
+
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">Editor</span> <span class="k">as</span> <span class="n">UIEditor</span>
+
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">OKColor</span><span class="p">,</span> <span class="n">ErrorColor</span>
+
+
+<div class="viewcode-block" id="Editor"><a class="viewcode-back" href="../../../api/enable.trait_defs.ui.editor_with_component.html#enable.trait_defs.ui.editor_with_component.Editor">[docs]</a><span class="k">class</span> <span class="nc">Editor</span><span class="p">(</span><span class="n">UIEditor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for PyQt editors for Traits-based UIs.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Editor.clear_layout"><a class="viewcode-back" href="../../../api/enable.trait_defs.ui.editor_with_component.html#enable.trait_defs.ui.editor_with_component.Editor.clear_layout">[docs]</a>    <span class="k">def</span> <span class="nf">clear_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delete the contents of a control&#39;s layout.&quot;&quot;&quot;</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">itm</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">takeAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">itm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="n">itm</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_control_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handles the **control** trait being set.&quot;&quot;&quot;</span>
+        <span class="c1"># FIXME: Check we actually make use of this.</span>
+        <span class="k">if</span> <span class="n">control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">control</span><span class="o">.</span><span class="n">_editor</span> <span class="o">=</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="Editor.set_focus"><a class="viewcode-back" href="../../../api/enable.trait_defs.ui.editor_with_component.html#enable.trait_defs.ui.editor_with_component.Editor.set_focus">[docs]</a>    <span class="k">def</span> <span class="nf">set_focus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Assigns focus to the editor&#39;s underlying toolkit widget.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">setFocus</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Editor.update_editor"><a class="viewcode-back" href="../../../api/enable.trait_defs.ui.editor_with_component.html#enable.trait_defs.ui.editor_with_component.Editor.update_editor">[docs]</a>    <span class="k">def</span> <span class="nf">update_editor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Updates the editor when the object trait changes externally to the</span>
+<span class="sd">        editor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">str_value</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">!=</span> <span class="n">new_value</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Editor.get_control_widget"><a class="viewcode-back" href="../../../api/enable.trait_defs.ui.editor_with_component.html#enable.trait_defs.ui.editor_with_component.Editor.get_control_widget">[docs]</a>    <span class="k">def</span> <span class="nf">get_control_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the concrete widget for the control.</span>
+
+<span class="sd">        Some editors may use a QLayout  instead of a Qwidget, which may not be</span>
+<span class="sd">        suitable for certain usages (eg. for parenting other widgets).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">control</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLayout</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">control</span></div>
+
+<div class="viewcode-block" id="Editor.set_tooltip_text"><a class="viewcode-back" href="../../../api/enable.trait_defs.ui.editor_with_component.html#enable.trait_defs.ui.editor_with_component.Editor.set_tooltip_text">[docs]</a>    <span class="k">def</span> <span class="nf">set_tooltip_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the tooltip for a specified control.&quot;&quot;&quot;</span>
+        <span class="n">control</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_enabled_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handles the **enabled** state of the editor being changed.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_enabled_changed_helper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">control</span><span class="p">,</span> <span class="n">enabled</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_control</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_enabled_changed_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">,</span> <span class="n">enabled</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A helper that allows the control to be a layout and recursively</span>
+<span class="sd">        manages all its widgets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
+            <span class="n">control</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
+                <span class="n">itm</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">itemAt</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_enabled_changed_helper</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">itm</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span> <span class="ow">or</span> <span class="n">itm</span><span class="o">.</span><span class="n">layout</span><span class="p">()),</span> <span class="n">enabled</span>
+                <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_visible_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">visible</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handles the **visible** state of the editor being changed.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_control</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">control</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># We are being called after the editor has already gone away.</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_visible_changed_helper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">control</span><span class="p">,</span> <span class="n">visible</span><span class="p">)</span>
+
+        <span class="n">page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">page</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="n">page</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="n">page</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="n">page</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="n">page</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span>
+        <span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="c1"># The TabWidget (representing the notebook) has a StackedWidget inside it,</span>
+        <span class="c1"># which then contains our parent.</span>
+        <span class="c1"># Even after the tab is removed, the parent-child relationship between</span>
+        <span class="c1"># our container widget (representing the page) and the enclosing TabWidget,</span>
+        <span class="c1"># so the following reference is still valid.</span>
+        <span class="n">stack_widget</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+        <span class="n">notebook</span> <span class="o">=</span> <span class="n">stack_widget</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+        <span class="n">is_tabbed_group</span> <span class="o">=</span> <span class="n">notebook</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;traits_tabbed_group&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">notebook</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">notebook</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QTabWidget</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_tabbed_group</span>
+        <span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">visible</span><span class="p">:</span>
+            <span class="c1"># Store the page number and name on the parent</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">notebook</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="n">notebook</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">==</span> <span class="n">page</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tab_index</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_tab_text</span> <span class="o">=</span> <span class="n">notebook</span><span class="o">.</span><span class="n">tabText</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="n">page</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">notebook</span><span class="o">.</span><span class="n">removeTab</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Check to see if our parent has previously-stored tab</span>
+            <span class="c1"># index and text attributes</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_tab_index&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_tab_text&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="p">):</span>
+                <span class="n">page</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">notebook</span><span class="o">.</span><span class="n">insertTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tab_index</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_text</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_visible_changed_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">,</span> <span class="n">visible</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A helper that allows the control to be a layout and recursively</span>
+<span class="sd">        manages all its widgets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
+            <span class="n">control</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">control</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
+                <span class="n">itm</span> <span class="o">=</span> <span class="n">control</span><span class="o">.</span><span class="n">itemAt</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_visible_changed_helper</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">itm</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span> <span class="ow">or</span> <span class="n">itm</span><span class="o">.</span><span class="n">layout</span><span class="p">()),</span> <span class="n">visible</span>
+                <span class="p">)</span>
+
+<div class="viewcode-block" id="Editor.get_error_control"><a class="viewcode-back" href="../../../api/enable.trait_defs.ui.editor_with_component.html#enable.trait_defs.ui.editor_with_component.Editor.get_error_control">[docs]</a>    <span class="k">def</span> <span class="nf">get_error_control</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the editor&#39;s control for indicating error status.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">control</span></div>
+
+<div class="viewcode-block" id="Editor.in_error_state"><a class="viewcode-back" href="../../../api/enable.trait_defs.ui.editor_with_component.html#enable.trait_defs.ui.editor_with_component.Editor.in_error_state">[docs]</a>    <span class="k">def</span> <span class="nf">in_error_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns whether or not the editor is in an error state.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Editor.set_error_state"><a class="viewcode-back" href="../../../api/enable.trait_defs.ui.editor_with_component.html#enable.trait_defs.ui.editor_with_component.Editor.set_error_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_error_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the editor&#39;s current error state.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">invalid</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">state</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_error_state</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">control</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">control</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_error_control</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">control</span> <span class="o">=</span> <span class="p">[</span><span class="n">control</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">control</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">pal</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPalette</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">palette</span><span class="p">())</span>
+
+            <span class="k">if</span> <span class="n">state</span><span class="p">:</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">ErrorColor</span>
+                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;_ok_color&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">_ok_color</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span>
+                        <span class="n">pal</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Base</span><span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;_ok_color&quot;</span><span class="p">,</span> <span class="n">OKColor</span><span class="p">)</span>
+
+            <span class="n">pal</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPalette</span><span class="o">.</span><span class="n">ColorRole</span><span class="o">.</span><span class="n">Base</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">setPalette</span><span class="p">(</span><span class="n">pal</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_invalid_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handles the editor&#39;s invalid state changing.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_error_state</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Editor.perform"><a class="viewcode-back" href="../../../api/enable.trait_defs.ui.editor_with_component.html#enable.trait_defs.ui.editor_with_component.Editor.perform">[docs]</a>    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">action_event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Performs the action described by a specified Action object.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">do_undoable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_perform</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_perform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+        <span class="n">method_name</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">action</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menu_context</span><span class="p">[</span><span class="s2">&quot;info&quot;</span><span class="p">]</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menu_context</span><span class="p">[</span><span class="s2">&quot;handler&quot;</span><span class="p">]</span>
+        <span class="nb">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menu_context</span><span class="p">[</span><span class="s2">&quot;object&quot;</span><span class="p">]</span>
+        <span class="n">selection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menu_context</span><span class="p">[</span><span class="s2">&quot;selection&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_menu_context</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">action</span>
+
+        <span class="k">if</span> <span class="n">method_name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">method_name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">method_name</span> <span class="o">+=</span> <span class="s2">&quot;()&quot;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">eval</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="nb">globals</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menu_context</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">raise_to_debug</span>
+
+                <span class="n">raise_to_debug</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="n">method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">method</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">selection</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">action</span><span class="o">.</span><span class="n">on_perform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">action</span><span class="o">.</span><span class="n">on_perform</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">action</span><span class="o">.</span><span class="n">perform</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Editor.eval_when"><a class="viewcode-back" href="../../../api/enable.trait_defs.ui.editor_with_component.html#enable.trait_defs.ui.editor_with_component.Editor.eval_when">[docs]</a>    <span class="k">def</span> <span class="nf">eval_when</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evaluates a condition within a defined context, and sets a</span>
+<span class="sd">        specified object trait based on the result, which is assumed to be a</span>
+<span class="sd">        Boolean.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">condition</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">eval</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="nb">globals</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menu_context</span><span class="p">):</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">raise_to_debug</span>
+
+                <span class="n">raise_to_debug</span><span class="p">()</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Editor.add_to_menu"><a class="viewcode-back" href="../../../api/enable.trait_defs.ui.editor_with_component.html#enable.trait_defs.ui.editor_with_component.Editor.add_to_menu">[docs]</a>    <span class="k">def</span> <span class="nf">add_to_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menu_item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds a menu item to the menu bar being constructed.&quot;&quot;&quot;</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">menu_item</span><span class="o">.</span><span class="n">item</span><span class="o">.</span><span class="n">action</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eval_when</span><span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">enabled_when</span><span class="p">,</span> <span class="n">menu_item</span><span class="p">,</span> <span class="s2">&quot;enabled&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eval_when</span><span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">checked_when</span><span class="p">,</span> <span class="n">menu_item</span><span class="p">,</span> <span class="s2">&quot;checked&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Editor.can_add_to_menu"><a class="viewcode-back" href="../../../api/enable.trait_defs.ui.editor_with_component.html#enable.trait_defs.ui.editor_with_component.Editor.can_add_to_menu">[docs]</a>    <span class="k">def</span> <span class="nf">can_add_to_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns whether the action should be defined in the user interface.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">action</span><span class="o">.</span><span class="n">defined_when</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">eval</span><span class="p">(</span>
+                    <span class="n">action</span><span class="o">.</span><span class="n">defined_when</span><span class="p">,</span> <span class="nb">globals</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menu_context</span>
+                <span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">raise_to_debug</span>
+
+                <span class="n">raise_to_debug</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">action</span><span class="o">.</span><span class="n">visible_when</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">eval</span><span class="p">(</span>
+                    <span class="n">action</span><span class="o">.</span><span class="n">visible_when</span><span class="p">,</span> <span class="nb">globals</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menu_context</span>
+                <span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> <span class="n">raise_to_debug</span>
+
+                <span class="n">raise_to_debug</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+    <span class="c1"># TODO: move this method, it should be part of ui_panel or some other</span>
+    <span class="c1"># place that is responsible for setting up the Qt layout.</span>
+<div class="viewcode-block" id="Editor.set_size_policy"><a class="viewcode-back" href="../../../api/enable.trait_defs.ui.editor_with_component.html#enable.trait_defs.ui.editor_with_component.Editor.set_size_policy">[docs]</a>    <span class="k">def</span> <span class="nf">set_size_policy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">resizable</span><span class="p">,</span> <span class="n">springy</span><span class="p">,</span> <span class="n">stretch</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the size policy of the editor&#39;s controller.</span>
+
+<span class="sd">        Based on the &quot;direction&quot; of the group that contains this editor</span>
+<span class="sd">        (VGroup or HGroup), set the stretch factor and the resizing</span>
+<span class="sd">        policy of the control.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        direction : QtGui.QBoxLayout.Direction</span>
+<span class="sd">            Directionality of the group that contains this editor. Either</span>
+<span class="sd">            QtGui.QBoxLayout.Direction.LeftToRight or QtGui.QBoxLayout.Direction.TopToBottom</span>
+
+<span class="sd">        resizable : bool</span>
+<span class="sd">            True if control should be resizable in the orientation opposite</span>
+<span class="sd">            to the group directionality</span>
+
+<span class="sd">        springy : bool</span>
+<span class="sd">            True if control should be resizable in the orientation equal</span>
+<span class="sd">            to the group directionality</span>
+
+<span class="sd">        stretch : int</span>
+<span class="sd">            Stretch factor used by Qt to distribute the total size to</span>
+<span class="sd">            each component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">policy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">sizePolicy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QBoxLayout</span><span class="o">.</span><span class="n">Direction</span><span class="o">.</span><span class="n">LeftToRight</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">springy</span><span class="p">:</span>
+                <span class="n">policy</span><span class="o">.</span><span class="n">setHorizontalStretch</span><span class="p">(</span><span class="n">stretch</span><span class="p">)</span>
+                <span class="n">policy</span><span class="o">.</span><span class="n">setHorizontalPolicy</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">resizable</span><span class="p">:</span>
+                <span class="n">policy</span><span class="o">.</span><span class="n">setVerticalStretch</span><span class="p">(</span><span class="n">stretch</span><span class="p">)</span>
+                <span class="n">policy</span><span class="o">.</span><span class="n">setVerticalPolicy</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># TopToBottom</span>
+            <span class="k">if</span> <span class="n">springy</span><span class="p">:</span>
+                <span class="n">policy</span><span class="o">.</span><span class="n">setVerticalStretch</span><span class="p">(</span><span class="n">stretch</span><span class="p">)</span>
+                <span class="n">policy</span><span class="o">.</span><span class="n">setVerticalPolicy</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">resizable</span><span class="p">:</span>
+                <span class="n">policy</span><span class="o">.</span><span class="n">setHorizontalStretch</span><span class="p">(</span><span class="n">stretch</span><span class="p">)</span>
+                <span class="n">policy</span><span class="o">.</span><span class="n">setHorizontalPolicy</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">EditorWithList</span><span class="p">(</span><span class="n">Editor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Editor for an object that contains a list.&quot;&quot;&quot;</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1">#  Trait definitions:</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="c1">#: Object containing the list being monitored</span>
+    <span class="n">list_object</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">)</span>
+
+    <span class="c1">#: Name of the monitored trait</span>
+    <span class="n">list_name</span> <span class="o">=</span> <span class="n">Str</span><span class="p">()</span>
+
+    <span class="c1">#: Function used to evaluate the current list object value:</span>
+    <span class="n">list_value</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the object.&quot;&quot;&quot;</span>
+        <span class="n">factory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">list_object</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">list_name</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">list_value</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_extended_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">list_object</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_name</span> <span class="o">=</span> <span class="n">factory</span><span class="p">,</span> <span class="s2">&quot;values&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">list_value</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">factory</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_object</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_list_updated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_name</span><span class="p">,</span> <span class="n">dispatch</span><span class="o">=</span><span class="s2">&quot;ui&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_object</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_list_updated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_name</span> <span class="o">+</span> <span class="s2">&quot;_items&quot;</span><span class="p">,</span> <span class="n">dispatch</span><span class="o">=</span><span class="s2">&quot;ui&quot;</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_list_updated</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Disconnects the listeners set up by the constructor.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_object</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_list_updated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_name</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_object</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_list_updated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_name</span> <span class="o">+</span> <span class="s2">&quot;_items&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_list_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handles the monitored trait being updated.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_updated</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_value</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">list_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handles the monitored list being updated.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+
+<span class="k">class</span> <span class="nc">EditorFromView</span><span class="p">(</span><span class="n">Editor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An editor generated from a View object.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the object.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ui</span> <span class="o">=</span> <span class="n">ui</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_ui</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ui</span><span class="o">.</span><span class="n">history</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">history</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">control</span> <span class="o">=</span> <span class="n">ui</span><span class="o">.</span><span class="n">control</span>
+
+    <span class="k">def</span> <span class="nf">init_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates and returns the traits UI defined by this editor.</span>
+<span class="sd">        (Must be overridden by a subclass).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">update_editor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Updates the editor when the object trait changes externally to the</span>
+<span class="sd">        editor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Normally nothing needs to be done here, since it should all be handled</span>
+        <span class="c1"># by the editor&#39;s internally created traits UI:</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">dispose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Disposes of the editor.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ui</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+          </div>
+      <div class="spc-rightsidebar span3">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/img/e-logo.png" alt="Logo">
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-navbar-bottom">
+      <div class="spc-navbar">
+        
+      </div>
+    </div>
+    <div class="container">
+    <div class="footer">
+    <div class="row-fluid">
+    <ul class="inline pull-left">
+      <li>
+        &copy; Copyright 2005-2022 Enthought
+      </li>
+      <li>
+      Last updated on Apr 28, 2022.
+      </li>
+      <li>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
+      </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+  </body>
+</html>
