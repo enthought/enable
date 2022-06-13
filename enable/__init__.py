@@ -20,6 +20,8 @@ __requires__ = [
 ]
 
 __extras_require__ = {
+    # Dependencies for documentation
+    "docs": ["enthought-sphinx-theme", "sphinx", "sphinx-copybutton"],
     # Dependencies for running enable/kiva's examples
     "examples": ["chaco", "mayavi", "scipy", "kiwisolver", "pyglet"],
     # Dependencies for GL backend support
