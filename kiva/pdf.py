@@ -34,7 +34,7 @@ from reportlab.pdfgen import canvas
 from .arc_conversion import arc_to_tangent_points
 from .basecore2d import GraphicsContextBase
 from .line_state import is_dashed
-import kiva.constants as constants
+from kiva import constants
 import kiva.affine as affine
 from kiva.fonttools.font import Font
 
@@ -741,17 +741,17 @@ class GraphicsContext(GraphicsContextBase):
     def stroke_path(self):
         """
         """
-        self.draw_path(mode=STROKE)
+        self.draw_path(mode=constants.DrawingMode.STROKE)
 
     def fill_path(self):
         """
         """
-        self.draw_path(mode=FILL)
+        self.draw_path(mode=constants.DrawingMode.FILL)
 
     def eof_fill_path(self):
         """
         """
-        self.draw_path(mode=EOF_FILL)
+        self.draw_path(mode=constants.DrawingMode.EOF_FILL)
 
     def stroke_rect(self, rect):
         """

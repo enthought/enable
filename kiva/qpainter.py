@@ -20,7 +20,7 @@ from pyface.qt import QtCore, QtGui
 from .abstract_graphics_context import AbstractGraphicsContext
 from .arc_conversion import arc_to_tangent_points
 from .fonttools import Font
-import kiva.constants as constants
+from kiva import constants
 
 # These are the symbols that a backend has to define.
 __all__ = ["CompiledPath", "Font", "font_metrics_provider", "GraphicsContext"]

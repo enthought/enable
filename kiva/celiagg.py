@@ -18,7 +18,7 @@ import celiagg as agg
 import numpy as np
 
 from kiva.abstract_graphics_context import AbstractGraphicsContext
-import kiva.constants as constants
+from kiva import constants
 from kiva.fonttools import Font
 from kiva.marker_renderer import MarkerRenderer
 

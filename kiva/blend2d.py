@@ -15,7 +15,7 @@ import blend2d
 import numpy as np
 
 from kiva.abstract_graphics_context import AbstractGraphicsContext
-import kiva.constants as constants
+from kiva import constants
 from kiva.fonttools import Font
 
 # These are the symbols that a backend has to define.
