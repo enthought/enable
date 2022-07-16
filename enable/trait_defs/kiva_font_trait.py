@@ -24,19 +24,19 @@ font_attrs = [
 
 #: Mapping from Pyface Font generic family names to corresponding constants.
 pyface_family_to_kiva_family = {
-    'default': kc.DEFAULT,
-    'fantasy': kc.DECORATIVE,
-    'decorative': kc.DECORATIVE,
-    'serif': kc.ROMAN,
-    'roman': kc.ROMAN,
-    'cursive': kc.SCRIPT,
-    'script': kc.SCRIPT,
-    'sans-serif': kc.SWISS,
-    'swiss': kc.SWISS,
-    'monospace': kc.MODERN,
-    'modern': kc.MODERN,
-    'typewriter': kc.TELETYPE,
-    'teletype': kc.TELETYPE,
+    'default': kc.FontFamily.DEFAULT,
+    'fantasy': kc.FontFamily.DECORATIVE,
+    'decorative': kc.FontFamily.DECORATIVE,
+    'serif': kc.FontFamily.ROMAN,
+    'roman': kc.FontFamily.ROMAN,
+    'cursive': kc.FontFamily.SCRIPT,
+    'script': kc.FontFamily.SCRIPT,
+    'sans-serif': kc.FontFamily.SWISS,
+    'swiss': kc.FontFamily.SWISS,
+    'monospace': kc.FontFamily.MODERN,
+    'modern': kc.FontFamily.MODERN,
+    'typewriter': kc.FontFamily.TELETYPE,
+    'teletype': kc.FontFamily.TELETYPE,
 }
 
 
@@ -62,10 +62,10 @@ def pyface_font_to_font(font):
             family = pyface_family_to_kiva_family[face]
             break
     else:
-        family = kc.DEFAULT
+        family = kc.FontFamily.DEFAULT
     size = int(font.size)
     weight = font.weight_
-    style = kc.NORMAL if font.style == 'normal' else kc.ITALIC
+    style = kc.FontStyle.NORMAL if font.style == 'normal' else kc.FontStyle.ITALIC
     underline = 'underline' in font.decorations
     return Font(face_name, size, family, weight, style, underline)
 
