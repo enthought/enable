@@ -154,11 +154,11 @@ join_style[constants.LineJoin.BEVEL] = kCGLineJoinBevel
 join_style[constants.LineJoin.MITER] = kCGLineJoinMiter
 
 draw_modes = {}
-draw_modes[constants.DrawingMode.FILL]            = kCGPathFill
-draw_modes[constants.DrawingMode.EOF_FILL]        = kCGPathEOFill
-draw_modes[constants.DrawingMode.STROKE]          = kCGPathStroke
-draw_modes[constants.DrawingMode.FILL_STROKE]     = kCGPathFillStroke
-draw_modes[constants.DrawingMode.EOF_FILL_STROKE] = kCGPathEOFillStroke
+draw_modes[constants.DrawMode.FILL]            = kCGPathFill
+draw_modes[constants.DrawMode.EOF_FILL]        = kCGPathEOFill
+draw_modes[constants.DrawMode.STROKE]          = kCGPathStroke
+draw_modes[constants.DrawMode.FILL_STROKE]     = kCGPathFillStroke
+draw_modes[constants.DrawMode.EOF_FILL_STROKE] = kCGPathEOFillStroke
 
 text_modes = {}
 text_modes[constants.TextMode.FILL]             = kCGTextFill
@@ -1021,7 +1021,7 @@ cdef class CGContext:
         """
         CGContextClearRect(self.context, CGRectMakeFromPython(rect))
 
-    def draw_path(self, object mode=constants.DrawingMode.FILL_STROKE):
+    def draw_path(self, object mode=constants.DrawMode.FILL_STROKE):
         """ Walk through all the drawing subpaths and draw each element.
 
             Each subpath is drawn separately.
@@ -1030,7 +1030,7 @@ cdef class CGContext:
         cg_mode = draw_modes[mode]
         CGContextDrawPath(self.context, cg_mode)
 
-    def draw_rect(self, rect, object mode=constants.DrawingMode.FILL_STROKE):
+    def draw_rect(self, rect, object mode=constants.DrawMode.FILL_STROKE):
         """ Draw a rectangle with the given mode.
         """
 
@@ -1048,7 +1048,7 @@ cdef class CGContext:
         return CGMutablePath()
 
     def draw_path_at_points(self, points, CGMutablePath marker not None,
-        object mode=constants.DrawingMode.FILL_STROKE):
+        object mode=constants.DrawMode.FILL_STROKE):
 
         cdef int i
         cdef int n
