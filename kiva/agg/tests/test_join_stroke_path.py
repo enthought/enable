@@ -34,7 +34,7 @@ import unittest
 from numpy import array
 
 from kiva.agg import GraphicsContextArray
-import kiva
+from kiva import constants
 
 from .test_utils import Utils
 
@@ -71,8 +71,8 @@ class JoinStrokePathTestCase(unittest.TestCase, Utils):
         """
         antialias = False
         width = 3
-        line_cap = kiva.CAP_BUTT
-        line_join = kiva.JOIN_MITER
+        line_cap = constants.LineCap.BUTT
+        line_join = constants.LineJoin.MITER
 
         gc = self.helper(antialias, width, line_cap, line_join)
 
@@ -89,8 +89,8 @@ class JoinStrokePathTestCase(unittest.TestCase, Utils):
         """
         antialias = False
         width = 3
-        line_cap = kiva.CAP_BUTT
-        line_join = kiva.JOIN_BEVEL
+        line_cap = constants.LineCap.BUTT
+        line_join = constants.LineJoin.BEVEL
 
         gc = self.helper(antialias, width, line_cap, line_join)
         actual = gc.bmp_array[:, :, 0]
@@ -110,8 +110,8 @@ class JoinStrokePathTestCase(unittest.TestCase, Utils):
         """
         antialias = False
         width = 3
-        line_cap = kiva.CAP_BUTT
-        line_join = kiva.JOIN_ROUND
+        line_cap = constants.LineCap.BUTT
+        line_join = constants.LineJoin.ROUND
 
         gc = self.helper(antialias, width, line_cap, line_join)
         actual = gc.bmp_array[:, :, 0]
@@ -123,8 +123,8 @@ class JoinStrokePathTestCase(unittest.TestCase, Utils):
         """
         antialias = True
         width = 3
-        line_cap = kiva.CAP_BUTT
-        line_join = kiva.JOIN_MITER
+        line_cap = constants.LineCap.BUTT
+        line_join = constants.LineJoin.MITER
 
         gc = self.helper(antialias, width, line_cap, line_join)
 
@@ -148,8 +148,8 @@ class JoinStrokePathTestCase(unittest.TestCase, Utils):
     def test_antialias_bevel(self):
         antialias = True
         width = 3
-        line_cap = kiva.CAP_BUTT
-        line_join = kiva.JOIN_BEVEL
+        line_cap = constants.LineCap.BUTT
+        line_join = constants.LineJoin.BEVEL
 
         gc = self.helper(antialias, width, line_cap, line_join)
         actual = gc.bmp_array[:, :, 0]
@@ -174,8 +174,8 @@ class JoinStrokePathTestCase(unittest.TestCase, Utils):
         """
         antialias = True
         width = 3
-        line_cap = kiva.CAP_BUTT
-        line_join = kiva.JOIN_ROUND
+        line_cap = constants.LineCap.BUTT
+        line_join = constants.LineJoin.ROUND
 
         gc = self.helper(antialias, width, line_cap, line_join)
         actual = gc.bmp_array[:, :, 0]
