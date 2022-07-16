@@ -15,7 +15,7 @@ from traitsui.api import Item, View
 from enable.api import ConstraintsContainer, Component, ComponentEditor
 from enable.examples._example_support import demo_main, DemoFrame
 from enable.primitives.image import Image
-from kiva import constants
+from kiva.constants import DrawingMode
 from kiva.image import GraphicsContext
 
 
@@ -44,7 +44,7 @@ def stars():
     gc.translate_ctm(0, -100)
     add_star(gc)
     gc.set_fill_color((0.0, 0.0, 1.0))
-    gc.draw_path(constants.EOF_FILL_STROKE)
+    gc.draw_path(DrawingMode.EOF_FILL_STROKE)
     with tempfile.NamedTemporaryFile(suffix=".bmp") as fid:
         gc.save(fid.name)
         image = Image.from_file(

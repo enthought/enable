@@ -14,7 +14,7 @@ from numpy import array, pi
 from enable.api import ConstraintsContainer
 from enable.examples._example_support import DemoFrame, demo_main
 from enable.primitives.image import Image
-from kiva import constants
+from kiva.constants import DrawingMode
 from kiva.image import GraphicsContext
 
 
@@ -31,7 +31,7 @@ def draw(gc):
         gc.linear_gradient(
             50, 25, 150, 125, array([starting_color, ending_color]), "pad"
         )
-        gc.draw_path(constants.FILL)
+        gc.draw_path(DrawingMode.FILL)
 
     # vertical top to bottom
     with gc:
@@ -39,14 +39,14 @@ def draw(gc):
         gc.linear_gradient(
             0, 200, 0, 150, array([starting_color, ending_color]), "pad"
         )
-        gc.draw_path(constants.FILL)
+        gc.draw_path(DrawingMode.FILL)
     # horizontal left to right
     with gc:
         gc.rect(50, 200, 150, 50)
         gc.linear_gradient(
             50, 0, 150, 0, array([starting_color, ending_color]), "pad"
         )
-        gc.draw_path(constants.FILL)
+        gc.draw_path(DrawingMode.FILL)
 
     # vertical bottom to top
     with gc:
@@ -54,14 +54,14 @@ def draw(gc):
         gc.linear_gradient(
             0, 275, 0, 325, array([starting_color, ending_color]), "pad"
         )
-        gc.draw_path(constants.FILL)
+        gc.draw_path(DrawingMode.FILL)
     # horizontal right to left
     with gc:
         gc.rect(50, 325, 150, 50)
         gc.linear_gradient(
             200, 0, 100, 0, array([starting_color, ending_color]), "pad"
         )
-        gc.draw_path(constants.FILL)
+        gc.draw_path(DrawingMode.FILL)
 
     # radial
     with gc:
@@ -69,7 +69,7 @@ def draw(gc):
         gc.radial_gradient(
             325, 75, 50, 325, 75, array([starting_color, ending_color]), "pad"
         )
-        gc.draw_path(constants.FILL)
+        gc.draw_path(DrawingMode.FILL)
 
     # radial with focal point in upper left
     with gc:
@@ -79,7 +79,7 @@ def draw(gc):
             array([starting_color, ending_color]),
             "pad",
         )
-        gc.draw_path(constants.FILL)
+        gc.draw_path(DrawingMode.FILL)
 
     # radial with focal point in bottom right
     with gc:
@@ -89,7 +89,7 @@ def draw(gc):
             array([starting_color, ending_color]),
             "pad",
         )
-        gc.draw_path(constants.FILL)
+        gc.draw_path(DrawingMode.FILL)
 
 
 def gradient():

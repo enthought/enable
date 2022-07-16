@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 from abc import ABCMeta, abstractmethod
 
-from .constants import FILL_STROKE, SQUARE_MARKER
+from .constants import DrawingMode, Marker, TextMode
 
 
 class AbstractGraphicsContext(object, metaclass=ABCMeta):
@@ -426,18 +426,12 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def draw_path(self, draw_mode=FILL_STROKE):
+    def draw_path(self, draw_mode: DrawingMode = DrawingMode.FILL_STROKE):
         """ Draw the current path with the specified mode
-
-        Parameters
-        ----------
-            draw_mode
-                One of ``FILL``, ``EOF_FILL``, ``STROKE``, ``FILL_STROKE``,
-                or ``EOF_FILL_STROKE``. Each is defined in :py:mod:`kiva.api`.
         """
 
     @abstractmethod
-    def draw_rect(self, rect, draw_mode=FILL_STROKE):
+    def draw_rect(self, rect, draw_mode: DrawingMode = DrawingMode.FILL_STROKE):
         """ Draw a rectangle with the specified mode
 
         Parameters
@@ -468,16 +462,8 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
     # -------------------------------------------
 
     @abstractmethod
-    def set_text_drawing_mode(self, draw_mode):
+    def set_text_drawing_mode(self, draw_mode: TextMode):
         """ Set the drawing mode to use with text
-
-        Parameters
-        ----------
-            draw_mode
-                Allowed values are ``TEXT_FILL``, ``TEXT_STROKE``,
-                ``TEXT_FILL_STROKE``, ``TEXT_INVISIBLE``, ``TEXT_FILL_CLIP``,
-                ``TEXT_STROKE_CLIP``, ``TEXT_FILL_STROKE_CLIP``, or
-                ``TEXT_CLIP``. Each is defined in :py:mod:`kiva.api`.
         """
 
     @abstractmethod
@@ -645,7 +631,7 @@ class EnhancedAbstractGraphicsContext(AbstractGraphicsContext):
     """ ABC for graphics contexts which provide additional methods """
 
     @abstractmethod
-    def draw_marker_at_points(self, point_array, size, marker=SQUARE_MARKER):
+    def draw_marker_at_points(self, point_array, size, marker: Marker = Marker.SQUARE):
         """ Draw a marker at a collection of points
 
         Parameters
@@ -669,7 +655,7 @@ class EnhancedAbstractGraphicsContext(AbstractGraphicsContext):
 
     @abstractmethod
     def draw_path_at_points(self, point_array, compiled_path,
-                            draw_mode=FILL_STROKE):
+                            draw_mode: DrawingMode = DrawingMode.FILL_STROKE):
         """ Draw a compiled path at a collection of points
 
         The starting point of the paths are specified by the points,

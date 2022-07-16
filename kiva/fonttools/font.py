@@ -14,44 +14,41 @@ import copy
 import warnings
 
 from kiva.constants import (
-    BOLD, DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN, SCRIPT, SWISS,
-    TELETYPE, WEIGHT_BOLD, WEIGHT_EXTRABOLD, WEIGHT_EXTRAHEAVY,
-    WEIGHT_EXTRALIGHT, WEIGHT_HEAVY, WEIGHT_LIGHT, WEIGHT_MEDIUM,
-    WEIGHT_NORMAL, WEIGHT_SEMIBOLD, WEIGHT_THIN, bold_styles, italic_styles,
+    FontFamily, FontWeight, FontStyle, bold_styles, italic_styles,
 )
 from kiva.fonttools._query import FontQuery
 from kiva.fonttools.font_manager import default_font_manager
 
 FAMILIES = {
-    'default': DEFAULT,
-    'cursive': SCRIPT,
-    'decorative': DECORATIVE,
-    'fantasy': DECORATIVE,
-    'modern': MODERN,
-    'monospace': MODERN,
-    'roman': ROMAN,
-    'sans-serif': SWISS,
-    'script': SCRIPT,
-    'serif': ROMAN,
-    'swiss': SWISS,
-    'teletype': TELETYPE,
-    'typewriter': TELETYPE,
+    'default': FontFamily.DEFAULT,
+    'cursive': FontFamily.SCRIPT,
+    'decorative': FontFamily.DECORATIVE,
+    'fantasy': FontFamily.DECORATIVE,
+    'modern': FontFamily.MODERN,
+    'monospace': FontFamily.MODERN,
+    'roman': FontFamily.ROMAN,
+    'sans-serif': FontFamily.SWISS,
+    'script': FontFamily.SCRIPT,
+    'serif': FontFamily.ROMAN,
+    'swiss': FontFamily.SWISS,
+    'teletype': FontFamily.TELETYPE,
+    'typewriter': FontFamily.TELETYPE,
 }
 WEIGHTS = {
-    'thin': WEIGHT_THIN,
-    'extra-light': WEIGHT_EXTRALIGHT,
-    'light': WEIGHT_LIGHT,
-    'regular': WEIGHT_NORMAL,
-    'medium': WEIGHT_MEDIUM,
-    'semi-bold': WEIGHT_SEMIBOLD,
-    'bold': WEIGHT_BOLD,
-    'extra-bold': WEIGHT_EXTRABOLD,
-    'heavy': WEIGHT_HEAVY,
-    'extra-heavy': WEIGHT_EXTRAHEAVY
+    'thin': FontWeight.THIN,
+    'extra-light': FontWeight.EXTRALIGHT,
+    'light': FontWeight.LIGHT,
+    'regular': FontWeight.NORMAL,
+    'medium': FontWeight.MEDIUM,
+    'semi-bold': FontWeight.SEMIBOLD,
+    'bold': FontWeight.BOLD,
+    'extra-bold': FontWeight.EXTRABOLD,
+    'heavy': FontWeight.HEAVY,
+    'extra-heavy': FontWeight.EXTRAHEAVY
 }
 STYLES = {
-    'italic': ITALIC,
-    'oblique': ITALIC,
+    'italic': FontStyle.ITALIC,
+    'oblique': FontStyle.ITALIC,
 }
 DECORATIONS = {'underline'}
 NOISE = {'pt', 'point', 'px', 'family'}
@@ -117,10 +114,10 @@ def simple_parser(description):
     CSS font definition.
     """
     face = []
-    family = DEFAULT
+    family = FontFamily.DEFAULT
     size = None
-    weight = WEIGHT_NORMAL
-    style = NORMAL
+    weight = FontWeight.NORMAL
+    style = FontStyle.NORMAL
     underline = False
     for word in description.split():
         lower_word = word.casefold()
@@ -181,18 +178,18 @@ class Font(object):
     # Maps the constants for font families to names to use when searching for
     # fonts.
     familymap = {
-        DEFAULT: "serif",
-        SWISS: "sans-serif",
-        ROMAN: "serif",
-        MODERN: "sans-serif",
-        DECORATIVE: "fantasy",
-        SCRIPT: "script",
-        TELETYPE: "monospace",
+        FontFamily.DEFAULT: "serif",
+        FontFamily.SWISS: "sans-serif",
+        FontFamily.ROMAN: "serif",
+        FontFamily.MODERN: "sans-serif",
+        FontFamily.DECORATIVE: "fantasy",
+        FontFamily.SCRIPT: "script",
+        FontFamily.TELETYPE: "monospace",
     }
 
-    def __init__(self, face_name="", size=12, family=SWISS,
-                 weight=WEIGHT_NORMAL, style=NORMAL, underline=0,
-                 encoding=DEFAULT):
+    def __init__(self, face_name="", size=12, family=FontFamily.SWISS,
+                 weight=FontWeight.NORMAL, style=FontStyle.NORMAL, underline=0,
+                 encoding=FontFamily.DEFAULT):
         if not isinstance(face_name, str):
             raise RuntimeError(
                 f"Expected face name to be a str, got {face_name!r}")
@@ -225,7 +222,7 @@ class Font(object):
 
         # correct the style and weight if needed (can be removed in Enable 7)
         self.weight = self._get_weight()
-        self.style = style & ~BOLD
+        self.style = style & ~FontStyle.BOLD
 
     def findfont(self, language=None):
         """ Returns the file name and face index of the font that most closely
@@ -269,7 +266,7 @@ class Font(object):
         than medium.
         """
         weight = self._get_weight()
-        return (weight > WEIGHT_MEDIUM)
+        return (weight > FontWeight.MEDIUM)
 
     def _make_font_query(self):
         """ Returns a FontQuery object that encapsulates our font properties.
@@ -296,21 +293,21 @@ class Font(object):
 
         Note: this is a temporary method that will be removed in Enable 7.
         """
-        if self.weight == BOLD:
+        if self.weight == FontStyle.BOLD:
             warnings.warn(
-                "Use WEIGHT_BOLD instead of BOLD for Font.weight",
+                "Use FontWeight.BOLD instead of FontStyle.BOLD for Font.weight",
                 DeprecationWarning
             )
-            return WEIGHT_BOLD
+            return FontWeight.BOLD
         elif self.style in bold_styles:
             warnings.warn(
-                "Set Font.weight to WEIGHT_BOLD instead of Font.style to "
+                "Set Font.weight to FontWeight.BOLD instead of Font.style to "
                 "BOLD or BOLD_STYLE",
                 DeprecationWarning
             )
             # if weight is default, and style is bold, report as bold
-            if self.weight == WEIGHT_NORMAL:
-                return WEIGHT_BOLD
+            if self.weight == FontWeight.NORMAL:
+                return FontWeight.BOLD
 
         return self.weight
 

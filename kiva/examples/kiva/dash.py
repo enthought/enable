@@ -15,7 +15,7 @@ import numpy
 from enable.api import ConstraintsContainer
 from enable.examples._example_support import DemoFrame, demo_main
 from enable.primitives.image import Image
-from kiva import constants
+from kiva.constants import Cap
 from kiva.agg import GraphicsContextArray
 
 
@@ -30,7 +30,7 @@ def dash(sz=(1000, 1000)):
     phase = width * 2.5
     pattern = width * numpy.array((5, 5))
     gc.set_line_dash(pattern, phase)
-    gc.set_line_cap(constants.CAP_BUTT)
+    gc.set_line_cap(Cap.BUTT)
     t1 = perf_counter()
     gc.move_to(10, 10)
     gc.line_to(sz[0] - 10, sz[1] - 10)

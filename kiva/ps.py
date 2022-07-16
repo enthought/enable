@@ -25,11 +25,7 @@ from numpy import arange, ndarray, ravel
 # Local, relative Kiva imports
 from . import affine
 from . import basecore2d
-from . import constants
-from .constants import (
-    CONCAT_CTM, EOF_FILL, EOF_FILL_STROKE, FILL, FILL_STROKE, LOAD_CTM,
-    ROTATE_CTM, SCALE_CTM, STROKE, TRANSLATE_CTM,
-)
+from .constants import Cap, CTM, DrawingMode, Join
 
 # This backend does not have compiled paths, yet.
 CompiledPath = None
@@ -60,15 +56,15 @@ def default_filter(kw1):
 
 
 line_cap_map = {
-    constants.CAP_BUTT: 0,
-    constants.CAP_ROUND: 1,
-    constants.CAP_SQUARE: 2,
+    Cap.BUTT: 0,
+    Cap.ROUND: 1,
+    Cap.SQUARE: 2,
 }
 
 line_join_map = {
-    constants.JOIN_MITER: 0,
-    constants.JOIN_ROUND: 1,
-    constants.JOIN_BEVEL: 2,
+    Join.MITER: 0,
+    Join.ROUND: 1,
+    Join.BEVEL: 2,
 }
 
 font_map = {"Arial": "Helvetica"}
@@ -90,11 +86,11 @@ font_face_map = {"Arial": "Helvetica", "": "Helvetica"}
 _clip_counter = 0
 
 fill_stroke_map = {
-    FILL_STROKE: ("fill", "stroke"),
-    EOF_FILL_STROKE: ("eofill", "stroke"),
-    FILL: ("fill", None),
-    STROKE: ("stroke", None),
-    EOF_FILL: ("eofill", None),
+    DrawingMode.FILL_STROKE: ("fill", "stroke"),
+    DrawingMode.EOF_FILL_STROKE: ("eofill", "stroke"),
+    DrawingMode.FILL: ("fill", None),
+    DrawingMode.STROKE: ("stroke", None),
+    DrawingMode.EOF_FILL: ("eofill", None),
 }
 
 
@@ -152,7 +148,7 @@ class PSGC(basecore2d.GraphicsContextBase):
                 "%3.3f %3.3f %3.3f %3.3f rectclip\n" % self.state.clipping_path
             )
         self.contents.write("gsave\n")
-        self.device_transform_device_ctm(LOAD_CTM, [m])
+        self.device_transform_device_ctm(CTM.LOAD, [m])
         self.contents.write("%3.3f %3.3f moveto\n" % (0, 0))
         r, g, b, a = self.state.line_color
         self.contents.write("%1.3f %1.3f %1.3f setrgbcolor\n" % (r, g, b))
@@ -237,20 +233,20 @@ class PSGC(basecore2d.GraphicsContextBase):
         self.contents.write("grestore\n")
 
     def device_transform_device_ctm(self, func, args):
-        if func == LOAD_CTM:
+        if func == CTM.LOAD:
             self.contents.write("initmatrix\n")
-            func = CONCAT_CTM
+            func = CTM.CONCAT
 
-        if func == SCALE_CTM:
+        if func == CTM.SCALE:
             sx, sy = args
             self.contents.write("%.3f %.3f scale\n" % (sx, sy))
-        elif func == ROTATE_CTM:
+        elif func == CTM.ROTATE:
             r, = args
             self.contents.write("%.3f rotate\n" % r)
-        elif func == TRANSLATE_CTM:
+        elif func == CTM.TRANSLATE:
             tx, ty = args
             self.contents.write("%.3f %.3f translate\n" % (tx, ty))
-        elif func == CONCAT_CTM:
+        elif func == CTM.CONCAT:
             m, = args
             self.contents.write(
                 "[%.3f %.3f %.3f %.3f %.3f %.3f] concat\n"
