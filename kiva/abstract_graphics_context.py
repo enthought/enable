@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 from abc import ABCMeta, abstractmethod
 
-from .constants import DrawingMode, Marker, TextMode
+from .constants import DrawMode, Marker, TextMode
 
 
 class AbstractGraphicsContext(object, metaclass=ABCMeta):
@@ -426,12 +426,12 @@ class AbstractGraphicsContext(object, metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def draw_path(self, draw_mode: DrawingMode = DrawingMode.FILL_STROKE):
+    def draw_path(self, draw_mode: DrawMode = DrawMode.FILL_STROKE):
         """ Draw the current path with the specified mode
         """
 
     @abstractmethod
-    def draw_rect(self, rect, draw_mode: DrawingMode = DrawingMode.FILL_STROKE):
+    def draw_rect(self, rect, draw_mode: DrawMode = DrawMode.FILL_STROKE):
         """ Draw a rectangle with the specified mode
 
         Parameters
@@ -655,7 +655,7 @@ class EnhancedAbstractGraphicsContext(AbstractGraphicsContext):
 
     @abstractmethod
     def draw_path_at_points(self, point_array, compiled_path,
-                            draw_mode: DrawingMode = DrawingMode.FILL_STROKE):
+                            draw_mode: DrawMode = DrawMode.FILL_STROKE):
         """ Draw a compiled path at a collection of points
 
         The starting point of the paths are specified by the points,

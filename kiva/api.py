@@ -139,6 +139,8 @@ from .affine import (
     tsr_factor, trs_factor, transform_point, transform_points, IDENTITY
 )
 from .constants import (
+    LineCap, LineJoin, DrawMode, FontStyle, FontFamily, FontWeight,
+    TextMode, PathPrimitive, CTM, Marker,
     NO_DASH, CAP_ROUND, CAP_BUTT, CAP_SQUARE,
     JOIN_ROUND, JOIN_BEVEL, JOIN_MITER,
     FILL, EOF_FILL, STROKE, FILL_STROKE, EOF_FILL_STROKE,

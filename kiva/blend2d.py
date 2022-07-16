@@ -267,13 +267,13 @@ class GraphicsContext(object):
         for rect in rects:
             self.path.add_rect(rect)
 
-    def draw_rect(self, rect, mode = constants.DrawingMode.FILL_STROKE):
+    def draw_rect(self, rect, mode = constants.DrawMode.FILL_STROKE):
         """ Draw a rect.
         """
         rect = blend2d.Rect(*rect)
-        if mode & constants.DrawingMode.FILL:
+        if mode & constants.DrawMode.FILL:
             self.gc.fill_rect(rect)
-        if mode & constants.DrawingMode.STROKE:
+        if mode & constants.DrawMode.STROKE:
             self.gc.stroke_rect(rect)
 
     def add_path(self, path):
@@ -620,13 +620,13 @@ class GraphicsContext(object):
 
     def draw_path(
         self,
-        mode: constants.DrawingMode = constants.DrawingMode.FILL_STROKE,
+        mode: constants.DrawMode = constants.DrawMode.FILL_STROKE,
     ):
         """ Draw the current path with the specified mode
         """
-        if mode & constants.DrawingMode.FILL:
+        if mode & constants.DrawMode.FILL:
             self.gc.fill_path(self.path)
-        if mode & constants.DrawingMode.STROKE:
+        if mode & constants.DrawMode.STROKE:
             self.gc.stroke_path(self.path)
         self.begin_path()
 
@@ -639,7 +639,7 @@ class GraphicsContext(object):
         self,
         points,
         path,
-        mode: constants.DrawingMode = constants.DrawingMode.FILL_STROKE,
+        mode: constants.DrawMode = constants.DrawMode.FILL_STROKE,
     ):
         """ Draw a path object at many different points.
         """

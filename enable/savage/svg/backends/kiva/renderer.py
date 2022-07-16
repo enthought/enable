@@ -359,7 +359,7 @@ class Renderer(NullRenderer):
         "bevel": constants.LineJoin.BEVEL,
     }
 
-    fill_rules = {"nonzero": constants.DrawingMode.FILL, "evenodd": constants.DrawingMode.EOF_FILL}
+    fill_rules = {"nonzero": constants.DrawMode.FILL, "evenodd": constants.DrawMode.EOF_FILL}
 
     def __init__(self):
         pass

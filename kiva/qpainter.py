@@ -36,11 +36,11 @@ join_style[constants.LineJoin.BEVEL] = QtCore.Qt.BevelJoin
 join_style[constants.LineJoin.MITER] = QtCore.Qt.MiterJoin
 
 draw_modes = {}
-draw_modes[constants.DrawingMode.FILL] = QtCore.Qt.OddEvenFill
-draw_modes[constants.DrawingMode.EOF_FILL] = QtCore.Qt.WindingFill
-draw_modes[constants.DrawingMode.STROKE] = 0
-draw_modes[constants.DrawingMode.FILL_STROKE] = QtCore.Qt.OddEvenFill
-draw_modes[constants.DrawingMode.EOF_FILL_STROKE] = QtCore.Qt.WindingFill
+draw_modes[constants.DrawMode.FILL] = QtCore.Qt.OddEvenFill
+draw_modes[constants.DrawMode.EOF_FILL] = QtCore.Qt.WindingFill
+draw_modes[constants.DrawMode.STROKE] = 0
+draw_modes[constants.DrawMode.FILL_STROKE] = QtCore.Qt.OddEvenFill
+draw_modes[constants.DrawMode.EOF_FILL_STROKE] = QtCore.Qt.WindingFill
 
 font_styles = {}
 font_styles["regular"] = constants.FontStyle.NORMAL
@@ -386,16 +386,16 @@ class GraphicsContext(object):
         """
         self.path.rects(rects)
 
-    def draw_rect(self, rect, mode=constants.DrawingMode.FILL_STROKE):
+    def draw_rect(self, rect, mode=constants.DrawMode.FILL_STROKE):
         """ Draw a rect.
         """
         rect = QtCore.QRectF(*rect)
-        if mode == constants.DrawingMode.STROKE:
+        if mode == constants.DrawMode.STROKE:
             save_brush = self.gc.brush()
             self.gc.setBrush(QtGui.QBrush(QtCore.Qt.NoBrush))
             self.gc.drawRect(rect)
             self.gc.setBrush(save_brush)
-        elif mode in [constants.DrawingMode.FILL, constants.DrawingMode.EOF_FILL]:
+        elif mode in [constants.DrawMode.FILL, constants.DrawMode.EOF_FILL]:
             self.gc.fillRect(rect, self.gc.brush())
         else:
             self.gc.fillRect(rect, self.gc.brush())
@@ -820,14 +820,14 @@ class GraphicsContext(object):
         self.gc.setBackground(QtGui.QBrush(QtGui.QColor.fromRgbF(r, g, b, a)))
         self.gc.eraseRect(QtCore.QRectF(0, 0, self.width(), self.height()))
 
-    def draw_path(self, mode=constants.DrawingMode.FILL_STROKE):
+    def draw_path(self, mode=constants.DrawMode.FILL_STROKE):
         """ Walk through all the drawing subpaths and draw each element.
 
             Each subpath is drawn separately.
         """
-        if mode == constants.DrawingMode.STROKE:
+        if mode == constants.DrawMode.STROKE:
             self.stroke_path()
-        elif mode in [constants.DrawingMode.FILL, constants.DrawingMode.EOF_FILL]:
+        elif mode in [constants.DrawMode.FILL, constants.DrawMode.EOF_FILL]:
             mode = draw_modes[mode]
             self.path.path.setFillRule(mode)
             self.fill_path()
@@ -842,11 +842,11 @@ class GraphicsContext(object):
         """
         return CompiledPath()
 
-    def draw_path_at_points(self, points, path, mode=constants.DrawingMode.FILL_STROKE):
+    def draw_path_at_points(self, points, path, mode=constants.DrawMode.FILL_STROKE):
         # set up drawing state and function
-        if mode == constants.DrawingMode.STROKE:
+        if mode == constants.DrawMode.STROKE:
             draw_func = partial(self.gc.strokePath, path.path, self.gc.pen())
-        elif mode in [constants.DrawingMode.FILL, constants.DrawingMode.EOF_FILL]:
+        elif mode in [constants.DrawMode.FILL, constants.DrawMode.EOF_FILL]:
             mode = draw_modes[mode]
             path.path.setFillRule(mode)
             draw_func = partial(self.gc.fillPath, path.path, self.gc.brush())

@@ -2,7 +2,7 @@ from math import tau
 
 import numpy as np
 
-from kiva.api import CAP_ROUND, CIRCLE_MARKER, Font, STROKE
+from kiva.api import DrawMode, Font, LineCap, Marker
 from kiva.image import GraphicsContext, CompiledPath
 
 gc = GraphicsContext((600, 300))
@@ -22,7 +22,7 @@ points = np.array([
     [400., 200.],
     [550., 130.] 
 ])
-gc.draw_marker_at_points(points, 4.0, CIRCLE_MARKER)
+gc.draw_marker_at_points(points, 4.0, Marker.CIRCLE)
 gc.save("images/step_2.png")
 
 # step 3) Ammeter and Voltmeter
@@ -65,7 +65,7 @@ resistor_locations = [
 with gc:
     gc.set_stroke_color((1., 1., 1., 1.))
     gc.set_line_width(2)
-    gc.draw_path_at_points(resistor_locations, clear_resistor_path, STROKE)
+    gc.draw_path_at_points(resistor_locations, clear_resistor_path, DrawMode.STROKE)
 
 #step 4) resistors
 resistor_path = CompiledPath()
@@ -74,7 +74,7 @@ resistor_path_points = [(i*10+5, 10*(-1)**i) for i in range(8)]
 for x, y in resistor_path_points:
     resistor_path.line_to(x,y)
 resistor_path.line_to(80, 0)
-gc.draw_path_at_points(resistor_locations, resistor_path, STROKE)
+gc.draw_path_at_points(resistor_locations, resistor_path, DrawMode.STROKE)
 gc.save("images/step_45.png")
 
 # step 6) switch
@@ -130,7 +130,7 @@ with gc:
         (8, -28),
     ]
     gc.set_line_width(8)
-    gc.set_line_cap(CAP_ROUND)
+    gc.set_line_cap(LineCap.ROUND)
     gc.line_set(thick_starts, thick_ends)
     gc.stroke_path()
 

@@ -287,15 +287,15 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
     def device_fill_points(self, points, mode):
         points = self._fixpoints(points)
-        if mode in (constants.DrawingMode.FILL, constants.DrawingMode.FILL_STROKE, constants.DrawingMode.EOF_FILL_STROKE):
+        if mode in (constants.DrawMode.FILL, constants.DrawMode.FILL_STROKE, constants.DrawMode.EOF_FILL_STROKE):
             fill = self._color(self.state.fill_color)
         else:
             fill = "none"
-        if mode in (constants.DrawingMode.STROKE, constants.DrawingMode.FILL_STROKE, constants.DrawingMode.EOF_FILL_STROKE):
+        if mode in (constants.DrawMode.STROKE, constants.DrawMode.FILL_STROKE, constants.DrawMode.EOF_FILL_STROKE):
             stroke = self._color(self.state.line_color)
         else:
             stroke = "none"
-        if mode in (constants.DrawingMode.EOF_FILL_STROKE, constants.DrawingMode.EOF_FILL):
+        if mode in (constants.DrawMode.EOF_FILL_STROKE, constants.DrawMode.EOF_FILL):
             rule = "evenodd"
         else:
             rule = "nonzero"
@@ -310,7 +310,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             clip = None
         a, b, c, d, tx, ty = affine.affine_params(self.get_ctm())
         transform = "matrix(%(a)f,%(b)f,%(c)f,%(d)f,%(tx)f,%(ty)f)" % locals()
-        if mode == constants.DrawingMode.STROKE:
+        if mode == constants.DrawMode.STROKE:
             opacity = "%1.3f" % self.state.line_color[-1]
             self._emit(
                 "polyline",

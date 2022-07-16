@@ -55,7 +55,7 @@ JOIN_MITER = LineJoin.MITER
 # C version.
 # --------------------------------------------------------------------
 
-class DrawingMode(IntFlag):
+class DrawMode(IntFlag):
     """Drawing mode flags.
 
     FILL
@@ -80,11 +80,11 @@ class DrawingMode(IntFlag):
     FILL_STROKE = 5
     EOF_FILL_STROKE = 6
 
-FILL = DrawingMode.FILL
-EOF_FILL = DrawingMode.EOF_FILL
-STROKE = DrawingMode.STROKE
-FILL_STROKE = DrawingMode.FILL_STROKE
-EOF_FILL_STROKE = DrawingMode.EOF_FILL_STROKE
+FILL = DrawMode.FILL
+EOF_FILL = DrawMode.EOF_FILL
+STROKE = DrawMode.STROKE
+FILL_STROKE = DrawMode.FILL_STROKE
+EOF_FILL_STROKE = DrawMode.EOF_FILL_STROKE
 
 # -----------------------------------------------------------------------------
 # Font Constants

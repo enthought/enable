@@ -245,7 +245,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         else:
             self._ctx.set_source_rgb(*color)
         self.rect(0, 0, self.width(), self.height())
-        self.draw_path(constants.DrawingMode.FILL)
+        self.draw_path(constants.DrawMode.FILL)
         self.restore_state()
 
     def height(self):
@@ -1122,7 +1122,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     # Painting paths (drawing and filling contours)
     # ----------------------------------------------------------------
 
-    def draw_path(self, mode=constants.DrawingMode.FILL_STROKE):
+    def draw_path(self, mode=constants.DrawMode.FILL_STROKE):
         """ Walks through all the drawing subpaths and draw each element.
 
             Each subpath is drawn separately.
@@ -1150,20 +1150,20 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         ctx = self._ctx
         fr = ctx.get_fill_rule()
-        if mode in [constants.DrawingMode.EOF_FILL, constants.DrawingMode.EOF_FILL_STROKE]:
+        if mode in [constants.DrawMode.EOF_FILL, constants.DrawMode.EOF_FILL_STROKE]:
             ctx.set_fill_rule(cairo.FILL_RULE_EVEN_ODD)
         else:
             ctx.set_fill_rule(cairo.FILL_RULE_WINDING)
 
-        if mode in [constants.DrawingMode.FILL, constants.DrawingMode.EOF_FILL]:
+        if mode in [constants.DrawMode.FILL, constants.DrawMode.EOF_FILL]:
             if not self.state.has_gradient:
                 self._set_source_color(self.state.fill_color)
             ctx.fill()
-        elif mode == constants.DrawingMode.STROKE:
+        elif mode == constants.DrawMode.STROKE:
             if not self.state.has_gradient:
                 self._set_source_color(self.state.stroke_color)
             ctx.stroke()
-        elif mode in [constants.DrawingMode.FILL_STROKE, constants.DrawingMode.EOF_FILL_STROKE]:
+        elif mode in [constants.DrawMode.FILL_STROKE, constants.DrawMode.EOF_FILL_STROKE]:
             if not self.state.has_gradient:
                 self._set_source_color(self.state.fill_color)
             ctx.fill_preserve()

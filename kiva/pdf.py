@@ -57,11 +57,11 @@ font_styles["bold italic"] = "-BoldOblique"
 
 # stroke, fill, mode
 path_mode = {}
-path_mode[constants.DrawingMode.FILL_STROKE] = (1, 1, canvas.FILL_NON_ZERO)
-path_mode[constants.DrawingMode.FILL] = (0, 1, canvas.FILL_NON_ZERO)
-path_mode[constants.DrawingMode.EOF_FILL] = (0, 1, canvas.FILL_EVEN_ODD)
-path_mode[constants.DrawingMode.STROKE] = (1, 0, canvas.FILL_NON_ZERO)
-path_mode[constants.DrawingMode.EOF_FILL_STROKE] = (1, 1, canvas.FILL_EVEN_ODD)
+path_mode[constants.DrawMode.FILL_STROKE] = (1, 1, canvas.FILL_NON_ZERO)
+path_mode[constants.DrawMode.FILL] = (0, 1, canvas.FILL_NON_ZERO)
+path_mode[constants.DrawMode.EOF_FILL] = (0, 1, canvas.FILL_EVEN_ODD)
+path_mode[constants.DrawMode.STROKE] = (1, 0, canvas.FILL_NON_ZERO)
+path_mode[constants.DrawMode.EOF_FILL_STROKE] = (1, 1, canvas.FILL_EVEN_ODD)
 
 
 # fixme: I believe this can be implemented but for now, it is not.
@@ -370,7 +370,7 @@ class GraphicsContext(GraphicsContextBase):
         self.current_pdf_path.rect(*args)
         self.current_point = (args[0], args[1])
 
-    def draw_rect(self, rect, mode: constants.DrawingMode = constants.DrawingMode.FILL_STROKE):
+    def draw_rect(self, rect, mode: constants.DrawMode = constants.DrawMode.FILL_STROKE):
         self.rect(rect)
         self.draw_path(mode)
         self.current_point = (rect[0], rect[1])
@@ -741,17 +741,17 @@ class GraphicsContext(GraphicsContextBase):
     def stroke_path(self):
         """
         """
-        self.draw_path(mode=constants.DrawingMode.STROKE)
+        self.draw_path(mode=constants.DrawMode.STROKE)
 
     def fill_path(self):
         """
         """
-        self.draw_path(mode=constants.DrawingMode.FILL)
+        self.draw_path(mode=constants.DrawMode.FILL)
 
     def eof_fill_path(self):
         """
         """
-        self.draw_path(mode=constants.DrawingMode.EOF_FILL)
+        self.draw_path(mode=constants.DrawMode.EOF_FILL)
 
     def stroke_rect(self, rect):
         """
@@ -785,7 +785,7 @@ class GraphicsContext(GraphicsContextBase):
         msg = "clear_rect not implemented on PDF yet."
         raise NotImplementedError(msg)
 
-    def draw_path(self, mode: constants.DrawingMode = constants.DrawingMode.FILL_STROKE):
+    def draw_path(self, mode: constants.DrawMode = constants.DrawMode.FILL_STROKE):
         """ Walks through all the drawing subpaths and draw each element.
 
             Each subpath is drawn separately.

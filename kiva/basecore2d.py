@@ -32,7 +32,7 @@ import numpy as np
 from numpy import alltrue, array, asarray, concatenate, float64, pi, shape
 
 from .constants import (
-    LineCap, DrawingMode, PathPrimitive, CTM, LineJoin, NO_DASH, TextMode,
+    LineCap, DrawMode, PathPrimitive, CTM, LineJoin, NO_DASH, TextMode,
 )
 from .abstract_graphics_context import AbstractGraphicsContext
 from .line_state import LineState, line_state_equal
@@ -1032,15 +1032,15 @@ class GraphicsContextBase(AbstractGraphicsContext):
         pass
 
     def stroke_path(self):
-        self.draw_path(mode=DrawingMode.STROKE)
+        self.draw_path(mode=DrawMode.STROKE)
 
     def fill_path(self):
-        self.draw_path(mode=DrawingMode.FILL)
+        self.draw_path(mode=DrawMode.FILL)
 
     def eof_fill_path(self):
-        self.draw_path(mode=DrawingMode.EOF_FILL)
+        self.draw_path(mode=DrawMode.EOF_FILL)
 
-    def draw_path(self, mode: DrawingMode = DrawingMode.FILL_STROKE):
+    def draw_path(self, mode: DrawMode = DrawMode.FILL_STROKE):
         """Walk through all the drawing subpaths and draw each element.
 
         Each subpath is drawn separately.
@@ -1051,9 +1051,9 @@ class GraphicsContextBase(AbstractGraphicsContext):
 
         old_line_alpha = self.state.line_state.line_color[3]
         old_fill_alpha = self.state.fill_color[3]
-        if not (mode & DrawingMode.STROKE):
+        if not (mode & DrawMode.STROKE):
             self.state.line_state.line_color[3] = 0.0
-        if not (mode & (DrawingMode.FILL | DrawingMode.EOF_FILL)):
+        if not (mode & (DrawMode.FILL | DrawMode.EOF_FILL)):
             self.state.fill_color[3] = 0.0
 
         self.device_update_line_state()
@@ -1194,7 +1194,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
             pts = asarray(self.draw_points)
         return pts
 
-    def draw_subpath(self, mode: DrawingMode):
+    def draw_subpath(self, mode: DrawMode):
         """ Fills and strokes the point path.
 
             After the path is drawn, the subpath point list is

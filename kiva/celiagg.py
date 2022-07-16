@@ -36,11 +36,11 @@ join_style = {
     constants.LineJoin.MITER: agg.LineJoin.JoinMiter,
 }
 draw_modes = {
-    constants.DrawingMode.FILL: agg.DrawingMode.DrawFill,
-    constants.DrawingMode.EOF_FILL: agg.DrawingMode.DrawEofFill,
-    constants.DrawingMode.STROKE: agg.DrawingMode.DrawStroke,
-    constants.DrawingMode.FILL_STROKE: agg.DrawingMode.DrawFillStroke,
-    constants.DrawingMode.EOF_FILL_STROKE: agg.DrawingMode.DrawEofFillStroke,
+    constants.DrawMode.FILL: agg.DrawingMode.DrawFill,
+    constants.DrawMode.EOF_FILL: agg.DrawingMode.DrawEofFill,
+    constants.DrawMode.STROKE: agg.DrawingMode.DrawStroke,
+    constants.DrawMode.FILL_STROKE: agg.DrawingMode.DrawFillStroke,
+    constants.DrawMode.EOF_FILL_STROKE: agg.DrawingMode.DrawEofFillStroke,
 }
 font_weights = {
     constants.FontWeight.THIN: agg.FontWeight.Thin,
@@ -395,7 +395,7 @@ class GraphicsContext(object):
     def draw_rect(
         self,
         rect,
-        mode: constants.DrawingMode = constants.DrawingMode.FILL_STROKE,
+        mode: constants.DrawMode = constants.DrawMode.FILL_STROKE,
     ):
         """ Draw a rect.
         """
@@ -840,7 +840,7 @@ class GraphicsContext(object):
 
     def draw_path(
         self,
-        mode: constants.DrawingMode = constants.DrawingMode.FILL_STROKE,
+        mode: constants.DrawMode = constants.DrawMode.FILL_STROKE,
     ):
         """ Walk through all the drawing subpaths and draw each element.
 
@@ -865,7 +865,7 @@ class GraphicsContext(object):
         self,
         points,
         path,
-        mode: constants.DrawingMode = constants.DrawingMode.FILL_STROKE,
+        mode: constants.DrawMode = constants.DrawMode.FILL_STROKE,
     ):
         """ Draw a path object at many different points.
         """

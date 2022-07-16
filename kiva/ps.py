@@ -25,7 +25,7 @@ from numpy import arange, ndarray, ravel
 # Local, relative Kiva imports
 from . import affine
 from . import basecore2d
-from .constants import LineCap, CTM, DrawingMode, LineJoin
+from .constants import LineCap, CTM, DrawMode, LineJoin
 
 # This backend does not have compiled paths, yet.
 CompiledPath = None
@@ -86,11 +86,11 @@ font_face_map = {"Arial": "Helvetica", "": "Helvetica"}
 _clip_counter = 0
 
 fill_stroke_map = {
-    DrawingMode.FILL_STROKE: ("fill", "stroke"),
-    DrawingMode.EOF_FILL_STROKE: ("eofill", "stroke"),
-    DrawingMode.FILL: ("fill", None),
-    DrawingMode.STROKE: ("stroke", None),
-    DrawingMode.EOF_FILL: ("eofill", None),
+    DrawMode.FILL_STROKE: ("fill", "stroke"),
+    DrawMode.EOF_FILL_STROKE: ("eofill", "stroke"),
+    DrawMode.FILL: ("fill", None),
+    DrawMode.STROKE: ("stroke", None),
+    DrawMode.EOF_FILL: ("eofill", None),
 }
 
 

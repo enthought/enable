@@ -35,6 +35,6 @@ gc.draw_path()
 gc.translate_ctm(0, -100)
 add_star(gc)
 gc.set_fill_color((0.0, 0.0, 1.0))
-gc.draw_path(constants.DrawingMode.EOF_FILL_STROKE)
+gc.draw_path(constants.DrawMode.EOF_FILL_STROKE)
 
 gc.save("star1.bmp")

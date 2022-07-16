@@ -18,7 +18,7 @@ import tempfile
 from enable.api import ConstraintsContainer
 from enable.examples._example_support import DemoFrame, demo_main
 from enable.primitives.image import Image
-from kiva.api import STROKE
+from kiva.api import DrawMode
 from kiva.image import GraphicsContext, CompiledPath
 
 
@@ -49,7 +49,7 @@ def compiled_path():
 
     gc = GraphicsContext((300, 600))
     gc.set_stroke_color((0, 0, 1, 1))
-    gc.draw_path_at_points(locs, path, STROKE)
+    gc.draw_path_at_points(locs, path, DrawMode.STROKE)
 
     with tempfile.NamedTemporaryFile(suffix=".jpg") as fid:
         gc.save(fid.name)
