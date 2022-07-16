@@ -807,7 +807,7 @@ cdef class CGContext:
             constants.FontStyle.NORMAL: 'regular',
             constants.FontStyle.BOLD: 'bold',
             constants.FontStyle.ITALIC: 'italic',
-            constants.FontStyle.BOLD_ITALIC: 'bold italic',
+            constants.FontStyle.BOLD | constants.FontStyle.ITALIC: 'bold italic',
         }[font.is_bold() | font.style]
         self.select_font(font.face_name, font.size, style=style)
 
