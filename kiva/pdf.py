@@ -34,21 +34,20 @@ from reportlab.pdfgen import canvas
 from .arc_conversion import arc_to_tangent_points
 from .basecore2d import GraphicsContextBase
 from .line_state import is_dashed
-from .constants import FILL, STROKE, EOF_FILL
 import kiva.constants as constants
 import kiva.affine as affine
 from kiva.fonttools.font import Font
 
 
 cap_style = {}
-cap_style[constants.CAP_ROUND] = 1
-cap_style[constants.CAP_SQUARE] = 2
-cap_style[constants.CAP_BUTT] = 0
+cap_style[constants.Cap.ROUND] = 1
+cap_style[constants.Cap.SQUARE] = 2
+cap_style[constants.Cap.BUTT] = 0
 
 join_style = {}
-join_style[constants.JOIN_ROUND] = 1
-join_style[constants.JOIN_BEVEL] = 2
-join_style[constants.JOIN_MITER] = 0
+join_style[constants.Join.ROUND] = 1
+join_style[constants.Join.BEVEL] = 2
+join_style[constants.Join.MITER] = 0
 
 font_styles = {}
 font_styles["regular"] = ""
@@ -58,11 +57,11 @@ font_styles["bold italic"] = "-BoldOblique"
 
 # stroke, fill, mode
 path_mode = {}
-path_mode[constants.FILL_STROKE] = (1, 1, canvas.FILL_NON_ZERO)
-path_mode[constants.FILL] = (0, 1, canvas.FILL_NON_ZERO)
-path_mode[constants.EOF_FILL] = (0, 1, canvas.FILL_EVEN_ODD)
-path_mode[constants.STROKE] = (1, 0, canvas.FILL_NON_ZERO)
-path_mode[constants.EOF_FILL_STROKE] = (1, 1, canvas.FILL_EVEN_ODD)
+path_mode[constants.DrawingMode.FILL_STROKE] = (1, 1, canvas.FILL_NON_ZERO)
+path_mode[constants.DrawingMode.FILL] = (0, 1, canvas.FILL_NON_ZERO)
+path_mode[constants.DrawingMode.EOF_FILL] = (0, 1, canvas.FILL_EVEN_ODD)
+path_mode[constants.DrawingMode.STROKE] = (1, 0, canvas.FILL_NON_ZERO)
+path_mode[constants.DrawingMode.EOF_FILL_STROKE] = (1, 1, canvas.FILL_EVEN_ODD)
 
 
 # fixme: I believe this can be implemented but for now, it is not.
@@ -371,7 +370,7 @@ class GraphicsContext(GraphicsContextBase):
         self.current_pdf_path.rect(*args)
         self.current_point = (args[0], args[1])
 
-    def draw_rect(self, rect, mode=constants.FILL_STROKE):
+    def draw_rect(self, rect, mode: constants.DrawingMode = constants.DrawingMode.FILL_STROKE):
         self.rect(rect)
         self.draw_path(mode)
         self.current_point = (rect[0], rect[1])
@@ -786,7 +785,7 @@ class GraphicsContext(GraphicsContextBase):
         msg = "clear_rect not implemented on PDF yet."
         raise NotImplementedError(msg)
 
-    def draw_path(self, mode=constants.FILL_STROKE):
+    def draw_path(self, mode: constants.DrawingMode = constants.DrawingMode.FILL_STROKE):
         """ Walks through all the drawing subpaths and draw each element.
 
             Each subpath is drawn separately.

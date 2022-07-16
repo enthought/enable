@@ -42,7 +42,6 @@ from numpy import arange, ndarray, ravel
 from . import affine
 from . import basecore2d
 from . import constants
-from .constants import FILL, FILL_STROKE, EOF_FILL_STROKE, EOF_FILL, STROKE
 
 
 def _strpoints(points):
@@ -68,15 +67,15 @@ def default_filter(kw1):
 
 
 line_cap_map = {
-    constants.CAP_ROUND: "round",
-    constants.CAP_SQUARE: "square",
-    constants.CAP_BUTT: "butt",
+    constants.Cap.ROUND: "round",
+    constants.Cap.SQUARE: "square",
+    constants.Cap.BUTT: "butt",
 }
 
 line_join_map = {
-    constants.JOIN_ROUND: "round",
-    constants.JOIN_BEVEL: "bevel",
-    constants.JOIN_MITER: "miter",
+    constants.Join.ROUND: "round",
+    constants.Join.BEVEL: "bevel",
+    constants.Join.MITER: "miter",
 }
 
 xmltemplate = """<?xml version="1.0"?>
@@ -288,15 +287,15 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
 
     def device_fill_points(self, points, mode):
         points = self._fixpoints(points)
-        if mode in (FILL, FILL_STROKE, EOF_FILL_STROKE):
+        if mode in (constants.DrawingMode.FILL, constants.DrawingMode.FILL_STROKE, constants.DrawingMode.EOF_FILL_STROKE):
             fill = self._color(self.state.fill_color)
         else:
             fill = "none"
-        if mode in (STROKE, FILL_STROKE, EOF_FILL_STROKE):
+        if mode in (constants.DrawingMode.STROKE, constants.DrawingMode.FILL_STROKE, constants.DrawingMode.EOF_FILL_STROKE):
             stroke = self._color(self.state.line_color)
         else:
             stroke = "none"
-        if mode in (EOF_FILL_STROKE, EOF_FILL):
+        if mode in (constants.DrawingMode.EOF_FILL_STROKE, constants.DrawingMode.EOF_FILL):
             rule = "evenodd"
         else:
             rule = "nonzero"
@@ -311,7 +310,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             clip = None
         a, b, c, d, tx, ty = affine.affine_params(self.get_ctm())
         transform = "matrix(%(a)f,%(b)f,%(c)f,%(d)f,%(tx)f,%(ty)f)" % locals()
-        if mode == STROKE:
+        if mode == constants.DrawingMode.STROKE:
             opacity = "%1.3f" % self.state.line_color[-1]
             self._emit(
                 "polyline",

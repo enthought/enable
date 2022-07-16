@@ -26,46 +26,46 @@ import kiva.constants as constants
 __all__ = ["CompiledPath", "Font", "font_metrics_provider", "GraphicsContext"]
 
 cap_style = {}
-cap_style[constants.CAP_ROUND] = QtCore.Qt.RoundCap
-cap_style[constants.CAP_SQUARE] = QtCore.Qt.SquareCap
-cap_style[constants.CAP_BUTT] = QtCore.Qt.FlatCap
+cap_style[constants.Cap.ROUND] = QtCore.Qt.RoundCap
+cap_style[constants.Cap.SQUARE] = QtCore.Qt.SquareCap
+cap_style[constants.Cap.BUTT] = QtCore.Qt.FlatCap
 
 join_style = {}
-join_style[constants.JOIN_ROUND] = QtCore.Qt.RoundJoin
-join_style[constants.JOIN_BEVEL] = QtCore.Qt.BevelJoin
-join_style[constants.JOIN_MITER] = QtCore.Qt.MiterJoin
+join_style[constants.Join.ROUND] = QtCore.Qt.RoundJoin
+join_style[constants.Join.BEVEL] = QtCore.Qt.BevelJoin
+join_style[constants.Join.MITER] = QtCore.Qt.MiterJoin
 
 draw_modes = {}
-draw_modes[constants.FILL] = QtCore.Qt.OddEvenFill
-draw_modes[constants.EOF_FILL] = QtCore.Qt.WindingFill
-draw_modes[constants.STROKE] = 0
-draw_modes[constants.FILL_STROKE] = QtCore.Qt.OddEvenFill
-draw_modes[constants.EOF_FILL_STROKE] = QtCore.Qt.WindingFill
+draw_modes[constants.DrawingMode.FILL] = QtCore.Qt.OddEvenFill
+draw_modes[constants.DrawingMode.EOF_FILL] = QtCore.Qt.WindingFill
+draw_modes[constants.DrawingMode.STROKE] = 0
+draw_modes[constants.DrawingMode.FILL_STROKE] = QtCore.Qt.OddEvenFill
+draw_modes[constants.DrawingMode.EOF_FILL_STROKE] = QtCore.Qt.WindingFill
 
 font_styles = {}
-font_styles["regular"] = constants.NORMAL
-font_styles["bold"] = constants.NORMAL
-font_styles["italic"] = constants.ITALIC
+font_styles["regular"] = constants.FontStyle.NORMAL
+font_styles["bold"] = constants.FontStyle.NORMAL
+font_styles["italic"] = constants.FontStyle.ITALIC
 font_styles["bold italic"] = constants.ITALIC
 
 font_weights = {
-    "regular": constants.WEIGHT_NORMAL,
-    "bold": constants.WEIGHT_BOLD,
-    "italic": constants.WEIGHT_NORMAL,
-    "bold italic": constants.WEIGHT_BOLD,
+    "regular": constants.FontWeight.NORMAL,
+    "bold": constants.FontWeight.BOLD,
+    "italic": constants.FontWeight.NORMAL,
+    "bold italic": constants.FontWeight.BOLD,
 }
 
 weight_to_qt_weight = {
-    constants.WEIGHT_THIN: QtGui.QFont.Weight.Thin,
-    constants.WEIGHT_EXTRALIGHT: QtGui.QFont.Weight.ExtraLight,
-    constants.WEIGHT_LIGHT: QtGui.QFont.Weight.Light,
-    constants.WEIGHT_NORMAL: QtGui.QFont.Weight.Normal,
-    constants.WEIGHT_MEDIUM: QtGui.QFont.Weight.Medium,
-    constants.WEIGHT_SEMIBOLD: QtGui.QFont.Weight.DemiBold,
-    constants.WEIGHT_BOLD: QtGui.QFont.Weight.Bold,
-    constants.WEIGHT_EXTRABOLD: QtGui.QFont.Weight.ExtraBold,
-    constants.WEIGHT_HEAVY: QtGui.QFont.Weight.Black,
-    constants.WEIGHT_EXTRAHEAVY: 99,
+    constants.FontWeight.THIN: QtGui.QFont.Weight.Thin,
+    constants.FontWeight.EXTRALIGHT: QtGui.QFont.Weight.ExtraLight,
+    constants.FontWeight.LIGHT: QtGui.QFont.Weight.Light,
+    constants.FontWeight.NORMAL: QtGui.QFont.Weight.Normal,
+    constants.FontWeight.MEDIUM: QtGui.QFont.Weight.Medium,
+    constants.FontWeight.SEMIBOLD: QtGui.QFont.Weight.DemiBold,
+    constants.FontWeight.BOLD: QtGui.QFont.Weight.Bold,
+    constants.FontWeight.EXTRABOLD: QtGui.QFont.Weight.ExtraBold,
+    constants.FontWeight.HEAVY: QtGui.QFont.Weight.Black,
+    constants.FontWeight.EXTRAHEAVY: 99,
 }
 
 gradient_coord_modes = {}
@@ -386,16 +386,16 @@ class GraphicsContext(object):
         """
         self.path.rects(rects)
 
-    def draw_rect(self, rect, mode=constants.FILL_STROKE):
+    def draw_rect(self, rect, mode=constants.DrawingMode.FILL_STROKE):
         """ Draw a rect.
         """
         rect = QtCore.QRectF(*rect)
-        if mode == constants.STROKE:
+        if mode == constants.DrawingMode.STROKE:
             save_brush = self.gc.brush()
             self.gc.setBrush(QtGui.QBrush(QtCore.Qt.NoBrush))
             self.gc.drawRect(rect)
             self.gc.setBrush(save_brush)
-        elif mode in [constants.FILL, constants.EOF_FILL]:
+        elif mode in [constants.DrawingMode.FILL, constants.DrawingMode.EOF_FILL]:
             self.gc.fillRect(rect, self.gc.brush())
         else:
             self.gc.fillRect(rect, self.gc.brush())
@@ -641,8 +641,8 @@ class GraphicsContext(object):
     def select_font(self, name, size, style="regular", encoding=None):
         """ Set the font for the current graphics context.
         """
-        style = font_styles.get(style, constants.NORMAL)
-        weight = font_weights.get(style, constants.WEIGHT_NORMAL)
+        style = font_styles.get(style, constants.FontStyle.NORMAL)
+        weight = font_weights.get(style, constants.FontWeight.NORMAL)
         font = Font(name, size=size, style=style, weight=weight)
         self.set_font(font)
 
@@ -820,14 +820,14 @@ class GraphicsContext(object):
         self.gc.setBackground(QtGui.QBrush(QtGui.QColor.fromRgbF(r, g, b, a)))
         self.gc.eraseRect(QtCore.QRectF(0, 0, self.width(), self.height()))
 
-    def draw_path(self, mode=constants.FILL_STROKE):
+    def draw_path(self, mode=constants.DrawingMode.FILL_STROKE):
         """ Walk through all the drawing subpaths and draw each element.
 
             Each subpath is drawn separately.
         """
-        if mode == constants.STROKE:
+        if mode == constants.DrawingMode.STROKE:
             self.stroke_path()
-        elif mode in [constants.FILL, constants.EOF_FILL]:
+        elif mode in [constants.DrawingMode.FILL, constants.DrawingMode.EOF_FILL]:
             mode = draw_modes[mode]
             self.path.path.setFillRule(mode)
             self.fill_path()
@@ -842,11 +842,11 @@ class GraphicsContext(object):
         """
         return CompiledPath()
 
-    def draw_path_at_points(self, points, path, mode=constants.FILL_STROKE):
+    def draw_path_at_points(self, points, path, mode=constants.DrawingMode.FILL_STROKE):
         # set up drawing state and function
-        if mode == constants.STROKE:
+        if mode == constants.DrawingMode.STROKE:
             draw_func = partial(self.gc.strokePath, path.path, self.gc.pen())
-        elif mode in [constants.FILL, constants.EOF_FILL]:
+        elif mode in [constants.DrawingMode.FILL, constants.DrawingMode.EOF_FILL]:
             mode = draw_modes[mode]
             path.path.setFillRule(mode)
             draw_func = partial(self.gc.fillPath, path.path, self.gc.brush())

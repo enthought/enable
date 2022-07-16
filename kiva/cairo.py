@@ -27,15 +27,15 @@ from . import basecore2d, constants
 
 
 line_join = {
-    constants.JOIN_BEVEL: cairo.LINE_JOIN_BEVEL,
-    constants.JOIN_MITER: cairo.LINE_JOIN_MITER,
-    constants.JOIN_ROUND: cairo.LINE_JOIN_ROUND,
+    constants.Join.BEVEL: cairo.LINE_JOIN_BEVEL,
+    constants.Join.MITER: cairo.LINE_JOIN_MITER,
+    constants.Join.ROUND: cairo.LINE_JOIN_ROUND,
 }
 
 line_cap = {
-    constants.CAP_BUTT: cairo.LINE_CAP_BUTT,
-    constants.CAP_ROUND: cairo.LINE_CAP_ROUND,
-    constants.CAP_SQUARE: cairo.LINE_CAP_SQUARE,
+    constants.Cap.BUTT: cairo.LINE_CAP_BUTT,
+    constants.Cap.ROUND: cairo.LINE_CAP_ROUND,
+    constants.Cap.SQUARE: cairo.LINE_CAP_SQUARE,
 }
 
 font_slant = {
@@ -60,24 +60,24 @@ spread_methods = {
 
 text_draw_modes = {
     "FILL": (
-        constants.TEXT_FILL,
-        constants.TEXT_FILL_CLIP,
-        constants.TEXT_FILL_STROKE,
-        constants.TEXT_FILL_STROKE_CLIP,
+        constants.TextMode.FILL,
+        constants.TextMode.FILL_CLIP,
+        constants.TextMode.FILL_STROKE,
+        constants.TextMode.FILL_STROKE_CLIP,
     ),
     "STROKE": (
-        constants.TEXT_FILL_STROKE,
-        constants.TEXT_FILL_STROKE_CLIP,
-        constants.TEXT_STROKE,
-        constants.TEXT_STROKE_CLIP,
+        constants.TextMode.FILL_STROKE,
+        constants.TextMode.FILL_STROKE_CLIP,
+        constants.TextMode.STROKE,
+        constants.TextMode.STROKE_CLIP,
     ),
     "CLIP": (
-        constants.TEXT_CLIP,
-        constants.TEXT_FILL_CLIP,
-        constants.TEXT_FILL_STROKE_CLIP,
-        constants.TEXT_STROKE_CLIP,
+        constants.TextMode.CLIP,
+        constants.TextMode.FILL_CLIP,
+        constants.TextMode.FILL_STROKE_CLIP,
+        constants.TextMode.STROKE_CLIP,
     ),
-    "INVISIBLE": constants.TEXT_INVISIBLE,
+    "INVISIBLE": constants.TextMode.INVISIBLE,
 }
 
 
@@ -195,7 +195,7 @@ class GraphicsState(object):
         self.fill_color = [1, 1, 1]
         self.stroke_color = [1, 1, 1]
         self.alpha = 1.0
-        self.text_drawing_mode = constants.TEXT_FILL
+        self.text_drawing_mode = constants.TextMode.FILL
         self.has_gradient = False
 
         # not implemented yet...
@@ -354,7 +354,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         self._ctx.set_line_width(width)
 
-    def set_line_join(self, style):
+    def set_line_join(self, style: constants.Join):
         """ Sets the style for joining lines in a drawing.
 
             Parameters
@@ -387,7 +387,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         self._ctx.set_miter_limit(limit)
 
-    def set_line_cap(self, style):
+    def set_line_cap(self, style: constants.Cap):
         """ Specifies the style of endings to put on line ends.
 
             Parameters
@@ -1008,7 +1008,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         self.state.character_spacing = spacing
 
-    def set_text_drawing_mode(self, mode):
+    def set_text_drawing_mode(self, mode: constants.TextMode):
         """ Specifies whether text is drawn filled or outlined or both.
 
             Parameters
@@ -1039,14 +1039,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             Note:
                 wxPython currently ignores all but the INVISIBLE flag.
         """
-        text_modes = (
-            constants.TEXT_FILL, constants.TEXT_STROKE,
-            constants.TEXT_FILL_STROKE, constants.TEXT_INVISIBLE,
-            constants.TEXT_FILL_CLIP, constants.TEXT_STROKE_CLIP,
-            constants.TEXT_FILL_STROKE_CLIP, constants.TEXT_CLIP,
-            constants.TEXT_OUTLINE,
-        )
-        if mode not in text_modes:
+        if not isinstance(mode, constants.TextMode):
             msg = (
                 "Invalid text drawing mode.  See documentation for valid modes"
             )
@@ -1157,20 +1150,20 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         ctx = self._ctx
         fr = ctx.get_fill_rule()
-        if mode in [constants.EOF_FILL, constants.EOF_FILL_STROKE]:
+        if mode in [constants.DrawingMode.EOF_FILL, constants.DrawingMode.EOF_FILL_STROKE]:
             ctx.set_fill_rule(cairo.FILL_RULE_EVEN_ODD)
         else:
             ctx.set_fill_rule(cairo.FILL_RULE_WINDING)
 
-        if mode in [constants.FILL, constants.EOF_FILL]:
+        if mode in [constants.DrawingMode.FILL, constants.DrawingMode.EOF_FILL]:
             if not self.state.has_gradient:
                 self._set_source_color(self.state.fill_color)
             ctx.fill()
-        elif mode == constants.STROKE:
+        elif mode == constants.DrawingMode.STROKE:
             if not self.state.has_gradient:
                 self._set_source_color(self.state.stroke_color)
             ctx.stroke()
-        elif mode in [constants.FILL_STROKE, constants.EOF_FILL_STROKE]:
+        elif mode in [constants.DrawingMode.FILL_STROKE, constants.DrawingMode.EOF_FILL_STROKE]:
             if not self.state.has_gradient:
                 self._set_source_color(self.state.fill_color)
             ctx.fill_preserve()

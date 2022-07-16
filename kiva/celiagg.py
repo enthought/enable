@@ -26,44 +26,44 @@ from kiva.marker_renderer import MarkerRenderer
 __all__ = ["CompiledPath", "Font", "font_metrics_provider", "GraphicsContext"]
 
 cap_style = {
-    constants.CAP_ROUND: agg.LineCap.CapRound,
-    constants.CAP_SQUARE: agg.LineCap.CapSquare,
-    constants.CAP_BUTT: agg.LineCap.CapButt,
+    constants.Cap.ROUND: agg.LineCap.CapRound,
+    constants.Cap.SQUARE: agg.LineCap.CapSquare,
+    constants.Cap.BUTT: agg.LineCap.CapButt,
 }
 join_style = {
-    constants.JOIN_ROUND: agg.LineJoin.JoinRound,
-    constants.JOIN_BEVEL: agg.LineJoin.JoinBevel,
-    constants.JOIN_MITER: agg.LineJoin.JoinMiter,
+    constants.Join.ROUND: agg.LineJoin.JoinRound,
+    constants.Join.BEVEL: agg.LineJoin.JoinBevel,
+    constants.Join.MITER: agg.LineJoin.JoinMiter,
 }
 draw_modes = {
-    constants.FILL: agg.DrawingMode.DrawFill,
-    constants.EOF_FILL: agg.DrawingMode.DrawEofFill,
-    constants.STROKE: agg.DrawingMode.DrawStroke,
-    constants.FILL_STROKE: agg.DrawingMode.DrawFillStroke,
-    constants.EOF_FILL_STROKE: agg.DrawingMode.DrawEofFillStroke,
+    constants.DrawingMode.FILL: agg.DrawingMode.DrawFill,
+    constants.DrawingMode.EOF_FILL: agg.DrawingMode.DrawEofFill,
+    constants.DrawingMode.STROKE: agg.DrawingMode.DrawStroke,
+    constants.DrawingMode.FILL_STROKE: agg.DrawingMode.DrawFillStroke,
+    constants.DrawingMode.EOF_FILL_STROKE: agg.DrawingMode.DrawEofFillStroke,
 }
 font_weights = {
-    constants.WEIGHT_THIN: agg.FontWeight.Thin,
-    constants.WEIGHT_EXTRALIGHT: agg.FontWeight.ExtraLight,
-    constants.WEIGHT_LIGHT: agg.FontWeight.Light,
-    constants.WEIGHT_NORMAL: agg.FontWeight.Regular,
-    constants.WEIGHT_MEDIUM: agg.FontWeight.Medium,
-    constants.WEIGHT_SEMIBOLD: agg.FontWeight.SemiBold,
-    constants.WEIGHT_BOLD: agg.FontWeight.Bold,
-    constants.WEIGHT_EXTRABOLD: agg.FontWeight.ExtraBold,
-    constants.WEIGHT_HEAVY: agg.FontWeight.Heavy,
-    constants.WEIGHT_EXTRAHEAVY: agg.FontWeight.Heavy,
+    constants.FontWeight.THIN: agg.FontWeight.Thin,
+    constants.FontWeight.EXTRALIGHT: agg.FontWeight.ExtraLight,
+    constants.FontWeight.LIGHT: agg.FontWeight.Light,
+    constants.FontWeight.NORMAL: agg.FontWeight.Regular,
+    constants.FontWeight.MEDIUM: agg.FontWeight.Medium,
+    constants.FontWeight.SEMIBOLD: agg.FontWeight.SemiBold,
+    constants.FontWeight.BOLD: agg.FontWeight.Bold,
+    constants.FontWeight.EXTRABOLD: agg.FontWeight.ExtraBold,
+    constants.FontWeight.HEAVY: agg.FontWeight.Heavy,
+    constants.FontWeight.EXTRAHEAVY: agg.FontWeight.Heavy,
 }
 text_modes = {
-    constants.TEXT_FILL: agg.TextDrawingMode.TextDrawRaster,
-    constants.TEXT_STROKE: agg.TextDrawingMode.TextDrawStroke,
-    constants.TEXT_FILL_STROKE: agg.TextDrawingMode.TextDrawFillStroke,
-    constants.TEXT_INVISIBLE: agg.TextDrawingMode.TextDrawInvisible,
-    constants.TEXT_FILL_CLIP: agg.TextDrawingMode.TextDrawFillClip,
-    constants.TEXT_STROKE_CLIP: agg.TextDrawingMode.TextDrawStrokeClip,
-    constants.TEXT_FILL_STROKE_CLIP: agg.TextDrawingMode.TextDrawFillStrokeClip,  # noqa
-    constants.TEXT_CLIP: agg.TextDrawingMode.TextDrawClip,
-    constants.TEXT_OUTLINE: agg.TextDrawingMode.TextDrawStroke,
+    constants.TextMode.FILL: agg.TextDrawingMode.TextDrawRaster,
+    constants.TextMode.STROKE: agg.TextDrawingMode.TextDrawStroke,
+    constants.TextMode.FILL_STROKE: agg.TextDrawingMode.TextDrawFillStroke,
+    constants.TextMode.INVISIBLE: agg.TextDrawingMode.TextDrawInvisible,
+    constants.TextMode.FILL_CLIP: agg.TextDrawingMode.TextDrawFillClip,
+    constants.TextMode.STROKE_CLIP: agg.TextDrawingMode.TextDrawStrokeClip,
+    constants.TextMode.FILL_STROKE_CLIP: agg.TextDrawingMode.TextDrawFillStrokeClip,  # noqa
+    constants.TextMode.CLIP: agg.TextDrawingMode.TextDrawClip,
+    constants.TextMode.OUTLINE: agg.TextDrawingMode.TextDrawStroke,
 }
 gradient_coord_modes = {
     'userSpaceOnUse': agg.GradientUnits.UserSpace,
@@ -95,10 +95,10 @@ StateBundle = namedtuple(
 
 # map used in select_font
 font_styles = {
-    "regular": (constants.WEIGHT_NORMAL, constants.NORMAL),
-    "bold": (constants.WEIGHT_BOLD, constants.NORMAL),
-    "italic": (constants.WEIGHT_NORMAL, constants.ITALIC),
-    "bold italic": (constants.WEIGHT_BOLD, constants.ITALIC),
+    "regular": (constants.FontWeight.NORMAL, constants.FontStyle.NORMAL),
+    "bold": (constants.FontWeight.BOLD, constants.FontStyle.NORMAL),
+    "italic": (constants.FontWeight.NORMAL, constants.FontStyle.ITALIC),
+    "bold italic": (constants.FontWeight.BOLD, constants.FontStyle.ITALIC),
 }
 
 class GraphicsContext(object):
@@ -392,7 +392,11 @@ class GraphicsContext(object):
         """
         self.path.rects(rects)
 
-    def draw_rect(self, rect, mode=constants.FILL_STROKE):
+    def draw_rect(
+        self,
+        rect,
+        mode: constants.DrawingMode = constants.DrawingMode.FILL_STROKE,
+    ):
         """ Draw a rect.
         """
 
@@ -834,7 +838,10 @@ class GraphicsContext(object):
     def clear(self, clear_color=(1.0, 1.0, 1.0, 1.0)):
         self.gc.clear(*clear_color)
 
-    def draw_path(self, mode=constants.FILL_STROKE):
+    def draw_path(
+        self,
+        mode: constants.DrawingMode = constants.DrawingMode.FILL_STROKE,
+    ):
         """ Walk through all the drawing subpaths and draw each element.
 
             Each subpath is drawn separately.
@@ -854,7 +861,12 @@ class GraphicsContext(object):
         """
         return CompiledPath()
 
-    def draw_path_at_points(self, points, path, mode=constants.FILL_STROKE):
+    def draw_path_at_points(
+        self,
+        points,
+        path,
+        mode: constants.DrawingMode = constants.DrawingMode.FILL_STROKE,
+    ):
         """ Draw a path object at many different points.
         """
         self.canvas_state.drawing_mode = draw_modes[mode]
@@ -867,8 +879,11 @@ class GraphicsContext(object):
             fill=self.fill_paint,
         )
 
-    def draw_marker_at_points(self, points_array, size,
-                              marker=constants.SQUARE_MARKER):
+    def draw_marker_at_points(
+        self,
+        points_array,
+        size,
+        marker: constants.Marker = constants.Marker.SQUARE):
         """ Draw a marker at a collection of points
         """
         # Apply the current transform
