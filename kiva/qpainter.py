@@ -46,7 +46,7 @@ font_styles = {}
 font_styles["regular"] = constants.FontStyle.NORMAL
 font_styles["bold"] = constants.FontStyle.NORMAL
 font_styles["italic"] = constants.FontStyle.ITALIC
-font_styles["bold italic"] = constants.ITALIC
+font_styles["bold italic"] = constants.FontStyle.ITALIC
 
 font_weights = {
     "regular": constants.FontWeight.NORMAL,

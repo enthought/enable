@@ -27,33 +27,33 @@ class TestKivaFont(unittest.TestCase):
 
     def test_validate_str(self):
         expected_outcomes = {}
-        expected_outcomes[""] = Font(size=10, family=constants.DEFAULT)
+        expected_outcomes[""] = Font(size=10, family=constants.FontFamily.DEFAULT)
 
         for weight, kiva_weight in WEIGHTS.items():
             expected_outcomes[weight] = Font(
-                weight=kiva_weight, size=10, family=constants.DEFAULT)
+                weight=kiva_weight, size=10, family=constants.FontFamily.DEFAULT)
 
         for style, kiva_style in STYLES.items():
             expected_outcomes[style] = Font(
-                style=kiva_style, size=10, family=constants.DEFAULT)
+                style=kiva_style, size=10, family=constants.FontFamily.DEFAULT)
 
         expected_outcomes["underline"] = Font(
-            underline=True, size=10, family=constants.DEFAULT)
+            underline=True, size=10, family=constants.FontFamily.DEFAULT)
 
-        expected_outcomes["18"] = Font(size=18, family=constants.DEFAULT)
-        expected_outcomes["18 pt"] = Font(size=18, family=constants.DEFAULT)
-        expected_outcomes["18 point"] = Font(size=18, family=constants.DEFAULT)
+        expected_outcomes["18"] = Font(size=18, family=constants.FontFamily.DEFAULT)
+        expected_outcomes["18 pt"] = Font(size=18, family=constants.FontFamily.DEFAULT)
+        expected_outcomes["18 point"] = Font(size=18, family=constants.FontFamily.DEFAULT)
 
         for family, kiva_family in FAMILIES.items():
             expected_outcomes[family] = Font(family=kiva_family, size=10)
 
         expected_outcomes["Courier"] = Font(
-            "Courier", size=10, family=constants.DEFAULT)
+            "Courier", size=10, family=constants.FontFamily.DEFAULT)
         expected_outcomes["Comic Sans"] = Font(
-            "Comic Sans", size=10, family=constants.DEFAULT)
+            "Comic Sans", size=10, family=constants.FontFamily.DEFAULT)
         expected_outcomes["18 pt Bold Italic Underline Comic Sans script"] = Font(  # noqa: E501
-            "Comic Sans", 18, constants.SCRIPT, weight=constants.WEIGHT_BOLD,
-            style=constants.ITALIC, underline=True,
+            "Comic Sans", 18, constants.FontFamily.SCRIPT, weight=constants.FontWeight.BOLD,
+            style=constants.FontStyle.ITALIC, underline=True,
         )
 
         for name, expected in expected_outcomes.items():
@@ -76,7 +76,7 @@ class TestKivaFont(unittest.TestCase):
         self.assertIs(result, font)
 
     def test_validate_pyface_font(self):
-        font = Font("Comic Sans", 18, constants.DEFAULT)
+        font = Font("Comic Sans", 18, constants.FontFamily.DEFAULT)
         pyface_font = PyfaceFont(family=["Comic Sans"], size=18)
         example = FontExample(font=pyface_font)
 
@@ -90,7 +90,7 @@ class TestKivaFont(unittest.TestCase):
         example = FontExample()
 
         self.assertIsInstance(example.font, Font)
-        self.assertEqual(example.font, Font(size=12, family=constants.SWISS))
+        self.assertEqual(example.font, Font(size=12, family=constants.FontFamily.SWISS))
 
     def test_font_trait_none(self):
         with self.assertRaises(TraitError):

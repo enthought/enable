@@ -1,5 +1,5 @@
 import math
-from kiva import CAP_ROUND, CAP_SQUARE, JOIN_ROUND
+from kiva.constants import CAP_ROUND, CAP_SQUARE, JOIN_ROUND
 from kiva.image import GraphicsContext
 
 gc = GraphicsContext((600, 600))

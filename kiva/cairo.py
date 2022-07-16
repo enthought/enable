@@ -245,7 +245,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         else:
             self._ctx.set_source_rgb(*color)
         self.rect(0, 0, self.width(), self.height())
-        self.draw_path(constants.FILL)
+        self.draw_path(constants.DrawingMode.FILL)
         self.restore_state()
 
     def height(self):
@@ -1122,7 +1122,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     # Painting paths (drawing and filling contours)
     # ----------------------------------------------------------------
 
-    def draw_path(self, mode=constants.FILL_STROKE):
+    def draw_path(self, mode=constants.DrawingMode.FILL_STROKE):
         """ Walks through all the drawing subpaths and draw each element.
 
             Each subpath is drawn separately.

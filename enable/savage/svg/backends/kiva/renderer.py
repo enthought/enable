@@ -100,8 +100,8 @@ class Pen(object):
     def __init__(self, color):
         # fixme: what format is the color passed in? int or float
         self.color = color
-        self.cap = constants.CAP_BUTT
-        self.join = constants.JOIN_MITER
+        self.cap = constants.Cap.BUTT
+        self.join = constants.Join.MITER
         self.width = 1
         self.dasharray = None
         self.dashoffset = 0.0
@@ -348,18 +348,18 @@ class Renderer(NullRenderer):
     TransparentPen = Pen((1.0, 1.0, 1.0, 0.0))
 
     caps = {
-        "butt": constants.CAP_BUTT,
-        "round": constants.CAP_ROUND,
-        "square": constants.CAP_SQUARE,
+        "butt": constants.Cap.BUTT,
+        "round": constants.Cap.ROUND,
+        "square": constants.Cap.SQUARE,
     }
 
     joins = {
-        "miter": constants.JOIN_MITER,
-        "round": constants.JOIN_ROUND,
-        "bevel": constants.JOIN_BEVEL,
+        "miter": constants.Join.MITER,
+        "round": constants.Join.ROUND,
+        "bevel": constants.Join.BEVEL,
     }
 
-    fill_rules = {"nonzero": constants.FILL, "evenodd": constants.EOF_FILL}
+    fill_rules = {"nonzero": constants.DrawingMode.FILL, "evenodd": constants.DrawingMode.EOF_FILL}
 
     def __init__(self):
         pass
@@ -408,14 +408,14 @@ class Renderer(NullRenderer):
 
     @classmethod
     def getFont(cls, font_name="Arial"):
-        kiva_style = constants.NORMAL
+        kiva_style = constants.FontStyle.NORMAL
         if "-" in font_name:
             font_name, style = font_name.split("-", 2)
             style = style.lower()
             if "bold" in style:
-                kiva_style += constants.BOLD
+                kiva_style |= constants.FontStyle.BOLD
             if "italic" in style:
-                kiva_style += constants.ITALIC
+                kiva_style |= constants.FontStyle.ITALIC
         return Font(font_name, style=kiva_style)
 
     @classmethod
