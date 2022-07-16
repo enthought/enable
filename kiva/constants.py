@@ -58,18 +58,33 @@ JOIN_MITER = Join.MITER
 class DrawingMode(IntFlag):
     """Drawing mode flags.
 
+    FILL
+        Paint the path using the nonzero winding rule
+        to determine the regions for painting.
+
+    EOF_FILL
+        Paint the path using the even-odd fill rule.
+
+    STROKE
+        Draw the outline of the path with the
+        current width, end caps, etc settings.
+
     Note that FILL and EOF_FILL are mutually exclusive, so modes 3
     and 7 aren't valid.
+
+    Outlines are stroked after any filling is performed.
     """
     FILL = 1
     EOF_FILL = 2
     STROKE = 4
+    FILL_STROKE = 5
+    EOF_FILL_STROKE = 6
 
 FILL = DrawingMode.FILL
 EOF_FILL = DrawingMode.EOF_FILL
 STROKE = DrawingMode.STROKE
-FILL_STROKE = DrawingMode.FILL | DrawingMode.STROKE
-EOF_FILL_STROKE = DrawingMode.EOF_FILL | DrawingMode.STROKE
+FILL_STROKE = DrawingMode.FILL_STROKE
+EOF_FILL_STROKE = DrawingMode.EOF_FILL_STROKE
 
 # -----------------------------------------------------------------------------
 # Font Constants
@@ -140,7 +155,36 @@ WEIGHT_EXTRAHEAVY = FontWeight.EXTRAHEAVY
 # -----------------------------------------------------------------------------
 
 class TextMode(IntEnum):
-    """Text drawing mode."""
+    """Text drawing mode.
+    
+    Determines how text is drawn to the screen.  If a CLIP flag is set, the
+    font outline is added to the clipping path. Possible values:
+
+    FILL
+        fill the text
+
+    STROKE
+        paint the outline
+
+    FILL_STROKE
+        fill and outline
+
+    INVISIBLE
+        paint it invisibly ??
+
+    FILL_CLIP
+        fill and add outline clipping path
+
+    STROKE_CLIP
+        outline and add outline to clipping path
+
+    FILL_STROKE_CLIP
+        fill, outline, and add to clipping path
+
+    CLIP
+        add text outline to clipping path
+
+    """
     FILL = 0
     STROKE = 1
     FILL_STROKE = 2

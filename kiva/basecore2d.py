@@ -32,12 +32,7 @@ import numpy as np
 from numpy import alltrue, array, asarray, concatenate, float64, pi, shape
 
 from .constants import (
-    CAP_BUTT, CAP_ROUND, CAP_SQUARE, CLOSE, CONCAT_CTM, EOF_FILL_STROKE,
-    EOF_FILL, FILL_STROKE, FILL, JOIN_BEVEL, JOIN_MITER, JOIN_ROUND, LINE,
-    LINES, LOAD_CTM, NO_DASH, POINT, RECT, ROTATE_CTM, SCALE_CTM, STROKE,
-    TEXT_CLIP, TEXT_FILL_CLIP, TEXT_FILL_STROKE_CLIP, TEXT_FILL_STROKE,
-    TEXT_FILL, TEXT_INVISIBLE, TEXT_OUTLINE, TEXT_STROKE_CLIP, TEXT_STROKE,
-    TRANSLATE_CTM,
+    Cap, DrawingMode, DrawingPrimitive, CTM, Join, NO_DASH, TextMode,
 )
 from .abstract_graphics_context import AbstractGraphicsContext
 from .line_state import LineState, line_state_equal
@@ -54,11 +49,11 @@ import kiva.affine as affine
 
 
 def is_point(tup):
-    return tup[0] == POINT
+    return tup[0] == DrawingPrimitive.POINT
 
 
 def is_line(tup):
-    return tup[0] == LINE
+    return tup[0] == DrawingPrimitive.LINE
 
 
 def is_fully_transparent(color):
@@ -158,7 +153,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
                 The new scale factor for the y axis
         """
         self.state.ctm = affine.scale(self.state.ctm, sx, sy)
-        self.active_subpath.append((SCALE_CTM, (sx, sy)))
+        self.active_subpath.append((CTM.SCALE, (sx, sy)))
         self.path_transform_indices.append(len(self.active_subpath) - 1)
 
     def translate_ctm(self, tx, ty):
@@ -172,7 +167,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
                 The distance to move in the y direction
         """
         self.state.ctm = affine.translate(self.state.ctm, tx, ty)
-        self.active_subpath.append((TRANSLATE_CTM, (tx, ty)))
+        self.active_subpath.append((CTM.TRANSLATE, (tx, ty)))
         self.path_transform_indices.append(len(self.active_subpath) - 1)
 
     def rotate_ctm(self, angle):
@@ -184,7 +179,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
                 the angle, in radians, to rotate the coordinate system
         """
         self.state.ctm = affine.rotate(self.state.ctm, angle)
-        self.active_subpath.append((ROTATE_CTM, (angle,)))
+        self.active_subpath.append((CTM.ROTATE, (angle,)))
         self.path_transform_indices.append(len(self.active_subpath) - 1)
 
     def concat_ctm(self, transform):
@@ -197,7 +192,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
                 the current coordinate matrix.
         """
         self.state.ctm = affine.concat(self.state.ctm, transform)
-        self.active_subpath.append((CONCAT_CTM, (transform,)))
+        self.active_subpath.append((CTM.CONCAT, (transform,)))
         self.path_transform_indices.append(len(self.active_subpath) - 1)
 
     def get_ctm(self):
@@ -209,7 +204,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """ Returns the current coordinate transform matrix.
         """
         self.state.ctm = transform
-        self.active_subpath.append((LOAD_CTM, (transform,)))
+        self.active_subpath.append((CTM.LOAD, (transform,)))
         self.path_transform_indices.append(len(self.active_subpath) - 1)
 
     # ----------------------------------------------------------------
@@ -229,7 +224,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
     def restore_state(self):
         """ Restores the previous graphics state. """
         self.state = self.state_stack.pop(-1)
-        self.active_subpath.append((LOAD_CTM, (self.state.ctm,)))
+        self.active_subpath.append((CTM.LOAD, (self.state.ctm,)))
         self.path_transform_indices.append(len(self.active_subpath) - 1)
 
     # ----------------------------------------------------------------
@@ -289,17 +284,17 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         self.state.line_state.line_width = width
 
-    def set_line_join(self, style):
+    def set_line_join(self, style: Join):
         """ Sets the style for joining lines in a drawing.
 
         Parameters
         ----------
         style : join_style
             The line joining style.  The available
-            styles are JOIN_ROUND, JOIN_BEVEL, JOIN_MITER.
+            styles are Join.ROUND, Join.BEVEL, Join.MITER.
 
         """
-        if style not in (JOIN_ROUND, JOIN_BEVEL, JOIN_MITER):
+        if not isinstance(style, Join):
             msg = "Invalid line join style. See documentation for valid styles"
             raise ValueError(msg)
         self.state.line_state.line_join = style
@@ -323,17 +318,17 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         self.state.miter_limit = limit
 
-    def set_line_cap(self, style):
+    def set_line_cap(self, style: Cap):
         """ Specifies the style of endings to put on line ends.
 
         Parameters
         ----------
         style : cap_style
             The line cap style to use. Available styles
-            are CAP_ROUND, CAP_BUTT, CAP_SQUARE.
+            are Cap.ROUND, Cap.BUTT, Cap.SQUARE.
 
         """
-        if style not in (CAP_ROUND, CAP_BUTT, CAP_SQUARE):
+        if not isinstance(style, Cap):
             msg = "Invalid line cap style.  See documentation for valid styles"
             raise ValueError(msg)
         self.state.line_state.line_cap = style
@@ -458,7 +453,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
 
         pt = array((x, y), dtype=float64)
         self.state.current_point = pt
-        self.active_subpath.append((POINT, pt))
+        self.active_subpath.append((DrawingPrimitive.POINT, pt))
 
     def line_to(self, x, y):
         """ Adds a line from the current point to the given point (x, y).
@@ -473,7 +468,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         pt = array((x, y), dtype=float64)
         self.state.current_point = pt
-        self.active_subpath.append((LINE, pt))
+        self.active_subpath.append((DrawingPrimitive.LINE, pt))
 
     def lines(self, points):
         """ Adds a series of lines as a new subpath.
@@ -488,7 +483,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         self._new_subpath()
         pts = points
-        self.active_subpath.append((LINES, pts))
+        self.active_subpath.append((DrawingPrimitive.LINES, pts))
         self.state.current_point = points[-1]
 
     def line_set(self, starts, ends):
@@ -506,8 +501,8 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         self._new_subpath()
         for i in range(min(len(starts), len(ends))):
-            self.active_subpath.append((POINT, starts[i]))
-            self.active_subpath.append((LINE, ends[i]))
+            self.active_subpath.append((DrawingPrimitive.POINT, starts[i]))
+            self.active_subpath.append((DrawingPrimitive.LINE, ends[i]))
         self.state.current_point = ends[i]
 
     def rect(self, x, y, sx, sy):
@@ -534,7 +529,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
 
             Currently starts a new subpath -- is this what we want?
         """
-        self.active_subpath.append((CLOSE, (tag,)))
+        self.active_subpath.append((DrawingPrimitive.CLOSE, (tag,)))
         self._new_subpath()
 
     def curve_to(self, x_ctrl1, y_ctrl1, x_ctrl2, y_ctrl2, x_to, y_to):
@@ -574,7 +569,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
                 y0*u3 + 3*(y_ctrl1*t*u2 + y_ctrl2*t2*u) + y_to*t3,
             ]
         )
-        self.active_subpath.append((LINES, pts))
+        self.active_subpath.append((DrawingPrimitive.LINES, pts))
         self.state.current_point = pts[-1]
 
     def quad_curve_to(self, x_ctrl, y_ctrl, x_to, y_to):
@@ -635,7 +630,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         theta = np.linspace(start_angle, end_angle, n)
         pts = radius * np.column_stack([np.cos(theta), np.sin(theta)])
         pts += np.array([x, y])
-        self.active_subpath.append((LINES, pts))
+        self.active_subpath.append((DrawingPrimitive.LINES, pts))
         self.state.current_point = pts[-1]
 
     def arc_to(self, x1, y1, x2, y2, radius):
@@ -938,43 +933,10 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """ Gets the amount of additional spacing between text characters. """
         return self.state.character_spacing
 
-    def set_text_drawing_mode(self, mode):
+    def set_text_drawing_mode(self, mode: TextMode):
         """ Specifies whether text is drawn filled or outlined or both.
-
-            Parameters
-            ----------
-
-            mode
-                determines how text is drawn to the screen.  If
-                a CLIP flag is set, the font outline is added to the
-                clipping path. Possible values:
-
-                    TEXT_FILL
-                        fill the text
-                    TEXT_STROKE
-                        paint the outline
-                    TEXT_FILL_STROKE
-                        fill and outline
-                    TEXT_INVISIBLE
-                        paint it invisibly ??
-                    TEXT_FILL_CLIP
-                        fill and add outline clipping path
-                    TEXT_STROKE_CLIP
-                        outline and add outline to clipping path
-                    TEXT_FILL_STROKE_CLIP
-                        fill, outline, and add to clipping path
-                    TEXT_CLIP
-                        add text outline to clipping path
-
-            Note:
-                wxPython currently ignores all but the INVISIBLE flag.
         """
-        text_modes = (
-            TEXT_FILL, TEXT_STROKE, TEXT_FILL_STROKE, TEXT_INVISIBLE,
-            TEXT_FILL_CLIP, TEXT_STROKE_CLIP, TEXT_FILL_STROKE_CLIP, TEXT_CLIP,
-            TEXT_OUTLINE,
-        )
-        if mode not in text_modes:
+        if not isinstance(mode, TextMode):
             msg = (
                 "Invalid text drawing mode.  See documentation for valid "
                 + "modes"
@@ -1070,78 +1032,55 @@ class GraphicsContextBase(AbstractGraphicsContext):
         pass
 
     def stroke_path(self):
-        self.draw_path(mode=STROKE)
+        self.draw_path(mode=DrawingMode.STROKE)
 
     def fill_path(self):
-        self.draw_path(mode=FILL)
+        self.draw_path(mode=DrawingMode.FILL)
 
     def eof_fill_path(self):
-        self.draw_path(mode=EOF_FILL)
+        self.draw_path(mode=DrawingMode.EOF_FILL)
 
-    def draw_path(self, mode=FILL_STROKE):
-        """ Walks through all the drawing subpaths and draw each element.
+    def draw_path(self, mode: DrawingMode = DrawingMode.FILL_STROKE):
+        """Walk through all the drawing subpaths and draw each element.
 
-            Each subpath is drawn separately.
-
-            Parameters
-            ----------
-            mode
-                Specifies how the subpaths are drawn.  The default is
-                FILL_STROKE.  The following are valid values.
-
-                    FILL
-                        Paint the path using the nonzero winding rule
-                        to determine the regions for painting.
-                    EOF_FILL
-                        Paint the path using the even-odd fill rule.
-                    STROKE
-                        Draw the outline of the path with the
-                        current width, end caps, etc settings.
-                    FILL_STROKE
-                        First fill the path using the nonzero
-                        winding rule, then stroke the path.
-                    EOF_FILL_STROKE
-                        First fill the path using the even-odd
-                        fill method, then stroke the path.
+        Each subpath is drawn separately.
         """
-        # ---------------------------------------------------------------------
-        # FILL AND STROKE settings are handled by setting the alpha value of
+        # FILL and STROKE settings are handled by setting the alpha value of
         # the line and fill colors to zero (transparent) if stroke or fill
         # is not needed.
-        # ---------------------------------------------------------------------
 
         old_line_alpha = self.state.line_state.line_color[3]
         old_fill_alpha = self.state.fill_color[3]
-        if mode not in [STROKE, FILL_STROKE, EOF_FILL_STROKE]:
+        if not (mode & DrawingMode.STROKE):
             self.state.line_state.line_color[3] = 0.0
-        if mode not in [FILL, EOF_FILL, FILL_STROKE, EOF_FILL_STROKE]:
+        if not (mode & (DrawingMode.FILL | DrawingMode.EOF_FILL)):
             self.state.fill_color[3] = 0.0
 
         self.device_update_line_state()
         self.device_update_fill_state()
 
         ctm_funcs = (
-            SCALE_CTM, ROTATE_CTM, TRANSLATE_CTM, CONCAT_CTM, LOAD_CTM,
+            CTM.SCALE, CTM.ROTATE, CTM.TRANSLATE, CTM.CONCAT, CTM.LOAD,
         )
         for subpath in self.path:
             # reset the current point for drawing.
             self.clear_subpath_points()
             for func, args in subpath:
-                if func == POINT:
+                if func == DrawingPrimitive.POINT:
                     self.draw_subpath(mode)
                     self.add_point_to_subpath(args)
                     self.first_point = args
-                elif func == LINE:
+                elif func == DrawingPrimitive.LINE:
                     self.add_point_to_subpath(args)
-                elif func == LINES:
+                elif func == DrawingPrimitive.LINES:
                     self.draw_subpath(mode)
                     # add all points in list to subpath.
                     self.add_point_to_subpath(args)
                     self.first_point = args[0]
-                elif func == CLOSE:
+                elif func == DrawingPrimitive.CLOSE:
                     self.add_point_to_subpath(self.first_point)
                     self.draw_subpath(mode)
-                elif func == RECT:
+                elif func == DrawingPrimitive.RECT:
                     self.draw_subpath(mode)
                     self.device_draw_rect(
                         args[0], args[1], args[2], args[3], mode
@@ -1175,17 +1114,17 @@ class GraphicsContextBase(AbstractGraphicsContext):
             OpenGL, can benefit from overriding the method and using
             hardware acceleration.
         """
-        if func == SCALE_CTM:
+        if func == CTM.SCALE:
             self.device_ctm = affine.scale(self.device_ctm, args[0], args[1])
-        elif func == ROTATE_CTM:
+        elif func == CTM.ROTATE:
             self.device_ctm = affine.rotate(self.device_ctm, args[0])
-        elif func == TRANSLATE_CTM:
+        elif func == CTM.TRANSLATE:
             self.device_ctm = affine.translate(
                 self.device_ctm, args[0], args[1]
             )
-        elif func == CONCAT_CTM:
+        elif func == CTM.CONCAT:
             self.device_ctm = affine.concat(self.device_ctm, args[0])
-        elif func == LOAD_CTM:
+        elif func == CTM.LOAD:
             self.device_ctm = args[0].copy()
 
     def device_draw_rect(self, x, y, sx, sy, mode):
@@ -1255,7 +1194,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
             pts = asarray(self.draw_points)
         return pts
 
-    def draw_subpath(self, mode):
+    def draw_subpath(self, mode: DrawingMode):
         """ Fills and strokes the point path.
 
             After the path is drawn, the subpath point list is
