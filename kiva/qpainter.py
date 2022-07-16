@@ -26,14 +26,14 @@ from kiva import constants
 __all__ = ["CompiledPath", "Font", "font_metrics_provider", "GraphicsContext"]
 
 cap_style = {}
-cap_style[constants.Cap.ROUND] = QtCore.Qt.RoundCap
-cap_style[constants.Cap.SQUARE] = QtCore.Qt.SquareCap
-cap_style[constants.Cap.BUTT] = QtCore.Qt.FlatCap
+cap_style[constants.LineCap.ROUND] = QtCore.Qt.RoundCap
+cap_style[constants.LineCap.SQUARE] = QtCore.Qt.SquareCap
+cap_style[constants.LineCap.BUTT] = QtCore.Qt.FlatCap
 
 join_style = {}
-join_style[constants.Join.ROUND] = QtCore.Qt.RoundJoin
-join_style[constants.Join.BEVEL] = QtCore.Qt.BevelJoin
-join_style[constants.Join.MITER] = QtCore.Qt.MiterJoin
+join_style[constants.LineJoin.ROUND] = QtCore.Qt.RoundJoin
+join_style[constants.LineJoin.BEVEL] = QtCore.Qt.BevelJoin
+join_style[constants.LineJoin.MITER] = QtCore.Qt.MiterJoin
 
 draw_modes = {}
 draw_modes[constants.DrawingMode.FILL] = QtCore.Qt.OddEvenFill

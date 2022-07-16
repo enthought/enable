@@ -25,7 +25,7 @@ from numpy import arange, ndarray, ravel
 # Local, relative Kiva imports
 from . import affine
 from . import basecore2d
-from .constants import Cap, CTM, DrawingMode, Join
+from .constants import LineCap, CTM, DrawingMode, LineJoin
 
 # This backend does not have compiled paths, yet.
 CompiledPath = None
@@ -56,15 +56,15 @@ def default_filter(kw1):
 
 
 line_cap_map = {
-    Cap.BUTT: 0,
-    Cap.ROUND: 1,
-    Cap.SQUARE: 2,
+    LineCap.BUTT: 0,
+    LineCap.ROUND: 1,
+    LineCap.SQUARE: 2,
 }
 
 line_join_map = {
-    Join.MITER: 0,
-    Join.ROUND: 1,
-    Join.BEVEL: 2,
+    LineJoin.MITER: 0,
+    LineJoin.ROUND: 1,
+    LineJoin.BEVEL: 2,
 }
 
 font_map = {"Arial": "Helvetica"}

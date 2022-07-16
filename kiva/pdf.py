@@ -40,14 +40,14 @@ from kiva.fonttools.font import Font
 
 
 cap_style = {}
-cap_style[constants.Cap.ROUND] = 1
-cap_style[constants.Cap.SQUARE] = 2
-cap_style[constants.Cap.BUTT] = 0
+cap_style[constants.LineCap.ROUND] = 1
+cap_style[constants.LineCap.SQUARE] = 2
+cap_style[constants.LineCap.BUTT] = 0
 
 join_style = {}
-join_style[constants.Join.ROUND] = 1
-join_style[constants.Join.BEVEL] = 2
-join_style[constants.Join.MITER] = 0
+join_style[constants.LineJoin.ROUND] = 1
+join_style[constants.LineJoin.BEVEL] = 2
+join_style[constants.LineJoin.MITER] = 0
 
 font_styles = {}
 font_styles["regular"] = ""

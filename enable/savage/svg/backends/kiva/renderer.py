@@ -100,8 +100,8 @@ class Pen(object):
     def __init__(self, color):
         # fixme: what format is the color passed in? int or float
         self.color = color
-        self.cap = constants.Cap.BUTT
-        self.join = constants.Join.MITER
+        self.cap = constants.LineCap.BUTT
+        self.join = constants.LineJoin.MITER
         self.width = 1
         self.dasharray = None
         self.dashoffset = 0.0
@@ -348,15 +348,15 @@ class Renderer(NullRenderer):
     TransparentPen = Pen((1.0, 1.0, 1.0, 0.0))
 
     caps = {
-        "butt": constants.Cap.BUTT,
-        "round": constants.Cap.ROUND,
-        "square": constants.Cap.SQUARE,
+        "butt": constants.LineCap.BUTT,
+        "round": constants.LineCap.ROUND,
+        "square": constants.LineCap.SQUARE,
     }
 
     joins = {
-        "miter": constants.Join.MITER,
-        "round": constants.Join.ROUND,
-        "bevel": constants.Join.BEVEL,
+        "miter": constants.LineJoin.MITER,
+        "round": constants.LineJoin.ROUND,
+        "bevel": constants.LineJoin.BEVEL,
     }
 
     fill_rules = {"nonzero": constants.DrawingMode.FILL, "evenodd": constants.DrawingMode.EOF_FILL}

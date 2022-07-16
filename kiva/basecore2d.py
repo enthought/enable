@@ -32,7 +32,7 @@ import numpy as np
 from numpy import alltrue, array, asarray, concatenate, float64, pi, shape
 
 from .constants import (
-    Cap, DrawingMode, DrawingPrimitive, CTM, Join, NO_DASH, TextMode,
+    LineCap, DrawingMode, PathPrimitive, CTM, LineJoin, NO_DASH, TextMode,
 )
 from .abstract_graphics_context import AbstractGraphicsContext
 from .line_state import LineState, line_state_equal
@@ -49,11 +49,11 @@ import kiva.affine as affine
 
 
 def is_point(tup):
-    return tup[0] == DrawingPrimitive.POINT
+    return tup[0] == PathPrimitive.POINT
 
 
 def is_line(tup):
-    return tup[0] == DrawingPrimitive.LINE
+    return tup[0] == PathPrimitive.LINE
 
 
 def is_fully_transparent(color):
@@ -284,7 +284,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         self.state.line_state.line_width = width
 
-    def set_line_join(self, style: Join):
+    def set_line_join(self, style: LineJoin):
         """ Sets the style for joining lines in a drawing.
 
         Parameters
@@ -294,7 +294,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
             styles are Join.ROUND, Join.BEVEL, Join.MITER.
 
         """
-        if not isinstance(style, Join):
+        if not isinstance(style, LineJoin):
             msg = "Invalid line join style. See documentation for valid styles"
             raise ValueError(msg)
         self.state.line_state.line_join = style
@@ -318,7 +318,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         self.state.miter_limit = limit
 
-    def set_line_cap(self, style: Cap):
+    def set_line_cap(self, style: LineCap):
         """ Specifies the style of endings to put on line ends.
 
         Parameters
@@ -328,7 +328,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
             are Cap.ROUND, Cap.BUTT, Cap.SQUARE.
 
         """
-        if not isinstance(style, Cap):
+        if not isinstance(style, LineCap):
             msg = "Invalid line cap style.  See documentation for valid styles"
             raise ValueError(msg)
         self.state.line_state.line_cap = style
@@ -453,7 +453,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
 
         pt = array((x, y), dtype=float64)
         self.state.current_point = pt
-        self.active_subpath.append((DrawingPrimitive.POINT, pt))
+        self.active_subpath.append((PathPrimitive.POINT, pt))
 
     def line_to(self, x, y):
         """ Adds a line from the current point to the given point (x, y).
@@ -468,7 +468,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         pt = array((x, y), dtype=float64)
         self.state.current_point = pt
-        self.active_subpath.append((DrawingPrimitive.LINE, pt))
+        self.active_subpath.append((PathPrimitive.LINE, pt))
 
     def lines(self, points):
         """ Adds a series of lines as a new subpath.
@@ -483,7 +483,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         self._new_subpath()
         pts = points
-        self.active_subpath.append((DrawingPrimitive.LINES, pts))
+        self.active_subpath.append((PathPrimitive.LINES, pts))
         self.state.current_point = points[-1]
 
     def line_set(self, starts, ends):
@@ -501,8 +501,8 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         self._new_subpath()
         for i in range(min(len(starts), len(ends))):
-            self.active_subpath.append((DrawingPrimitive.POINT, starts[i]))
-            self.active_subpath.append((DrawingPrimitive.LINE, ends[i]))
+            self.active_subpath.append((PathPrimitive.POINT, starts[i]))
+            self.active_subpath.append((PathPrimitive.LINE, ends[i]))
         self.state.current_point = ends[i]
 
     def rect(self, x, y, sx, sy):
@@ -529,7 +529,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
 
             Currently starts a new subpath -- is this what we want?
         """
-        self.active_subpath.append((DrawingPrimitive.CLOSE, (tag,)))
+        self.active_subpath.append((PathPrimitive.CLOSE, (tag,)))
         self._new_subpath()
 
     def curve_to(self, x_ctrl1, y_ctrl1, x_ctrl2, y_ctrl2, x_to, y_to):
@@ -569,7 +569,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
                 y0*u3 + 3*(y_ctrl1*t*u2 + y_ctrl2*t2*u) + y_to*t3,
             ]
         )
-        self.active_subpath.append((DrawingPrimitive.LINES, pts))
+        self.active_subpath.append((PathPrimitive.LINES, pts))
         self.state.current_point = pts[-1]
 
     def quad_curve_to(self, x_ctrl, y_ctrl, x_to, y_to):
@@ -630,7 +630,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         theta = np.linspace(start_angle, end_angle, n)
         pts = radius * np.column_stack([np.cos(theta), np.sin(theta)])
         pts += np.array([x, y])
-        self.active_subpath.append((DrawingPrimitive.LINES, pts))
+        self.active_subpath.append((PathPrimitive.LINES, pts))
         self.state.current_point = pts[-1]
 
     def arc_to(self, x1, y1, x2, y2, radius):
@@ -1066,21 +1066,21 @@ class GraphicsContextBase(AbstractGraphicsContext):
             # reset the current point for drawing.
             self.clear_subpath_points()
             for func, args in subpath:
-                if func == DrawingPrimitive.POINT:
+                if func == PathPrimitive.POINT:
                     self.draw_subpath(mode)
                     self.add_point_to_subpath(args)
                     self.first_point = args
-                elif func == DrawingPrimitive.LINE:
+                elif func == PathPrimitive.LINE:
                     self.add_point_to_subpath(args)
-                elif func == DrawingPrimitive.LINES:
+                elif func == PathPrimitive.LINES:
                     self.draw_subpath(mode)
                     # add all points in list to subpath.
                     self.add_point_to_subpath(args)
                     self.first_point = args[0]
-                elif func == DrawingPrimitive.CLOSE:
+                elif func == PathPrimitive.CLOSE:
                     self.add_point_to_subpath(self.first_point)
                     self.draw_subpath(mode)
-                elif func == DrawingPrimitive.RECT:
+                elif func == PathPrimitive.RECT:
                     self.draw_subpath(mode)
                     self.device_draw_rect(
                         args[0], args[1], args[2], args[3], mode

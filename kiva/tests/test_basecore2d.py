@@ -50,8 +50,8 @@ class LineStateTestCase(unittest.TestCase):
     def create_ls(self):
         color = array([0, 0, 0, 1])
         width = 2
-        join = constants.JOIN_MITER
-        cap = constants.CAP_ROUND
+        join = constants.LineJoin.MITER
+        cap = constants.LineCap.ROUND
         phase = 0
         pattern = array([5, 5])
         dash = (phase, pattern)
@@ -190,13 +190,13 @@ class GraphicsContextTestCase(unittest.TestCase):
     def test_state_line_join(self):
         gc = basecore2d.GraphicsContextBase()
         # defaults to JOIN_MITER
-        self.assertEqual(gc.state.line_state.line_join, constants.JOIN_MITER)
-        gc.set_line_join(constants.JOIN_BEVEL)
+        self.assertEqual(gc.state.line_state.line_join, constants.LineJoin.MITER)
+        gc.set_line_join(constants.LineJoin.BEVEL)
         gc.save_state()
-        gc.set_line_join(constants.JOIN_ROUND)
-        self.assertEqual(gc.state.line_state.line_join, constants.JOIN_ROUND)
+        gc.set_line_join(constants.LineJoin.ROUND)
+        self.assertEqual(gc.state.line_state.line_join, constants.LineJoin.ROUND)
         gc.restore_state()
-        self.assertEqual(gc.state.line_state.line_join, constants.JOIN_BEVEL)
+        self.assertEqual(gc.state.line_state.line_join, constants.LineJoin.BEVEL)
         # set_line_join should fail if one attempts to set a bad value.
         self.assertRaises(ValueError, gc.set_line_join, (100,))
 
@@ -214,13 +214,13 @@ class GraphicsContextTestCase(unittest.TestCase):
     def test_state_line_cap(self):
         gc = basecore2d.GraphicsContextBase()
         # defaults to CAP_ROUND
-        self.assertEqual(gc.state.line_state.line_cap, constants.CAP_ROUND)
-        gc.set_line_cap(constants.CAP_BUTT)
+        self.assertEqual(gc.state.line_state.line_cap, constants.LineCap.ROUND)
+        gc.set_line_cap(constants.LineCap.BUTT)
         gc.save_state()
-        gc.set_line_cap(constants.CAP_SQUARE)
-        self.assertEqual(gc.state.line_state.line_cap, constants.CAP_SQUARE)
+        gc.set_line_cap(constants.LineCap.SQUARE)
+        self.assertEqual(gc.state.line_state.line_cap, constants.LineCap.SQUARE)
         gc.restore_state()
-        self.assertEqual(gc.state.line_state.line_cap, constants.CAP_BUTT)
+        self.assertEqual(gc.state.line_state.line_cap, constants.LineCap.BUTT)
         # set_line_cap should fail if one attempts to set a bad value.
         self.assertRaises(ValueError, gc.set_line_cap, (100,))
 
@@ -318,13 +318,13 @@ class GraphicsContextTestCase(unittest.TestCase):
     def test_state_text_drawing_mode(self):
         gc = basecore2d.GraphicsContextBase()
         # defaults to None
-        self.assertEqual(gc.state.text_drawing_mode, constants.TEXT_FILL)
-        gc.set_text_drawing_mode(constants.TEXT_OUTLINE)
+        self.assertEqual(gc.state.text_drawing_mode, constants.TextMode.FILL)
+        gc.set_text_drawing_mode(constants.TextMode.OUTLINE)
         gc.save_state()
-        gc.set_text_drawing_mode(constants.TEXT_CLIP)
-        self.assertEqual(gc.state.text_drawing_mode, constants.TEXT_CLIP)
+        gc.set_text_drawing_mode(constants.TextMode.CLIP)
+        self.assertEqual(gc.state.text_drawing_mode, constants.TextMode.CLIP)
         gc.restore_state()
-        self.assertEqual(gc.state.text_drawing_mode, constants.TEXT_OUTLINE)
+        self.assertEqual(gc.state.text_drawing_mode, constants.TextMode.OUTLINE)
         # try an unacceptable value.
         self.assertRaises(ValueError, gc.set_text_drawing_mode, (10,))
 

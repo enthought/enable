@@ -22,14 +22,14 @@ from kiva.fonttools import Font
 __all__ = ["CompiledPath", "Font", "font_metrics_provider", "GraphicsContext"]
 
 cap_style = {
-    constants.Cap.BUTT: blend2d.StrokeCap.CAP_BUTT,
-    constants.Cap.ROUND: blend2d.StrokeCap.CAP_ROUND,
-    constants.Cap.SQUARE: blend2d.StrokeCap.CAP_SQUARE,
+    constants.LineCap.BUTT: blend2d.StrokeCap.CAP_BUTT,
+    constants.LineCap.ROUND: blend2d.StrokeCap.CAP_ROUND,
+    constants.LineCap.SQUARE: blend2d.StrokeCap.CAP_SQUARE,
 }
 join_style = {
-    constants.Join.ROUND: blend2d.StrokeJoin.JOIN_ROUND,
-    constants.Join.BEVEL: blend2d.StrokeJoin.JOIN_BEVEL,
-    constants.Join.MITER: blend2d.StrokeJoin.JOIN_MITER_BEVEL,
+    constants.LineJoin.ROUND: blend2d.StrokeJoin.JOIN_ROUND,
+    constants.LineJoin.BEVEL: blend2d.StrokeJoin.JOIN_BEVEL,
+    constants.LineJoin.MITER: blend2d.StrokeJoin.JOIN_MITER_BEVEL,
 }
 gradient_spread_modes = {
     "pad": blend2d.ExtendMode.PAD,
@@ -161,7 +161,7 @@ class GraphicsContext(object):
         """ Set the width of the pen used to stroke a path """
         self.gc.set_stroke_width(width)
 
-    def set_line_join(self, style: constants.Join):
+    def set_line_join(self, style: constants.LineJoin):
         """ Set the style of join to use a path corners
         """
         try:
@@ -178,7 +178,7 @@ class GraphicsContext(object):
         """
         self.gc.set_stroke_miter_limit(limit)
 
-    def set_line_cap(self, style: constants.Cap):
+    def set_line_cap(self, style: constants.LineCap):
         """ Set the style of cap to use a path ends
         """
         try:

@@ -27,15 +27,15 @@ from . import basecore2d, constants
 
 
 line_join = {
-    constants.Join.BEVEL: cairo.LINE_JOIN_BEVEL,
-    constants.Join.MITER: cairo.LINE_JOIN_MITER,
-    constants.Join.ROUND: cairo.LINE_JOIN_ROUND,
+    constants.LineJoin.BEVEL: cairo.LINE_JOIN_BEVEL,
+    constants.LineJoin.MITER: cairo.LINE_JOIN_MITER,
+    constants.LineJoin.ROUND: cairo.LINE_JOIN_ROUND,
 }
 
 line_cap = {
-    constants.Cap.BUTT: cairo.LINE_CAP_BUTT,
-    constants.Cap.ROUND: cairo.LINE_CAP_ROUND,
-    constants.Cap.SQUARE: cairo.LINE_CAP_SQUARE,
+    constants.LineCap.BUTT: cairo.LINE_CAP_BUTT,
+    constants.LineCap.ROUND: cairo.LINE_CAP_ROUND,
+    constants.LineCap.SQUARE: cairo.LINE_CAP_SQUARE,
 }
 
 font_slant = {
@@ -354,7 +354,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         self._ctx.set_line_width(width)
 
-    def set_line_join(self, style: constants.Join):
+    def set_line_join(self, style: constants.LineJoin):
         """ Sets the style for joining lines in a drawing.
 
             Parameters
@@ -387,7 +387,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         self._ctx.set_miter_limit(limit)
 
-    def set_line_cap(self, style: constants.Cap):
+    def set_line_cap(self, style: constants.LineCap):
         """ Specifies the style of endings to put on line ends.
 
             Parameters

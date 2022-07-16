@@ -26,14 +26,14 @@ from kiva.marker_renderer import MarkerRenderer
 __all__ = ["CompiledPath", "Font", "font_metrics_provider", "GraphicsContext"]
 
 cap_style = {
-    constants.Cap.ROUND: agg.LineCap.CapRound,
-    constants.Cap.SQUARE: agg.LineCap.CapSquare,
-    constants.Cap.BUTT: agg.LineCap.CapButt,
+    constants.LineCap.ROUND: agg.LineCap.CapRound,
+    constants.LineCap.SQUARE: agg.LineCap.CapSquare,
+    constants.LineCap.BUTT: agg.LineCap.CapButt,
 }
 join_style = {
-    constants.Join.ROUND: agg.LineJoin.JoinRound,
-    constants.Join.BEVEL: agg.LineJoin.JoinBevel,
-    constants.Join.MITER: agg.LineJoin.JoinMiter,
+    constants.LineJoin.ROUND: agg.LineJoin.JoinRound,
+    constants.LineJoin.BEVEL: agg.LineJoin.JoinBevel,
+    constants.LineJoin.MITER: agg.LineJoin.JoinMiter,
 }
 draw_modes = {
     constants.DrawingMode.FILL: agg.DrawingMode.DrawFill,

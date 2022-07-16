@@ -15,7 +15,7 @@ from time import perf_counter
 from numpy import array, shape, arange, transpose, sin, cos, zeros, pi
 from scipy import stats
 
-import kiva
+from kiva import constants
 from kiva import agg
 
 
@@ -86,11 +86,11 @@ def benchmark_draw_path_flags(cycles=10, n_pts=1000, sz=(1000, 1000)):
     x[:] = arange(0, width, interval)
 
     flags = [
-        kiva.FILL,
-        kiva.EOF_FILL,
-        kiva.STROKE,
-        kiva.FILL_STROKE,
-        kiva.EOF_FILL_STROKE,
+        constants.FILL,
+        constants.EOF_FILL,
+        constants.STROKE,
+        constants.FILL_STROKE,
+        constants.EOF_FILL_STROKE,
     ]
 
     for flag in flags:

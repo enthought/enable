@@ -12,7 +12,7 @@ import tempfile
 from enable.api import ConstraintsContainer
 from enable.examples._example_support import DemoFrame, demo_main
 from enable.primitives.image import Image
-from kiva.constants import Cap, Join
+from kiva.constants import LineCap, LineJoin
 from kiva.image import GraphicsContext
 
 
@@ -20,8 +20,8 @@ def simple():
     gc = GraphicsContext((100, 100))
 
     gc.clear()
-    gc.set_line_cap(Cap.SQUARE)
-    gc.set_line_join(Join.MITER)
+    gc.set_line_cap(LineCap.SQUARE)
+    gc.set_line_join(LineJoin.MITER)
     gc.set_stroke_color((1, 0, 0))
     gc.set_fill_color((0, 0, 1))
     gc.rect(0, 0, 30, 30)

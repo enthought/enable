@@ -67,15 +67,15 @@ def default_filter(kw1):
 
 
 line_cap_map = {
-    constants.Cap.ROUND: "round",
-    constants.Cap.SQUARE: "square",
-    constants.Cap.BUTT: "butt",
+    constants.LineCap.ROUND: "round",
+    constants.LineCap.SQUARE: "square",
+    constants.LineCap.BUTT: "butt",
 }
 
 line_join_map = {
-    constants.Join.ROUND: "round",
-    constants.Join.BEVEL: "bevel",
-    constants.Join.MITER: "miter",
+    constants.LineJoin.ROUND: "round",
+    constants.LineJoin.BEVEL: "bevel",
+    constants.LineJoin.MITER: "miter",
 }
 
 xmltemplate = """<?xml version="1.0"?>

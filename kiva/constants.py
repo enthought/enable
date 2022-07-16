@@ -23,29 +23,29 @@ del array
 # Line Cap Constants
 # --------------------------------------------------------------------
 
-class Cap(IntEnum):
+class LineCap(IntEnum):
     "Line cap styles."
     ROUND = 0
     BUTT = 1
     SQUARE = 2
 
-CAP_ROUND = Cap.ROUND
-CAP_BUTT = Cap.BUTT
-CAP_SQUARE = Cap.SQUARE
+CAP_ROUND = LineCap.ROUND
+CAP_BUTT = LineCap.BUTT
+CAP_SQUARE = LineCap.SQUARE
 
 # --------------------------------------------------------------------
 # Line Join Constants
 # --------------------------------------------------------------------
 
-class Join(IntEnum):
+class LineJoin(IntEnum):
     "Line join styles."
     ROUND = 0
     BEVEL = 1
     MITER = 2
 
-JOIN_ROUND = Join.ROUND
-JOIN_BEVEL = Join.BEVEL
-JOIN_MITER = Join.MITER
+JOIN_ROUND = LineJoin.ROUND
+JOIN_BEVEL = LineJoin.BEVEL
+JOIN_MITER = LineJoin.MITER
 
 # --------------------------------------------------------------------
 # Path Drawing Mode Constants
@@ -211,7 +211,7 @@ TEXT_OUTLINE = TextMode.OUTLINE
 # Used by the drawing state machine to determine what object to draw.
 # -----------------------------------------------------------------------------
 
-class DrawingPrimitive(IntEnum):
+class PathPrimitive(IntEnum):
     """Subpath drawing primitive constants
     
     Used by the drawing state machine to determine what object to draw.
@@ -226,15 +226,15 @@ class DrawingPrimitive(IntEnum):
     ARC = 7
     ARC_TO = 8
 
-POINT = DrawingPrimitive.POINT
-LINE = DrawingPrimitive.LINE
-LINES = DrawingPrimitive.LINES
-RECT = DrawingPrimitive.RECT
-CLOSE = DrawingPrimitive.CLOSE
-CURVE_TO = DrawingPrimitive.CURVE_TO
-QUAD_CURVE_TO = DrawingPrimitive.QUAD_CURVE_TO
-ARC = DrawingPrimitive.ARC
-ARC_TO = DrawingPrimitive.ARC_TO
+POINT = PathPrimitive.POINT
+LINE = PathPrimitive.LINE
+LINES = PathPrimitive.LINES
+RECT = PathPrimitive.RECT
+CLOSE = PathPrimitive.CLOSE
+CURVE_TO = PathPrimitive.CURVE_TO
+QUAD_CURVE_TO = PathPrimitive.QUAD_CURVE_TO
+ARC = PathPrimitive.ARC
+ARC_TO = PathPrimitive.ARC_TO
 
 
 # -----------------------------------------------------------------------------
