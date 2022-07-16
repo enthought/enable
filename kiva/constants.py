@@ -9,6 +9,8 @@
 # Thanks for using Enthought open source!
 """ Constants used by core2d drawing engine. """
 
+from enum import IntEnum, IntFlag
+
 from numpy import array
 
 # --------------------------------------------------------------------
@@ -21,17 +23,29 @@ del array
 # Line Cap Constants
 # --------------------------------------------------------------------
 
-CAP_ROUND = 0
-CAP_BUTT = 1
-CAP_SQUARE = 2
+class Cap(IntEnum):
+    "Line cap styles."
+    ROUND = 0
+    BUTT = 1
+    SQUARE = 2
+
+CAP_ROUND = Cap.ROUND
+CAP_BUTT = Cap.BUTT
+CAP_SQUARE = Cap.SQUARE
 
 # --------------------------------------------------------------------
 # Line Join Constants
 # --------------------------------------------------------------------
 
-JOIN_ROUND = 0
-JOIN_BEVEL = 1
-JOIN_MITER = 2
+class Join(IntEnum):
+    "Line join styles."
+    ROUND = 0
+    BEVEL = 1
+    MITER = 2
+
+JOIN_ROUND = Join.ROUND
+JOIN_BEVEL = Join.BEVEL
+JOIN_MITER = Join.MITER
 
 # --------------------------------------------------------------------
 # Path Drawing Mode Constants
@@ -41,59 +55,111 @@ JOIN_MITER = 2
 # C version.
 # --------------------------------------------------------------------
 
-FILL = 1
-EOF_FILL = 2
-STROKE = 4
-FILL_STROKE = 5
-EOF_FILL_STROKE = 6
+class DrawingMode(IntFlag):
+    """Drawing mode flags.
+
+    Note that FILL and EOF_FILL are mutually exclusive, so modes 3
+    and 7 aren't valid.
+    """
+    FILL = 1
+    EOF_FILL = 2
+    STROKE = 4
+
+FILL = DrawingMode.FILL
+EOF_FILL = DrawingMode.EOF_FILL
+STROKE = DrawingMode.STROKE
+FILL_STROKE = DrawingMode.FILL | DrawingMode.STROKE
+EOF_FILL_STROKE = DrawingMode.EOF_FILL | DrawingMode.STROKE
 
 # -----------------------------------------------------------------------------
 # Font Constants
 # -----------------------------------------------------------------------------
 
-NORMAL = 0
-BOLD = 1
-ITALIC = 2
-BOLD_ITALIC = 3
+class FontStyle(IntFlag):
+    """Basic font styles."""
+    NORMAL = 0
+    BOLD = 1
+    ITALIC = 2
+
+NORMAL = FontStyle.NORMAL
+BOLD = FontStyle.BOLD
+ITALIC = FontStyle.ITALIC
+BOLD_ITALIC = FontStyle.BOLD | FontStyle.ITALIC
 
 # convenience sets for styles
 bold_styles = {BOLD, BOLD_ITALIC}
 italic_styles = {ITALIC, BOLD_ITALIC}
 
 # Font families, as defined by the Windows API, and their CSS equivalents
-DEFAULT = 0
-SWISS = 1  # Sans-serif
-ROMAN = 2  # Serif
-MODERN = 3  # Monospace
-DECORATIVE = 4  # Fantasy
-SCRIPT = 5  # Cursive
-TELETYPE = 6
+class FontFamily(IntEnum):
+    """Standard font family names"""
+    DEFAULT = 0
+    SWISS = 1  # Sans-serif
+    ROMAN = 2  # Serif
+    MODERN = 3  # Monospace
+    DECORATIVE = 4  # Fantasy
+    SCRIPT = 5  # Cursive
+    TELETYPE = 6
+
+DEFAULT = FontFamily.DEFAULT
+SWISS = FontFamily.SWISS
+ROMAN = FontFamily.ROMAN
+MODERN = FontFamily.MODERN
+DECORATIVE = FontFamily.DECORATIVE
+SCRIPT = FontFamily.SCRIPT
+TELETYPE = FontFamily.TELETYPE
+
 
 # Font weight constants
-WEIGHT_THIN = 100
-WEIGHT_EXTRALIGHT = 200
-WEIGHT_LIGHT = 300
-WEIGHT_NORMAL = 400
-WEIGHT_MEDIUM = 500
-WEIGHT_SEMIBOLD = 600
-WEIGHT_BOLD = 700
-WEIGHT_EXTRABOLD = 800
-WEIGHT_HEAVY = 900
-WEIGHT_EXTRAHEAVY = 1000
+class FontWeight(IntEnum):
+    """Font weights"""
+    THIN = 100
+    EXTRALIGHT = 200
+    LIGHT = 300
+    NORMAL = 400
+    MEDIUM = 500
+    SEMIBOLD = 600
+    BOLD = 700
+    EXTRABOLD = 800
+    HEAVY = 900
+    EXTRAHEAVY = 1000
+
+WEIGHT_THIN = FontWeight.THIN
+WEIGHT_EXTRALIGHT = FontWeight.EXTRALIGHT
+WEIGHT_LIGHT = FontWeight.LIGHT
+WEIGHT_NORMAL = FontWeight.NORMAL
+WEIGHT_MEDIUM = FontWeight.MEDIUM
+WEIGHT_SEMIBOLD = FontWeight.SEMIBOLD
+WEIGHT_BOLD = FontWeight.BOLD
+WEIGHT_EXTRABOLD = FontWeight.EXTRABOLD
+WEIGHT_HEAVY = FontWeight.HEAVY
+WEIGHT_EXTRAHEAVY = FontWeight.EXTRAHEAVY
 
 # -----------------------------------------------------------------------------
 # Text Drawing Mode Constants
 # -----------------------------------------------------------------------------
 
-TEXT_FILL = 0
-TEXT_STROKE = 1
-TEXT_FILL_STROKE = 2
-TEXT_INVISIBLE = 3
-TEXT_FILL_CLIP = 4
-TEXT_STROKE_CLIP = 5
-TEXT_FILL_STROKE_CLIP = 6
-TEXT_CLIP = 7
-TEXT_OUTLINE = 8
+class TextMode(IntEnum):
+    """Text drawing mode."""
+    FILL = 0
+    STROKE = 1
+    FILL_STROKE = 2
+    INVISIBLE = 3
+    FILL_CLIP = 4
+    STROKE_CLIP = 5
+    FILL_STROKE_CLIP = 6
+    CLIP = 7
+    OUTLINE = 8
+
+TEXT_FILL = TextMode.FILL
+TEXT_STROKE = TextMode.STROKE
+TEXT_FILL_STROKE = TextMode.FILL_STROKE
+TEXT_INVISIBLE = TextMode.INVISIBLE
+TEXT_FILL_CLIP = TextMode.FILL_CLIP
+TEXT_STROKE_CLIP = TextMode.STROKE_CLIP
+TEXT_FILL_STROKE_CLIP = TextMode.FILL_STROKE_CLIP
+TEXT_CLIP = TextMode.CLIP
+TEXT_OUTLINE = TextMode.OUTLINE
 
 # -----------------------------------------------------------------------------
 # Subpath Drawing Primitive Constants
@@ -101,29 +167,56 @@ TEXT_OUTLINE = 8
 # Used by the drawing state machine to determine what object to draw.
 # -----------------------------------------------------------------------------
 
-POINT = 0
-LINE = 1
-LINES = 2
-RECT = 3
-CLOSE = 4
-CURVE_TO = 5
-QUAD_CURVE_TO = 6
-ARC = 7
-ARC_TO = 8
+class DrawingPrimitive(IntEnum):
+    """Subpath drawing primitive constants
+    
+    Used by the drawing state machine to determine what object to draw.
+    """
+    POINT = 0
+    LINE = 1
+    LINES = 2
+    RECT = 3
+    CLOSE = 4
+    CURVE_TO = 5
+    QUAD_CURVE_TO = 6
+    ARC = 7
+    ARC_TO = 8
+
+POINT = DrawingPrimitive.POINT
+LINE = DrawingPrimitive.LINE
+LINES = DrawingPrimitive.LINES
+RECT = DrawingPrimitive.RECT
+CLOSE = DrawingPrimitive.CLOSE
+CURVE_TO = DrawingPrimitive.CURVE_TO
+QUAD_CURVE_TO = DrawingPrimitive.QUAD_CURVE_TO
+ARC = DrawingPrimitive.ARC
+ARC_TO = DrawingPrimitive.ARC_TO
 
 
 # -----------------------------------------------------------------------------
 # Subpath CTM Constants
 #
 # These are added so its possible for OpenGL to do the matrix transformations
-# on the data (its much faster than doing it with Numeric).
+# on the data (its much faster than doing it with NumPy).
 # -----------------------------------------------------------------------------
 
-SCALE_CTM = 5
-TRANSLATE_CTM = 6
-ROTATE_CTM = 7
-CONCAT_CTM = 8
-LOAD_CTM = 9
+class CTM(IntEnum):
+    """Subpath CTM Constants
+
+    These are added so its possible for OpenGL to do the matrix transformations
+    on the data (its much faster than doing it with NumPy).
+    """
+    SCALE = 5
+    TRANSLATE = 6
+    ROTATE = 7
+    CONCAT = 8
+    LOAD = 9
+
+SCALE_CTM = CTM.SCALE
+TRANSLATE_CTM = CTM.TRANSLATE
+ROTATE_CTM = CTM.ROTATE
+CONCAT_CTM = CTM.CONCAT
+LOAD_CTM = CTM.LOAD
 
 
 # -----------------------------------------------------------------------------
@@ -136,14 +229,35 @@ LOAD_CTM = 9
 # Note that draw_marker_at_points takes a marker name as a string.
 # -----------------------------------------------------------------------------
 
-NO_MARKER = 0
-SQUARE_MARKER = 1
-DIAMOND_MARKER = 2
-CIRCLE_MARKER = 3
-CROSSED_CIRCLE_MARKER = 4
-CROSS_MARKER = 5
-TRIANGLE_MARKER = 6
-INVERTED_TRIANGLE_MARKER = 7
-PLUS_MARKER = 8
-DOT_MARKER = 9
-PIXEL_MARKER = 10
+class Marker(IntEnum):
+    """Marker Types
+
+    These are the marker types for draw_marker_at_points.  Some backends
+    (like Agg) have fast implementations for these; other backends manually
+    construct the paths representing these markers.
+    
+    Note that draw_marker_at_points takes a marker name as a string.
+    """
+    NONE = 0
+    SQUARE = 1
+    DIAMOND = 2
+    CIRCLE = 3
+    CROSSED_CIRCLE = 4
+    CROSS = 5
+    TRIANGLE = 6
+    INVERTED_TRIANGLE = 7
+    PLUS = 8
+    DOT = 9
+    PIXEL = 10
+
+NO_MARKER = Marker.NONE
+SQUARE_MARKER = Marker.SQUARE
+DIAMOND_MARKER = Marker.DIAMOND
+CIRCLE_MARKER = Marker.CIRCLE
+CROSSED_CIRCLE_MARKER = Marker.CROSSED_CIRCLE
+CROSS_MARKER = Marker.CROSS
+TRIANGLE_MARKER = Marker.TRIANGLE
+INVERTED_TRIANGLE_MARKER = Marker.INVERTED_TRIANGLE
+PLUS_MARKER = Marker.PLUS
+DOT_MARKER = Marker.DOT
+PIXEL_MARKER = Marker.PIXEL
