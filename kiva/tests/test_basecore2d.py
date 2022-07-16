@@ -50,8 +50,8 @@ class LineStateTestCase(unittest.TestCase):
     def create_ls(self):
         color = array([0, 0, 0, 1])
         width = 2
-        join = basecore2d.JOIN_MITER
-        cap = basecore2d.CAP_ROUND
+        join = constants.JOIN_MITER
+        cap = constants.CAP_ROUND
         phase = 0
         pattern = array([5, 5])
         dash = (phase, pattern)
