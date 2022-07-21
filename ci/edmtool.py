@@ -94,7 +94,6 @@ dependencies = {
         "apptools",
         "celiagg",
         "coverage",
-        "Cython",
         "fonttools",
         "kiwisolver",
         "numpy",
@@ -104,15 +103,14 @@ dependencies = {
         "pyparsing",
         "pypdf2",
         "reportlab",
-        "swig",
         "traits",
         "traitsui",
+        "wheel",
     },
     '3.8': {
         "apptools",
         "celiagg",
         "coverage",
-        "Cython",
         "fonttools",
         "kiwisolver",
         "numpy",
@@ -120,9 +118,9 @@ dependencies = {
         "pyface",
         "pygments",
         "pyparsing",
-        "swig",
         "traits",
         "traitsui",
+        "wheel",
     }
 }
 
