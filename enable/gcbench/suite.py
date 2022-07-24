@@ -22,6 +22,7 @@ import math
 import numpy as np
 
 import kiva.api as kiva_api
+import kiva.fonttools.font as kiva_font
 
 
 def gen_image():
@@ -235,6 +236,25 @@ class show_text:
                 self.gc.set_text_position(4, y)
                 self.gc.show_text(line)
                 y -= self.font.size * 1.4
+
+
+class show_text_font_styles:
+    def __init__(self, gc, module):
+        self.gc = gc
+    
+    def __call__(self):
+        names = ["default", "sans", "serif", "mono", "fantasy", "script", "type"]
+        for i, family in enumerate(kiva_font.Font.familymap):
+            x = 75 * i + 6.0
+            for j, style in enumerate([kiva_api.NORMAL, kiva_api.ITALIC]):
+                for k, weight in enumerate(kiva_font.WEIGHTS.values()):
+                    y = 48 * k + 24 * j + 6.0
+                    font = kiva_font.Font(size=18, family=family, style=style, weight=weight)
+                    with self.gc:
+                        self.gc.set_fill_color((0.5, 0.5, 0.0, 1.0))
+                        self.gc.set_font(font)
+                        self.gc.set_text_position(x, y)
+                        self.gc.show_text(names[i])
 
 
 class draw_path_linear_gradient:
