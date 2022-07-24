@@ -96,6 +96,90 @@ class draw_rect:
             self.gc.fill_path()
 
 
+class draw_arcs:
+    def __init__(self, gc, module):
+        self.gc = gc
+    
+    def __call__(self):
+        with self.gc:
+            self.gc.set_fill_color((0.33, 0.66, 0.99, 1.0))
+            self.gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
+            for i in range(-5, 11):
+                x = (i + 5) * 32 + 16.0
+                start = i * np.pi / 2
+                for j in range(-5, 11):
+                    y = (j + 5) * 32 + 16.0
+                    end = j * np.pi / 2
+                    with self.gc:
+                        self.gc.begin_path()
+                        self.gc.arc(x, y, 12.0, start, end)
+                        self.gc.draw_path()
+
+
+class draw_arcs_clockwise:
+    def __init__(self, gc, module):
+        self.gc = gc
+    
+    def __call__(self):
+        with self.gc:
+            self.gc.set_fill_color((0.33, 0.66, 0.99, 1.0))
+            self.gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
+            for i in range(-5, 11):
+                x = (i + 5) * 32 + 16.0
+                start = i * np.pi / 2
+                for j in range(-5, 11):
+                    y = (j + 5) * 32 + 16.0
+                    end = j * np.pi / 2
+                    with self.gc:
+                        self.gc.begin_path()
+                        self.gc.arc(x, y, 12.0, start, end, True)
+                        self.gc.draw_path()
+
+
+class draw_arc_path:
+    def __init__(self, gc, module):
+        self.gc = gc
+    
+    def __call__(self):
+         with self.gc:
+            self.gc.set_fill_color((0.33, 0.66, 0.99, 1.0))
+            self.gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
+            for i in range(-5, 11):
+                x = (i + 5) * 32 + 16.0
+                start = i * np.pi / 2
+                for j in range(-5, 11):
+                    y = (j + 5) * 32 + 16.0
+                    end = j * np.pi / 2
+                    with self.gc:
+                        self.gc.begin_path()
+                        self.gc.move_to(x - 12, y - 12)
+                        self.gc.arc(x, y, 12.0, start, end)
+                        self.gc.line_to(x - 12, y - 12)
+                        self.gc.draw_path()
+
+
+class draw_arc_path:
+    def __init__(self, gc, module):
+        self.gc = gc
+    
+    def __call__(self):
+         with self.gc:
+            self.gc.set_fill_color((0.33, 0.66, 0.99, 1.0))
+            self.gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
+            for i in range(-5, 11):
+                x = (i + 5) * 32 + 16.0
+                start = i * np.pi / 2
+                for j in range(-5, 11):
+                    y = (j + 5) * 32 + 16.0
+                    end = j * np.pi / 2
+                    with self.gc:
+                        self.gc.begin_path()
+                        self.gc.move_to(x, y)
+                        self.gc.arc(x, y, 12.0, start, end, True)
+                        self.gc.line_to(x, y)
+                        self.gc.draw_path()
+
+
 class draw_marker_at_points:
     def __init__(self, gc, module):
         self.points = gen_points(1000)
