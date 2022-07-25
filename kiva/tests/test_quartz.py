@@ -25,11 +25,6 @@ class TestQuartz(unittest.TestCase):
 
     @skip_if_not_wx
     def test_macport(self):
-        if sys.platform != "darwin":
-            from unittest.case import SkipTest
-
-            raise SkipTest("macport is only built on OS X")
-
         import wx
 
         from kiva.quartz import get_macport

@@ -17,14 +17,14 @@ include "CoreText.pxi"
 cdef object _cf_string_to_pystring(CFStringRef cf_string):
     cdef char* c_string
     cdef char buf[256]
-    c_string = CFStringGetCStringPtr(cf_string, kCFStringEncodingMacRoman)
+    c_string = CFStringGetCStringPtr(cf_string, kCFStringEncodingUTF8)
     if c_string == NULL:
         success = CFStringGetCString(cf_string, buf, 256,
-                    kCFStringEncodingMacRoman)
+                    kCFStringEncodingUTF8)
         retval = bytes(buf)
     else:
         retval = bytes(c_string)
-    return retval.decode('mac-roman')
+    return retval.decode('utf-8')
 
 cdef CFArrayRef _get_system_fonts():
         cdef CFIndex value = 1
