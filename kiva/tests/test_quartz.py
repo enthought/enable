@@ -34,6 +34,8 @@ class TestQuartz(unittest.TestCase):
 
         from kiva.quartz import get_macport
 
+        success = []
+
         class SimpleWindow(wx.Frame):
             """
             Simple test of get_macport().
@@ -62,10 +64,10 @@ class TestQuartz(unittest.TestCase):
                 try:
                     print("paintdc.macport: %x" % get_macport(dc))
                     print("memdc.macport: %x" % get_macport(self.memdc))
-                    self.success = True
+                    success.append(True)
                 except Exception as exc:
                     print(repr(exc))
-                    self.success = False
+                    success.append(False)
 
                 # We're done here
                 self.Close()
@@ -78,7 +80,8 @@ class TestQuartz(unittest.TestCase):
         app = MyApp(False)
         app.MainLoop()
 
-        self.assertTrue(app.success)
+        self.assertEqual(len(success), 1)
+        self.assertTrue(success[0])
 
     def test_font_names(self):
         from kiva.quartz.CTFont import default_font_info
