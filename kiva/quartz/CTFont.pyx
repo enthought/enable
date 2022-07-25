@@ -21,10 +21,10 @@ cdef object _cf_string_to_pystring(CFStringRef cf_string):
     if c_string == NULL:
         success = CFStringGetCString(cf_string, buf, 256,
                     kCFStringEncodingMacRoman)
-        retval = str(buf)
+        retval = bytes(buf)
     else:
-        retval = str(c_string)
-    return retval
+        retval = bytes(c_string)
+    return retval.decode('mac-roman')
 
 cdef CFArrayRef _get_system_fonts():
         cdef CFIndex value = 1
