@@ -59,10 +59,13 @@ class TestQuartz(unittest.TestCase):
 
             def OnPaint(self, evt):
                 dc = wx.PaintDC(self)
-                print("paintdc.this:", dc.this)
-                print("paintdc.macport: %x" % get_macport(dc))
-                print("memdc.this:", self.memdc.this)
-                print("memdc.macport: %x" % get_macport(self.memdc))
+                try:
+                    print("paintdc.macport: %x" % get_macport(dc))
+                    print("memdc.macport: %x" % get_macport(self.memdc))
+                    self.success = True
+                except Exception as exc:
+                    print(repr(exc))
+                    self.success = False
 
                 # We're done here
                 self.Close()
@@ -74,6 +77,8 @@ class TestQuartz(unittest.TestCase):
 
         app = MyApp(False)
         app.MainLoop()
+
+        self.assertTrue(app.success)
 
     def test_font_names(self):
         from kiva.quartz.CTFont import default_font_info
