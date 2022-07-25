@@ -12,6 +12,7 @@
 This is not a public module and should not to be used outside of Kiva.
 """
 
+import sys
 import unittest
 
 from traits.etsconfig.api import ETSConfig
@@ -21,5 +22,11 @@ def is_wx():
     """ Return true if the toolkit backend is wx. """
     return ETSConfig.toolkit == "wx"
 
-
 skip_if_not_wx = unittest.skipIf(not is_wx(), "Test only for wx")
+
+
+def is_mac():
+    return sys.platform == 'darwin'
+
+
+skip_unless_mac = unittest.skipUnless(is_mac(), "Test only on Mac OS")

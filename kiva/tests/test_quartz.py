@@ -10,16 +10,12 @@
 import sys
 import unittest
 
-from kiva.tests._testing import skip_if_not_wx
+from kiva.tests._testing import skip_if_not_wx, skip_unless_mac
 
 
+@skip_unless_mac
 class TestQuartz(unittest.TestCase):
     def test_quartz_importable(self):
-        if sys.platform != "darwin":
-            from unittest.case import SkipTest
-
-            raise SkipTest("quartz is only built on OS X")
-
         from kiva.quartz import ABCGI
         from kiva.quartz import CTFont
         from kiva.quartz import mac_context
