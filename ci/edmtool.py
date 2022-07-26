@@ -104,9 +104,9 @@ dependencies = {
         "pyparsing",
         "pypdf2",
         "reportlab",
-        "swig",
         "traits",
         "traitsui",
+        "wheel",
     },
     '3.8': {
         "apptools",
@@ -120,9 +120,9 @@ dependencies = {
         "pyface",
         "pygments",
         "pyparsing",
-        "swig",
         "traits",
         "traitsui",
+        "wheel",
     }
 }
 
