@@ -1247,13 +1247,6 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """
         if self.draw_points:
             pts = np.vstack(self.draw_points)
-        # if self.draw_points and len(shape(self.draw_points[0])) > 1:
-        #     first_points = self.draw_points[0]
-        #     other_points = asarray(self.draw_points[1:])
-        #     if len(other_points):
-        #         pts = concatenate((first_points, other_points), 0)
-        #     else:
-        #         pts = first_points
         else:
             pts = asarray(self.draw_points)
         return pts
