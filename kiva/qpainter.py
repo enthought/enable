@@ -42,6 +42,16 @@ draw_modes[constants.STROKE] = 0
 draw_modes[constants.FILL_STROKE] = QtCore.Qt.OddEvenFill
 draw_modes[constants.EOF_FILL_STROKE] = QtCore.Qt.WindingFill
 
+font_family_to_style_hint = {
+    constants.DEFAULT: QtGui.QFont.StyleHint.AnyStyle,
+    constants.SWISS: QtGui.QFont.StyleHint.SansSerif,
+    constants.ROMAN: QtGui.QFont.StyleHint.Serif,
+    constants.MODERN: QtGui.QFont.StyleHint.Monospace,
+    constants.TELETYPE: QtGui.QFont.StyleHint.TypeWriter,
+    constants.DECORATIVE: QtGui.QFont.StyleHint.Decorative,
+    constants.SCRIPT: QtGui.QFont.StyleHint.Cursive,
+}
+
 font_styles = {}
 font_styles["regular"] = constants.NORMAL
 font_styles["bold"] = constants.NORMAL
@@ -649,12 +659,26 @@ class GraphicsContext(object):
     def set_font(self, font):
         """ Set the font for the current graphics context.
         """
-        qfont = QtGui.QFont(font.face_name, font.size)
-
+        qfont = QtGui.QFont()
+        qfont.setStyleHint(font_family_to_style_hint[font.family])
+        qfont.setPointSizeF(font.size)
         weight = font._get_weight()
         qfont.setWeight(weight_to_qt_weight[weight])
-
         qfont.setItalic(font.style in constants.italic_styles)
+
+        if font.face_name:
+            name = font.face_name
+        else:
+            # if we don't have a face name, see if Qt can suggest one
+            name = qfont.defaultFamily()
+            if not name:
+                # otherwise use kiva.fonttools to suggest one
+                name = font.findfontname()
+
+        if hasattr(qfont, 'setFamilies'):
+            qfont.setFamilies([name])
+        else:
+            qfont.setFamily(name)
 
         self.gc.setFont(qfont)
 
