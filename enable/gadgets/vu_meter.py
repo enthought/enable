@@ -51,13 +51,13 @@ class VUMeter(Component):
     text = Str("VU")
 
     # Font used to draw `text`.
-    text_font = KivaFont("modern 48")
+    text_font = KivaFont("sans-serif 48")
 
     # Font for the db tick labels.
-    db_tick_font = KivaFont("modern 16")
+    db_tick_font = KivaFont("sans-serif 16")
 
     # Font for the percent tick labels.
-    percent_tick_font = KivaFont("modern 12")
+    percent_tick_font = KivaFont("sans-serif 12")
 
     # beta is the fraction of the of needle that is "hidden".
     # beta == 0 puts the hinge point of the needle on the bottom

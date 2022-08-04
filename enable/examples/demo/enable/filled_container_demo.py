@@ -36,7 +36,7 @@ class MyFilledContainer(Container):
     def _draw_container_mainlayer(self, gc, view_bounds, mode="default"):
         'Draws a filled container with the word "Container" in the center'
         if not self._font:
-            self._font = str_to_font("modern 10")
+            self._font = str_to_font("sans-serif 10")
 
         with gc:
             gc.set_fill_color(self.bgcolor_)
