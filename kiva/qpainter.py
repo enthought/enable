@@ -892,9 +892,16 @@ class CompiledPath(object):
             if not clockwise
             else start_angle - end_angle
         )
-        self.path.moveTo(x, y)
+        if self.is_empty():
+            # if this is the first point of the path, don't draw a line
+            # to the start point
+            self.path.moveTo(
+                x + r * np.cos(start_angle),
+                y + r * np.sin(start_angle),
+            )
+        # draw arc flipped in y-axis because QPainter has origin-up
         self.path.arcTo(
-            QtCore.QRectF(x - r, y - r, r * 2, r * 2),
+            QtCore.QRectF(x - r, y + r, r * 2, -r * 2),
             np.rad2deg(start_angle),
             np.rad2deg(sweep_angle),
         )
