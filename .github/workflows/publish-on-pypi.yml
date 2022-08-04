@@ -22,9 +22,9 @@ jobs:
       run: |
         python -m pip install build twine
 
-    - name: Build sdist and wheel
+    - name: Build sdist
       run: |
-        python setup.py sdist
+        python -m build --sdist
 
     - name: Publish to PyPI
 
