@@ -14,8 +14,8 @@ import os
 import unittest
 
 from kiva.constants import (
-    BOLD, BOLD_ITALIC, DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN, SCRIPT, TELETYPE, WEIGHT_BOLD,
-    WEIGHT_LIGHT, WEIGHT_NORMAL, SWISS,
+    BOLD, BOLD_ITALIC, DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN,
+    SCRIPT, TELETYPE, WEIGHT_BOLD, WEIGHT_LIGHT, WEIGHT_NORMAL, SWISS,
 )
 from kiva.fonttools._constants import font_family_aliases, preferred_fonts
 from kiva.fonttools.tests._testing import patch_global_font_manager
