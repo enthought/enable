@@ -184,7 +184,7 @@ class Font(object):
         DEFAULT: "serif",
         SWISS: "sans-serif",
         ROMAN: "serif",
-        MODERN: "sans-serif",
+        MODERN: "monospace",
         DECORATIVE: "fantasy",
         SCRIPT: "script",
         TELETYPE: "monospace",
