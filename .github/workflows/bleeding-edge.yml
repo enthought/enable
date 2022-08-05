@@ -12,9 +12,7 @@ jobs:
   test-ets:
     strategy:
       matrix:
-        # Note that Ubuntu 20 cannot be used because its SWIG version is 4.0
-        # (enthought/enable#360)
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
         toolkit: ['pyside6', 'pyside2', 'wx']
         python-version: [3.8]
     runs-on: ${{ matrix.os }}
@@ -48,7 +46,7 @@ jobs:
         run: |
           python -m pip install -U pip wheel
       - name: Install prebuilt wxPython
-        run: python -m pip install -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04 wxPython
+        run: python -m pip install -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 wxPython
         if: matrix.toolkit == 'wx'
       - name: Install prebuilt celiagg
         run: python -m pip install celiagg
