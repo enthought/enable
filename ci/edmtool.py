@@ -210,7 +210,7 @@ def install(runtime, toolkit, environment, source):
         elif sys.platform == "linux":
             # XXX this is mainly for TravisCI workers; need a generic solution
             commands.append(
-                "edm run -e {environment} -- pip install -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/ wxPython<4.1"  # noqa: E501
+                "edm run -e {environment} -- pip install -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04/ wxPython<4.1"  # noqa: E501
             )
         else:
             commands.append(
