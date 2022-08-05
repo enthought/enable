@@ -938,7 +938,8 @@ cdef class CGContext:
 
         pointer = self.current_font.get_pointer()
         ct_font = <CTFontRef>pointer
-        ct_line = _create_ct_line(text, ct_font, self.stroke_color)
+        # using fill_color here brings rendering in line with Agg backends
+        ct_line = _create_ct_line(text, ct_font, self.fill_color)
         if ct_line == NULL:
             return
 
