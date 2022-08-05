@@ -20,7 +20,7 @@ jobs:
         include:
           - toolkit: 'pyside6'
             runtime: '3.8'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - name: Install Qt dependencies for Linux
