@@ -899,7 +899,7 @@ class CompiledPath(object):
                 x + r * np.cos(start_angle),
                 y + r * np.sin(start_angle),
             )
-        # draw arc flipped in y-axis because QPainter has origin-up
+        # draw arc flipped in y-axis because QPainter has top-left origin
         self.path.arcTo(
             QtCore.QRectF(x - r, y + r, r * 2, -r * 2),
             np.rad2deg(start_angle),
