@@ -675,6 +675,7 @@ class GraphicsContext(object):
                 # otherwise use kiva.fonttools to suggest one
                 name = font.findfontname()
 
+        # setFamilies() was introduced in Qt 5.13
         if hasattr(qfont, 'setFamilies'):
             qfont.setFamilies([name])
         else:
