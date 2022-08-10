@@ -40,6 +40,7 @@ from .constants import (
     TRANSLATE_CTM,
 )
 from .abstract_graphics_context import AbstractGraphicsContext
+from .arc_conversion import arc_to_tangent_points
 from .line_state import LineState, line_state_equal
 from .graphics_state import GraphicsState
 from .fonttools import Font
@@ -639,9 +640,37 @@ class GraphicsContextBase(AbstractGraphicsContext):
         self.state.current_point = pts[-1]
 
     def arc_to(self, x1, y1, x2, y2, radius):
+        """ Draw a circular arc from current point to tangent line
+
+        The arc is tangent to the line from the current point to ``(x1, y1)``,
+        and it is also tangent to the line from ``(x1, y1)`` to ``(x2, y2)``.
+        ``(x1, y1)`` is the imaginary intersection point of the two lines
+        tangent to the arc at the current point and at ``(x2, y2)``.
+
+        If the tangent point on the line from the current point to ``(x1, y1)``
+        is not equal to the current point, a line is drawn to it. Depending on
+        the supplied ``radius``, the tangent point on the line from
+        ``(x1, y1)`` to ``(x2, y2)`` may or may not be ``(x2, y2)``. In either
+        case, the arc is drawn to the point of tangency, which is also the new
+        current point.
+
+        Consider the common case of rounding a rectangle's upper left corner.
+        Let "r" be the radius of rounding. Let the current point be
+        ``(x_left + r, y_top)``. Then ``(x2, y2)`` would be
+        ``(x_left, y_top - radius)``, and ``(x1, y1)`` would be
+        ``(x_left, y_top)``.
+
+        Note: this, like many backends, actually draws a quadratic Bezier curve
+        that approximates the arc.
         """
-        """
-        raise NotImplementedError("arc_to is not implemented")
+        # Get the endpoints on the curve where it touches the line segments
+        t1, t2 = arc_to_tangent_points(
+            self.state.current_point, (x1, y1), (x2, y2), radius
+        )
+
+        # This follows Quartz/Agg/QPainter conventions and stops at t2
+        self.line_to(*t1)
+        self.quad_curve_to(x1, y1, *t2)
 
     def _new_subpath(self):
         """ Starts a new drawing subpath.
@@ -654,7 +683,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
             self.path.append(self.active_subpath)
 
     # ----------------------------------------------------------------
-    # Getting infomration on paths
+    # Getting information on paths
     # ----------------------------------------------------------------
 
     def is_path_empty(self):

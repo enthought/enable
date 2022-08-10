@@ -78,6 +78,27 @@ class DrawingTester(object):
             self.gc.arc(150, 150, 100, 0.0, numpy.pi / 2)
             self.gc.stroke_path()
 
+    def test_arc_to(self):
+        with self.draw_and_check():
+            self.gc.begin_path()
+            self.gc.move_to(0, 50)
+            self.gc.arc_to(0, 150, 100, 150, 50)
+            self.gc.stroke_path()
+
+    def test_quad_curve_to(self):
+        with self.draw_and_check():
+            self.gc.begin_path()
+            self.gc.move_to(0, 50)
+            self.gc.quad_curve_to(0, 100, 50, 100)
+            self.gc.stroke_path()
+
+    def test_curve_to(self):
+        with self.draw_and_check():
+            self.gc.begin_path()
+            self.gc.move_to(300, 100)
+            self.gc.curve_to(230, 150, 270, 250, 200, 200)
+            self.gc.stroke_path()
+
     def test_text(self):
         for family in [
                 DECORATIVE, DEFAULT, ITALIC, MODERN, ROMAN, SCRIPT, TELETYPE]:

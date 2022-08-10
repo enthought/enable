@@ -403,12 +403,6 @@ class GraphicsContext(GraphicsContextBase):
         self.current_pdf_path.curveTo(cp1x, cp1y, cp2x, cp2y, x, y)
         self.current_point = (x, y)
 
-    def quad_curve_to(self, cpx, cpy, x, y):
-        """
-        """
-        msg = "quad curve to not implemented yet on PDF"
-        raise NotImplementedError(msg)
-
     def arc(self, x, y, radius, start_angle, end_angle, clockwise=False):
         """
         """
@@ -422,23 +416,6 @@ class GraphicsContext(GraphicsContextBase):
             (end_angle - start_angle) * 180.0 / pi,
         )
         self.current_point = (x, y)
-
-    def arc_to(self, x1, y1, x2, y2, radius):
-        """
-        """
-        if self.current_pdf_path is None:
-            self.begin_path()
-
-        # Get the endpoints on the curve where it touches the line segments
-        t1, t2 = arc_to_tangent_points(
-            self.current_point, (x1, y1), (x2, y2), radius
-        )
-
-        # draw!
-        self.current_pdf_path.lineTo(*t1)
-        self.current_pdf_path.curveTo(x1, y1, x1, y1, *t2)
-        self.current_pdf_path.lineTo(x2, y2)
-        self.current_point = (x2, y2)
 
     # ----------------------------------------------------------------
     # Getting infomration on paths
