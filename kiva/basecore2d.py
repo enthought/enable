@@ -40,7 +40,7 @@ from .constants import (
     TRANSLATE_CTM,
 )
 from .abstract_graphics_context import AbstractGraphicsContext
-from .line_state import LineState, line_state_equal
+from .line_state import LineState, line_state_equal  # noqa: F401
 from .graphics_state import GraphicsState
 from .fonttools import Font
 import kiva.affine as affine
