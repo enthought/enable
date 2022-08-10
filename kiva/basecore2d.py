@@ -29,7 +29,7 @@ transform
 
 """
 import numpy as np
-from numpy import alltrue, array, asarray, concatenate, float64, pi, shape
+from numpy import alltrue, array, asarray, float64, pi
 
 from .constants import (
     CAP_BUTT, CAP_ROUND, CAP_SQUARE, CLOSE, CONCAT_CTM, EOF_FILL_STROKE,
@@ -40,7 +40,7 @@ from .constants import (
     TRANSLATE_CTM,
 )
 from .abstract_graphics_context import AbstractGraphicsContext
-from .line_state import LineState, line_state_equal
+from .line_state import LineState
 from .graphics_state import GraphicsState
 from .fonttools import Font
 import kiva.affine as affine
