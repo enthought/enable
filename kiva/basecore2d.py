@@ -1236,16 +1236,16 @@ class GraphicsContextBase(AbstractGraphicsContext):
     def clear_subpath_points(self):
         self.draw_points = []
 
-    def get_subpath_points(self, debug=0):
-        """ Gets the points that are in the current path.
+    def get_subpath_points(self, debug=False):
+        """ Gets the points that are in the current subpath as an Nx2 array.
 
-            The first entry in the draw_points list may actually
-            be an array.  If this is true, the other points are
-            converted to an array and concatenated with the first
+        The draw_points attribute holds the current set of points as a
+        list of Nx2 arrays.
         """
         if self.draw_points:
             pts = np.vstack(self.draw_points)
         else:
+            # list is empty, convert to an empty array
             pts = asarray(self.draw_points)
         return pts
 
