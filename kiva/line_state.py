@@ -25,9 +25,9 @@ def exactly_equal(arr1, arr2):
 
 def is_dashed(dash):
     # if all the values in the dash settings are 0, then it is a solid line.
-    result = 0
+    result = False
     if dash is not None and sometrue(asarray(dash[1]) != 0):
-        result = 1
+        result = True
     return result
 
 
