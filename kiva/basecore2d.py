@@ -1054,7 +1054,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
     def show_text_at_point(self, text, x, y):
         """
         """
-        pass
+        self.show_text(text, (x, y))
 
     def show_glyphs_at_point(self):
         """
@@ -1129,17 +1129,16 @@ class GraphicsContextBase(AbstractGraphicsContext):
             for func, args in subpath:
                 if func == POINT:
                     self.draw_subpath(mode)
-                    self.add_point_to_subpath(args)
+                    self.add_point_to_subpath(args.reshape(1, 2))
                     self.first_point = args
                 elif func == LINE:
-                    self.add_point_to_subpath(args)
+                    self.add_point_to_subpath(args.reshape(1, 2))
                 elif func == LINES:
-                    self.draw_subpath(mode)
                     # add all points in list to subpath.
                     self.add_point_to_subpath(args)
                     self.first_point = args[0]
                 elif func == CLOSE:
-                    self.add_point_to_subpath(self.first_point)
+                    self.add_point_to_subpath(self.first_point.reshape(1, 2))
                     self.draw_subpath(mode)
                 elif func == RECT:
                     self.draw_subpath(mode)
@@ -1149,7 +1148,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
                 elif func in ctm_funcs:
                     self.device_transform_device_ctm(func, args)
                 else:
-                    print("oops:", func)
+                    raise RuntimeError(f"Unrecognised subpath term: {func}")
             # finally, draw any remaining paths.
             self.draw_subpath(mode)
 
@@ -1244,13 +1243,8 @@ class GraphicsContextBase(AbstractGraphicsContext):
             be an array.  If this is true, the other points are
             converted to an array and concatenated with the first
         """
-        if self.draw_points and len(shape(self.draw_points[0])) > 1:
-            first_points = self.draw_points[0]
-            other_points = asarray(self.draw_points[1:])
-            if len(other_points):
-                pts = concatenate((first_points, other_points), 0)
-            else:
-                pts = first_points
+        if self.draw_points:
+            pts = np.vstack(self.draw_points)
         else:
             pts = asarray(self.draw_points)
         return pts
