@@ -14,7 +14,7 @@ import numpy as np
 import warnings
 
 # Major package imports.
-from pyface.qt import QtCore, QtGui
+from pyface.qt import QtCore, QtGui, is_qt5
 
 # Local imports.
 from .abstract_graphics_context import AbstractGraphicsContext
@@ -75,7 +75,7 @@ weight_to_qt_weight = {
     constants.WEIGHT_BOLD: QtGui.QFont.Weight.Bold,
     constants.WEIGHT_EXTRABOLD: QtGui.QFont.Weight.ExtraBold,
     constants.WEIGHT_HEAVY: QtGui.QFont.Weight.Black,
-    constants.WEIGHT_EXTRAHEAVY: 99,
+    constants.WEIGHT_EXTRAHEAVY: 99 if is_qt5 else QtGui.QFont.Weight.Black,
 }
 
 gradient_coord_modes = {}
