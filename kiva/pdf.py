@@ -418,7 +418,7 @@ class GraphicsContext(GraphicsContextBase):
         self.current_point = (x, y)
 
     # ----------------------------------------------------------------
-    # Getting infomration on paths
+    # Getting information on paths
     # ----------------------------------------------------------------
 
     def is_path_empty(self):
