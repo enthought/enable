@@ -3,17 +3,19 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>Enable Custom Traits &mdash; enable 5.3.0 documentation</title>
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Enable Custom Traits &mdash; enable 5.3.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '5.3.0',
+        VERSION:     '5.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -24,12 +26,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/clipboard.min.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="enable 5.3.0 documentation" href="../index.html" >
+    <link rel="top" title="enable 5.3.1 documentation" href="../index.html" >
     <link rel="next" title="Enable Toolkit Selection" href="toolkit_selection.html" >
     <link rel="prev" title="Enable Constraints Layout" href="constraints_layout.html" > 
   </head>
@@ -48,7 +52,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">enable 5.3.0 documentation</a></li>
+        <li class="active"><a href="../index.html">enable 5.3.1 documentation</a></li>
 	 
     </ul>
               
@@ -83,42 +87,42 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="enable-custom-traits">
+  <section id="enable-custom-traits">
 <h1>Enable Custom Traits<a class="headerlink" href="#enable-custom-traits" title="Permalink to this headline">¶</a></h1>
 <p>Enable defines several <a class="reference external" href="https://docs.enthought.com/traits">trait types</a> which
 can be used to simplify the generation of values to pass to various APIs
 throughout Enable (and Kiva).</p>
-<div class="section" id="bounds-trait">
+<section id="bounds-trait">
 <h2>bounds_trait<a class="headerlink" href="#bounds-trait" title="Permalink to this headline">¶</a></h2>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">bounds_trait</span></code> represents the bounds of an object. It is a list of two
 values: width and height.</p>
-</div>
-<div class="section" id="colortrait">
+</section>
+<section id="colortrait">
 <h2>ColorTrait<a class="headerlink" href="#colortrait" title="Permalink to this headline">¶</a></h2>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">ColorTrait</span></code> represents an RGBA color. One can assign either tuples
 containing RGBA colors (each component in the range [0, 1]) or a string in
 the form of an HTML color name (“blue” or “#0000FF”).</p>
-</div>
-<div class="section" id="font-trait">
+</section>
+<section id="font-trait">
 <h2>font_trait<a class="headerlink" href="#font-trait" title="Permalink to this headline">¶</a></h2>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">font_trait</span></code> is a synonym for
 <a class="reference internal" href="../api/enable.trait_defs.kiva_font_trait.html#enable.trait_defs.kiva_font_trait.KivaFont" title="enable.trait_defs.kiva_font_trait.KivaFont"><code class="xref py py-class docutils literal notranslate"><span class="pre">enable.trait_defs.kiva_font_trait.KivaFont</span></code></a>. The trait maps a
 font-description string to a valid <a class="reference internal" href="../api/kiva.fonttools.html#kiva.fonttools.Font" title="kiva.fonttools.Font"><code class="xref py py-class docutils literal notranslate"><span class="pre">kiva.fonttools.Font</span></code></a>
 instance which can be passed to <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractGraphicsContext.set_font()</span></code></p>
-</div>
-<div class="section" id="linestyle">
+</section>
+<section id="linestyle">
 <h2>LineStyle<a class="headerlink" href="#linestyle" title="Permalink to this headline">¶</a></h2>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">LineStyle</span></code> represents the dash style of a line drawn with Kiva.
 Allowed values are “solid”, “dot dash”, “dash”, “dot”, or “long dash”.</p>
-</div>
-<div class="section" id="markertrait">
+</section>
+<section id="markertrait">
 <h2>MarkerTrait<a class="headerlink" href="#markertrait" title="Permalink to this headline">¶</a></h2>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">MarkerTrait</span></code> represents a marker which can be drawn by Kiva. Allowed
 values are “square”, “circle”, “triangle”, “inverted_triangle”, “left_triangle”,
 “right_triangle”, “pentagon”, “hexagon”, “hexagon2”, “plus”, “cross”, “star”,
 “cross_plus”, “diamond”, “dot”, or “pixel”.</p>
-</div>
-<div class="section" id="pointer">
+</section>
+<section id="pointer">
 <h2>Pointer<a class="headerlink" href="#pointer" title="Permalink to this headline">¶</a></h2>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">Pointer</span></code> represents the style of a mouse pointer on screen. Allowed
 values are “arrow”, “right arrow”, “blank”, “bullseye”, “char”, “cross”, “hand”,
@@ -127,8 +131,8 @@ values are “arrow”, “right arrow”, “blank”, “bullseye”, “char�
 “size top”, “size bottom”, “size left”, “size right”, “size top right”,
 “size bottom left”, “size top left”, “size bottom right”, “sizing”, “spray can”,
 “wait”, “watch”, or “arrow wait”.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -192,7 +196,7 @@ values are “arrow”, “right arrow”, “blank”, “bullseye”, “char�
         &copy; Copyright 2005-2022 Enthought
       </li>
       <li>
-      Last updated on Apr 28, 2022.
+      Last updated on Aug 12, 2022.
       </li>
       <li>
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.

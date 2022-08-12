@@ -3,17 +3,19 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>kiva.api module &mdash; enable 5.3.0 documentation</title>
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>kiva.api module &mdash; enable 5.3.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '5.3.0',
+        VERSION:     '5.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -24,12 +26,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/clipboard.min.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="enable 5.3.0 documentation" href="../index.html" >
+    <link rel="top" title="enable 5.3.1 documentation" href="../index.html" >
     <link rel="up" title="kiva package" href="kiva.html" >
     <link rel="next" title="kiva.arc_conversion module" href="kiva.arc_conversion.html" >
     <link rel="prev" title="kiva.affine module" href="kiva.affine.html" > 
@@ -49,7 +53,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">enable 5.3.0 documentation</a></li>
+        <li class="active"><a href="../index.html">enable 5.3.1 documentation</a></li>
 	
           <li class="active"><a href="kiva.html" accesskey="U">kiva package</a></li> 
     </ul>
@@ -85,9 +89,9 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="module-kiva.api">
+  <section id="module-kiva.api">
 <span id="kiva-api-module"></span><h1>kiva.api module<a class="headerlink" href="#module-kiva.api" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="affine-transformations">
+<section id="affine-transformations">
 <h2>Affine Transformations<a class="headerlink" href="#affine-transformations" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="kiva.affine.html#kiva.affine.affine_identity" title="kiva.affine.affine_identity"><code class="xref py py-func docutils literal notranslate"><span class="pre">affine_identity()</span></code></a></p></li>
@@ -107,38 +111,38 @@
 <li><p><a class="reference internal" href="kiva.affine.html#kiva.affine.transform_point" title="kiva.affine.transform_point"><code class="xref py py-func docutils literal notranslate"><span class="pre">transform_point()</span></code></a></p></li>
 <li><p><a class="reference internal" href="kiva.affine.html#kiva.affine.transform_points" title="kiva.affine.transform_points"><code class="xref py py-func docutils literal notranslate"><span class="pre">transform_points()</span></code></a></p></li>
 </ul>
-<div class="section" id="constants">
+<section id="constants">
 <h3>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">IDENTITY</span></code> - represents the <a class="reference internal" href="kiva.affine.html#kiva.affine.affine_identity" title="kiva.affine.affine_identity"><code class="xref py py-func docutils literal notranslate"><span class="pre">affine_identity()</span></code></a> matrix.</p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="drawing-constants">
+</section>
+</section>
+<section id="drawing-constants">
 <h2>Drawing Constants<a class="headerlink" href="#drawing-constants" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="line-dash-constants">
+<section id="line-dash-constants">
 <h3>Line Dash Constants<a class="headerlink" href="#line-dash-constants" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">NO_DASH</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="line-cap-constants">
+</section>
+<section id="line-cap-constants">
 <h3>Line Cap Constants<a class="headerlink" href="#line-cap-constants" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">CAP_ROUND</span></code></p></li>
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">CAP_BUTT</span></code></p></li>
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">CAP_SQUARE</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="line-join-constants">
+</section>
+<section id="line-join-constants">
 <h3>Line Join Constants<a class="headerlink" href="#line-join-constants" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">JOIN_ROUND</span></code></p></li>
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">JOIN_BEVEL</span></code></p></li>
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">JOIN_MITER</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="path-drawing-mode-constants">
+</section>
+<section id="path-drawing-mode-constants">
 <h3>Path Drawing Mode Constants<a class="headerlink" href="#path-drawing-mode-constants" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">FILL</span></code></p></li>
@@ -147,8 +151,8 @@
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">FILL_STROKE</span></code></p></li>
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">EOF_FILL_STROKE</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="text-drawing-mode-constants">
+</section>
+<section id="text-drawing-mode-constants">
 <h3>Text Drawing Mode Constants<a class="headerlink" href="#text-drawing-mode-constants" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">TEXT_FILL</span></code></p></li>
@@ -161,8 +165,8 @@
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">TEXT_CLIP</span></code></p></li>
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">TEXT_OUTLINE</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="marker-types">
+</section>
+<section id="marker-types">
 <h3>Marker Types<a class="headerlink" href="#marker-types" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">NO_MARKER</span></code></p></li>
@@ -177,22 +181,22 @@
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">DOT_MARKER</span></code></p></li>
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">PIXEL_MARKER</span></code></p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="marker-renderer">
+</section>
+</section>
+<section id="marker-renderer">
 <h2>Marker Renderer<a class="headerlink" href="#marker-renderer" title="Permalink to this headline">¶</a></h2>
 <p>This can be used by Kiva backends to implement <code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_marker_at_points()</span></code></p>
 <ul class="simple">
 <li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">MarkerRenderer</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="fonts">
+</section>
+<section id="fonts">
 <h2>Fonts<a class="headerlink" href="#fonts" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="kiva.fonttools.font.html#kiva.fonttools.font.Font" title="kiva.fonttools.font.Font"><code class="xref py py-class docutils literal notranslate"><span class="pre">Font</span></code></a></p></li>
 <li><p><a class="reference internal" href="kiva.fonttools.app_font.html#kiva.fonttools.app_font.add_application_fonts" title="kiva.fonttools.app_font.add_application_fonts"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_application_fonts</span></code></a></p></li>
 </ul>
-<div class="section" id="font-constants">
+<section id="font-constants">
 <h3>Font Constants<a class="headerlink" href="#font-constants" title="Permalink to this headline">¶</a></h3>
 <p>Font Sizes</p>
 <ul class="simple">
@@ -211,15 +215,15 @@
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">SCRIPT</span></code></p></li>
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">TELETYPE</span></code></p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="utilities">
+</section>
+</section>
+<section id="utilities">
 <h2>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">points_in_polygon()</span></code></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -296,7 +300,7 @@
         &copy; Copyright 2005-2022 Enthought
       </li>
       <li>
-      Last updated on Apr 28, 2022.
+      Last updated on Aug 12, 2022.
       </li>
       <li>
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.

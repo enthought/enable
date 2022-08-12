@@ -3,17 +3,19 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>Enable Tools &mdash; enable 5.3.0 documentation</title>
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Enable Tools &mdash; enable 5.3.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '5.3.0',
+        VERSION:     '5.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -24,12 +26,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/clipboard.min.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="enable 5.3.0 documentation" href="../index.html" >
+    <link rel="top" title="enable 5.3.1 documentation" href="../index.html" >
     <link rel="next" title="Enable GUI Events" href="events.html" >
     <link rel="prev" title="Enable" href="overview.html" > 
   </head>
@@ -48,7 +52,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">enable 5.3.0 documentation</a></li>
+        <li class="active"><a href="../index.html">enable 5.3.1 documentation</a></li>
 	 
     </ul>
               
@@ -83,17 +87,17 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="enable-tools">
+  <section id="enable-tools">
 <h1>Enable Tools<a class="headerlink" href="#enable-tools" title="Permalink to this headline">¶</a></h1>
 <p>Enable <code class="docutils literal notranslate"><span class="pre">Tools</span></code> are <code class="docutils literal notranslate"><span class="pre">Interator</span></code> subclasses that do not have to have any
 visual representation, and which can be dynamically added and removed from
 components by adding or removing them from the component’s <code class="docutils literal notranslate"><span class="pre">tools</span></code> list.
 This permits developers to quickly build up complex behaviours from simple,
 reproducible parts without having complex inheritance hierarchies.</p>
-<div class="section" id="basic-tools">
+<section id="basic-tools">
 <h2>Basic Tools<a class="headerlink" href="#basic-tools" title="Permalink to this headline">¶</a></h2>
 <p>Enable provides a number of basic tools for common interactions.</p>
-<div class="section" id="buttontool">
+<section id="buttontool">
 <h3>ButtonTool<a class="headerlink" href="#buttontool" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">ButtonTool</span></code> provides basic push-button or checkbox
 interactions, depending on how it is configured.  The primary interface it
@@ -115,35 +119,35 @@ themselves in a highlighted or selected mode when the mouse is down inside
 the button region.  The <code class="xref py py-attr docutils literal notranslate"><span class="pre">down</span></code> trait provides this information
 conveniently, so that users of the tool can change their drawing state and
 request redraws when it changes.</p>
-</div>
-<div class="section" id="dragtool">
+</section>
+<section id="dragtool">
 <h3>DragTool<a class="headerlink" href="#dragtool" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">DragTool</span></code> is an abstract base class that provides basic
 interaction support for draging within Enable.  Many other tools within
 Enable and Chaco use it.</p>
-</div>
-<div class="section" id="hovertool">
+</section>
+<section id="hovertool">
 <h3>HoverTool<a class="headerlink" href="#hovertool" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">HoverTool</span></code> is a simple tool that calls a callback when the
 mouse has been held steadily over the component for a period of time.</p>
-</div>
-<div class="section" id="movetool">
+</section>
+<section id="movetool">
 <h3>MoveTool<a class="headerlink" href="#movetool" title="Permalink to this headline">¶</a></h3>
 <p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">DragTool</span></code> subclass that allows a user to move a component around
 its container by dragging.</p>
-</div>
-<div class="section" id="resizetool">
+</section>
+<section id="resizetool">
 <h3>ResizeTool<a class="headerlink" href="#resizetool" title="Permalink to this headline">¶</a></h3>
 <p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">DragTool</span></code> subclass that allows a user to resize a component by
 dragging from the edges of the component.</p>
-</div>
-<div class="section" id="valuedragtool">
+</section>
+<section id="valuedragtool">
 <h3>ValueDragTool<a class="headerlink" href="#valuedragtool" title="Permalink to this headline">¶</a></h3>
 <p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">DragTool</span></code> subclass that allows a drag operation to set an
 arbitrary value.</p>
-</div>
-</div>
-<div class="section" id="undo-redo-support">
+</section>
+</section>
+<section id="undo-redo-support">
 <h2>Undo/Redo Support<a class="headerlink" href="#undo-redo-support" title="Permalink to this headline">¶</a></h2>
 <p>The <cite>enable.tools.pyface</cite> package has a number of modules that provide
 classes for working with Pyface’s Undo/Redo stack.  This permits Enable
@@ -151,11 +155,11 @@ tools to add Commands to the Undo/Redo stack, and provides variants of the
 MoveTool and ResizeTool that are undoable.</p>
 <p>In addition, a tool is provided which binds keystrokes to send undo and
 redo requests to the Pyface UndoManager.</p>
-<div class="section" id="high-level-tools">
+<section id="high-level-tools">
 <h3>High-Level Tools<a class="headerlink" href="#high-level-tools" title="Permalink to this headline">¶</a></h3>
 <p>There are three tools that provide convenient facilities and reference
 implementations of interacting with the undo/redo stack.</p>
-<div class="section" id="undotool">
+<section id="undotool">
 <h4>UndoTool<a class="headerlink" href="#undotool" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><p>The <code class="docutils literal notranslate"><span class="pre">UndoTool</span></code> binds keystrokes to undo and redo operations.  The
@@ -176,8 +180,8 @@ arrow’:</p>
 </pre></div>
 </div>
 </div></blockquote>
-</div>
-<div class="section" id="movecommandtool">
+</section>
+<section id="movecommandtool">
 <h4>MoveCommandTool<a class="headerlink" href="#movecommandtool" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><p>The <code class="docutils literal notranslate"><span class="pre">MoveCommandTool</span></code> is a subclass of <code class="docutils literal notranslate"><span class="pre">MoveTool</span></code> that by default
@@ -199,8 +203,8 @@ this one can be merged into one single move operation.</p>
 that should expect keyword arguments <code class="docutils literal notranslate"><span class="pre">component</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code> (the new
 position), <code class="docutils literal notranslate"><span class="pre">previous_position</span></code>, and <code class="docutils literal notranslate"><span class="pre">mergeable</span></code>.</p>
 </div></blockquote>
-</div>
-<div class="section" id="resizecommandtool">
+</section>
+<section id="resizecommandtool">
 <h4>ResizeCommandTool<a class="headerlink" href="#resizecommandtool" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><p>The <code class="docutils literal notranslate"><span class="pre">ResizeCommandTool</span></code> is a subclass of <code class="docutils literal notranslate"><span class="pre">ResizeTool</span></code> that issues
@@ -224,9 +228,9 @@ that should expect keyword arguments <code class="docutils literal notranslate">
 rectangle as a tuple <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height)</span></code>), <code class="docutils literal notranslate"><span class="pre">previous_rectangle</span></code>,
 and <code class="docutils literal notranslate"><span class="pre">mergeable</span></code>.</p>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="command-classes">
+</section>
+</section>
+<section id="command-classes">
 <h3>Command Classes<a class="headerlink" href="#command-classes" title="Permalink to this headline">¶</a></h3>
 <p>The library provides some useful <code class="docutils literal notranslate"><span class="pre">Command</span></code> subclasses that users may want
 to create specialized instances or subclass to customize the behaviour
@@ -278,8 +282,8 @@ variant of the component’s class).  Instances can improve this by
 either supplying a full replacement for the <code class="docutils literal notranslate"><span class="pre">name</span></code> attribute, or
 for the <code class="docutils literal notranslate"><span class="pre">component_name</span></code>.</p>
 </div></blockquote>
-</div>
-<div class="section" id="base-classes">
+</section>
+<section id="base-classes">
 <h3>Base Classes<a class="headerlink" href="#base-classes" title="Permalink to this headline">¶</a></h3>
 <p>There are two simple base classes of tools that are potentially of use to
 authors of new tools.</p>
@@ -315,9 +319,9 @@ of the <code class="docutils literal notranslate"><span class="pre">Command</spa
 the component’s class name, with camel-case converted to words.  Users
 are encouraged to override with something even more user-friendly.</p>
 </div></blockquote>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>
@@ -395,7 +399,7 @@ are encouraged to override with something even more user-friendly.</p>
         &copy; Copyright 2005-2022 Enthought
       </li>
       <li>
-      Last updated on Apr 28, 2022.
+      Last updated on Aug 12, 2022.
       </li>
       <li>
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.

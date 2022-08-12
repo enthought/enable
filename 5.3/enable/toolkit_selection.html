@@ -3,17 +3,19 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>Enable Toolkit Selection &mdash; enable 5.3.0 documentation</title>
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Enable Toolkit Selection &mdash; enable 5.3.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '5.3.0',
+        VERSION:     '5.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -24,12 +26,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/clipboard.min.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="enable 5.3.0 documentation" href="../index.html" >
+    <link rel="top" title="enable 5.3.1 documentation" href="../index.html" >
     <link rel="next" title="Testing Enable Components" href="testing.html" >
     <link rel="prev" title="Enable Custom Traits" href="traits.html" > 
   </head>
@@ -48,7 +52,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">enable 5.3.0 documentation</a></li>
+        <li class="active"><a href="../index.html">enable 5.3.1 documentation</a></li>
 	 
     </ul>
               
@@ -83,7 +87,7 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="enable-toolkit-selection">
+  <section id="enable-toolkit-selection">
 <span id="toolkit-selection"></span><h1>Enable Toolkit Selection<a class="headerlink" href="#enable-toolkit-selection" title="Permalink to this headline">¶</a></h1>
 <p>One of the more complicated aspects of Enable is the way in which it selects
 which widget toolkit (Qt, Wx, etc.) to use when constructing a <code class="xref py py-class docutils literal notranslate"><span class="pre">Window</span></code>
@@ -95,7 +99,7 @@ depend on the packages available in the Python environment where code is
 running. For most users, these defaults are sufficient and stable over time. For
 users that have specific needs, the widget toolkit and kiva backend can be
 explicitly specified.</p>
-<div class="section" id="etsconfig">
+<section id="etsconfig">
 <h2>ETSConfig<a class="headerlink" href="#etsconfig" title="Permalink to this headline">¶</a></h2>
 <p>To control toolkit selection directly from application code, one must use
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ETSConfig</span></code>. Specifically, the
@@ -136,8 +140,8 @@ wants to generate plots with Chaco. So you could use the <code class="docutils l
 <p><code class="docutils literal notranslate"><span class="pre">ETSConfig</span></code> has a read-only property <code class="docutils literal notranslate"><span class="pre">kiva_backend</span></code> which you can read if
 you’d like to know which kiva backend is currently selected, in case you haven’t
 explicitly selected a backend.</p>
-</div>
-<div class="section" id="ets-toolkit">
+</section>
+<section id="ets-toolkit">
 <h2>ETS_TOOLKIT<a class="headerlink" href="#ets-toolkit" title="Permalink to this headline">¶</a></h2>
 <p>If you wish to test toolkit/backend combinations <em>without</em> the need for code
 modifications, you can set the <code class="docutils literal notranslate"><span class="pre">ETS_TOOLKIT</span></code> environment variable before
@@ -148,8 +152,8 @@ what that looks like:</p>
 $ python kiva/examples/kiva/kiva_explorer.py
 </pre></div>
 </div>
-</div>
-<div class="section" id="enable-toolkits-entrypoints">
+</section>
+<section id="enable-toolkits-entrypoints">
 <h2>enable.toolkits entrypoints<a class="headerlink" href="#enable-toolkits-entrypoints" title="Permalink to this headline">¶</a></h2>
 <p>The allowed values for <code class="docutils literal notranslate"><span class="pre">ETSConfig.toolkit</span></code> are determined by the
 <code class="docutils literal notranslate"><span class="pre">enable.toolkits</span></code> <a class="reference external" href="https://setuptools.readthedocs.io/en/latest/pkg_resources.html#entry-points">entrypoint</a>. An <code class="docutils literal notranslate"><span class="pre">enable.toolkits</span></code> entrypoint is a
@@ -196,8 +200,8 @@ is used in Enable’s built-in toolkits:</p>
 <span class="n">toolkit</span> <span class="o">=</span> <span class="n">_wrapper</span><span class="p">(</span><span class="n">Toolkit</span><span class="p">(</span><span class="s2">&quot;enable&quot;</span><span class="p">,</span> <span class="s2">&quot;null&quot;</span><span class="p">,</span> <span class="s2">&quot;enable.null&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -258,7 +262,7 @@ is used in Enable’s built-in toolkits:</p>
         &copy; Copyright 2005-2022 Enthought
       </li>
       <li>
-      Last updated on Apr 28, 2022.
+      Last updated on Aug 12, 2022.
       </li>
       <li>
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
