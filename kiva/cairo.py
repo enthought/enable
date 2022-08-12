@@ -710,7 +710,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self._ctx.line_to(x2, y2)
 
     # ----------------------------------------------------------------
-    # Getting infomration on paths
+    # Getting information on paths
     # ----------------------------------------------------------------
 
     def is_path_empty(self):

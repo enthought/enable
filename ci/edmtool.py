@@ -104,9 +104,9 @@ dependencies = {
         "pyparsing",
         "pypdf2",
         "reportlab",
-        "swig",
         "traits",
         "traitsui",
+        "wheel",
     },
     '3.8': {
         "apptools",
@@ -120,9 +120,9 @@ dependencies = {
         "pyface",
         "pygments",
         "pyparsing",
-        "swig",
         "traits",
         "traitsui",
+        "wheel",
     }
 }
 
@@ -293,6 +293,7 @@ def docs(runtime, toolkit, environment):
     ])
     commands = [
         "edm install -y -e {environment} " + packages,
+        "edm run -e {environment} -- python -m pip install sphinx-copybutton",
     ]
     click.echo(
         "Installing documentation tools in  '{environment}'".format(

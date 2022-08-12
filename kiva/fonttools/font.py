@@ -186,7 +186,7 @@ class Font(object):
         ROMAN: "serif",
         MODERN: "sans-serif",
         DECORATIVE: "fantasy",
-        SCRIPT: "script",
+        SCRIPT: "cursive",
         TELETYPE: "monospace",
     }
 
