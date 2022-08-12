@@ -659,7 +659,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         Consider the common case of rounding a rectangle's upper left corner.
         Let "r" be the radius of rounding. Let the current point be
         ``(x_left + r, y_top)``. Then ``(x2, y2)`` would be
-        ``(x_left, y_top - radius)``, and ``(x1, y1)`` would be
+        ``(x_left, y_top - r)``, and ``(x1, y1)`` would be
         ``(x_left, y_top)``.
 
         Note: this, like many backends, actually draws a quadratic Bezier curve

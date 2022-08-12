@@ -26,7 +26,7 @@ class TestSVGDrawing(DrawingTester, unittest.TestCase):
         self.gc.save(filename)
         tree = ElementTree.parse(filename)
         elements = [element for element in tree.iter()]
-        if not len(elements) in [4, 5, 7]:
+        if len(elements) not in {4, 5, 7}:
             self.fail(
                 "The expected number of elements was not found. "
                 + f"Found {len(elements)}."
@@ -42,5 +42,8 @@ class TestSVGDrawing(DrawingTester, unittest.TestCase):
             fp.write(stream)
         tree = ElementTree.parse(filename)
         elements = [element for element in tree.iter()]
-        if not len(elements) in [4, 7]:
-            self.fail("The expected number of elements was not found")
+        if len(elements) not in {4, 7}:
+            self.fail(
+                "The expected number of elements was not found. "
+                + f"Found {len(elements)}."
+            )
