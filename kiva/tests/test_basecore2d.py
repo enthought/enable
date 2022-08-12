@@ -24,6 +24,7 @@ from numpy import alltrue, array, ravel
 from kiva import affine
 from kiva import basecore2d
 from kiva import constants
+from kiva.line_state import line_state_equal
 
 
 class TestIsFullyTransparent(unittest.TestCase):
@@ -70,31 +71,31 @@ class LineStateTestCase(unittest.TestCase):
         ls1 = self.create_ls()
         ls2 = ls1.copy()
         ls1.line_color[1] = 10
-        self.assertTrue(not basecore2d.line_state_equal(ls1, ls2))
+        self.assertTrue(not line_state_equal(ls1, ls2))
 
     def test_dash_on_copy(self):
         ls1 = self.create_ls()
         ls2 = ls1.copy()
         ls1.line_dash[1][0] = 10
-        self.assertTrue(not basecore2d.line_state_equal(ls1, ls2))
+        self.assertTrue(not line_state_equal(ls1, ls2))
 
     def test_cmp_for_different_length_dash_patterns(self):
         ls1 = self.create_ls()
         ls2 = ls1.copy()
         ls1.line_dash = (ls1.line_dash[0], array([10, 10, 10, 10]))
-        self.assertTrue(not basecore2d.line_state_equal(ls1, ls2))
+        self.assertTrue(not line_state_equal(ls1, ls2))
 
     def test_cmp(self):
         ls1 = self.create_ls()
         ls2 = ls1.copy()
-        self.assertTrue(basecore2d.line_state_equal(ls1, ls2))
+        self.assertTrue(line_state_equal(ls1, ls2))
 
     # line_dash no longer allowed to be none.
     # def test_cmp_with_dash_as_none(self):
     #    ls1 = self.create_ls()
     #    ls2 = ls1.copy()
     #    #ls1.line_dash = None
-    #    assert(not basecore2d.line_state_equal(ls1,ls2))
+    #    assert(not line_state_equal(ls1,ls2))
 
 
 class GraphicsContextTestCase(unittest.TestCase):

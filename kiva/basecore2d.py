@@ -29,7 +29,7 @@ transform
 
 """
 import numpy as np
-from numpy import alltrue, array, asarray, concatenate, float64, pi, shape
+from numpy import alltrue, array, asarray, float64, pi
 
 from .constants import (
     CAP_BUTT, CAP_ROUND, CAP_SQUARE, CLOSE, CONCAT_CTM, EOF_FILL_STROKE,
@@ -41,7 +41,7 @@ from .constants import (
 )
 from .abstract_graphics_context import AbstractGraphicsContext
 from .arc_conversion import arc_to_tangent_points
-from .line_state import LineState, line_state_equal
+from .line_state import LineState, line_state_equal  # noqa: F401
 from .graphics_state import GraphicsState
 from .fonttools import Font
 import kiva.affine as affine
@@ -505,6 +505,8 @@ class GraphicsContextBase(AbstractGraphicsContext):
             Starts and ends should have the same length.
             The current point is moved to the last point in 'ends'.
         """
+        starts = asarray(starts)
+        ends = asarray(ends)
         self._new_subpath()
         for i in range(min(len(starts), len(ends))):
             self.active_subpath.append((POINT, starts[i]))
@@ -1083,7 +1085,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
     def show_text_at_point(self, text, x, y):
         """
         """
-        pass
+        self.show_text(text, (x, y))
 
     def show_glyphs_at_point(self):
         """
@@ -1158,18 +1160,20 @@ class GraphicsContextBase(AbstractGraphicsContext):
             for func, args in subpath:
                 if func == POINT:
                     self.draw_subpath(mode)
-                    self.add_point_to_subpath(args)
+                    self.add_point_to_subpath(args.reshape(1, 2))
                     self.first_point = args
                 elif func == LINE:
-                    self.add_point_to_subpath(args)
+                    self.add_point_to_subpath(args.reshape(1, 2))
                 elif func == LINES:
-                    self.draw_subpath(mode)
                     # add all points in list to subpath.
                     self.add_point_to_subpath(args)
                     self.first_point = args[0]
                 elif func == CLOSE:
-                    self.add_point_to_subpath(self.first_point)
-                    self.draw_subpath(mode)
+                    if self.first_point is not None:
+                        self.add_point_to_subpath(
+                            self.first_point.reshape(1, 2)
+                        )
+                        self.draw_subpath(mode)
                 elif func == RECT:
                     self.draw_subpath(mode)
                     self.device_draw_rect(
@@ -1178,7 +1182,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
                 elif func in ctm_funcs:
                     self.device_transform_device_ctm(func, args)
                 else:
-                    print("oops:", func)
+                    raise RuntimeError(f"Unrecognised subpath term: {func}")
             # finally, draw any remaining paths.
             self.draw_subpath(mode)
 
@@ -1265,22 +1269,18 @@ class GraphicsContextBase(AbstractGraphicsContext):
 
     def clear_subpath_points(self):
         self.draw_points = []
+        self.first_point = None
 
-    def get_subpath_points(self, debug=0):
-        """ Gets the points that are in the current path.
+    def get_subpath_points(self, debug=False):
+        """ Gets the points that are in the current subpath as an Nx2 array.
 
-            The first entry in the draw_points list may actually
-            be an array.  If this is true, the other points are
-            converted to an array and concatenated with the first
+        The draw_points attribute holds the current set of points as a
+        list of Nx2 arrays.
         """
-        if self.draw_points and len(shape(self.draw_points[0])) > 1:
-            first_points = self.draw_points[0]
-            other_points = asarray(self.draw_points[1:])
-            if len(other_points):
-                pts = concatenate((first_points, other_points), 0)
-            else:
-                pts = first_points
+        if self.draw_points:
+            pts = np.vstack(self.draw_points)
         else:
+            # list is empty, convert to an empty array
             pts = asarray(self.draw_points)
         return pts
 
