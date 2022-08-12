@@ -504,6 +504,8 @@ class GraphicsContextBase(AbstractGraphicsContext):
             Starts and ends should have the same length.
             The current point is moved to the last point in 'ends'.
         """
+        starts = asarray(starts)
+        ends = asarray(ends)
         self._new_subpath()
         for i in range(min(len(starts), len(ends))):
             self.active_subpath.append((POINT, starts[i]))
@@ -1138,8 +1140,11 @@ class GraphicsContextBase(AbstractGraphicsContext):
                     self.add_point_to_subpath(args)
                     self.first_point = args[0]
                 elif func == CLOSE:
-                    self.add_point_to_subpath(self.first_point.reshape(1, 2))
-                    self.draw_subpath(mode)
+                    if self.first_point is not None:
+                        self.add_point_to_subpath(
+                            self.first_point.reshape(1, 2)
+                        )
+                        self.draw_subpath(mode)
                 elif func == RECT:
                     self.draw_subpath(mode)
                     self.device_draw_rect(
@@ -1235,6 +1240,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
 
     def clear_subpath_points(self):
         self.draw_points = []
+        self.first_point = None
 
     def get_subpath_points(self, debug=False):
         """ Gets the points that are in the current subpath as an Nx2 array.
