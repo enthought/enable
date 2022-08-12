@@ -3,17 +3,19 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>Kiva &mdash; enable 5.3.0 documentation</title>
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Kiva &mdash; enable 5.3.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '5.3.0',
+        VERSION:     '5.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -24,12 +26,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/clipboard.min.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="enable 5.3.0 documentation" href="../index.html" >
+    <link rel="top" title="enable 5.3.1 documentation" href="../index.html" >
     <link rel="next" title="Kiva Drawing In-depth" href="drawing_details.html" >
     <link rel="prev" title="Advanced Tutorial Code" href="../kiva_tutorial/tutorial_advanced_code.html" > 
   </head>
@@ -48,7 +52,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">enable 5.3.0 documentation</a></li>
+        <li class="active"><a href="../index.html">enable 5.3.1 documentation</a></li>
 	 
     </ul>
               
@@ -83,7 +87,7 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="kiva">
+  <section id="kiva">
 <span id="kiva-overview"></span><h1>Kiva<a class="headerlink" href="#kiva" title="Permalink to this headline">¶</a></h1>
 <p>Kiva is a 2D vector drawing interface providing functionality similar to
 <a class="reference external" href="http://en.wikipedia.org/wiki/Quartz_2D">Quartz</a>,
@@ -114,11 +118,11 @@ the vector drawing commands into a raster image which can then be saved as a
 standard image format (such as PNG or JPEG) or copied into a GUI window.  The
 Agg backend should be available on any platform, and should work even if there
 is no GUI or windowing system available.</p>
-<div class="section" id="kiva-concepts">
+<section id="kiva-concepts">
 <h2>Kiva Concepts<a class="headerlink" href="#kiva-concepts" title="Permalink to this headline">¶</a></h2>
 <p>This section gives a whirlwind tour of the concepts involved with drawing with
 Kiva.</p>
-<div class="section" id="the-graphics-context">
+<section id="the-graphics-context">
 <h3>The Graphics Context<a class="headerlink" href="#the-graphics-context" title="Permalink to this headline">¶</a></h3>
 <p>The heart of the Kiva drawing API is the “graphics context”, frequently
 abbreviated as <code class="docutils literal notranslate"><span class="pre">gc</span></code> in code.  The graphics context holds the current drawing
@@ -172,8 +176,8 @@ performed in C where possible:</p>
 <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="coordinate-model">
+</section>
+<section id="coordinate-model">
 <h3>Coordinate Model<a class="headerlink" href="#coordinate-model" title="Permalink to this headline">¶</a></h3>
 <p>Kiva uses mathematical axes direction conventions as opposed to framebuffer
 axes conventions.  In other words, the origin is always at the <em>bottom</em>
@@ -204,8 +208,8 @@ for instance:</p>
 because it is drawn along the boundary of the pixels, while the other line
 is drawn through the center of the pixels:</p>
 <img alt="../_images/pixel_coordinates.png" src="../_images/pixel_coordinates.png" />
-</div>
-<div class="section" id="the-coordinate-transform-matrix">
+</section>
+<section id="the-coordinate-transform-matrix">
 <h3>The Coordinate Transform Matrix<a class="headerlink" href="#the-coordinate-transform-matrix" title="Permalink to this headline">¶</a></h3>
 <p>The Kiva API allows arbitrary affine transforms to be applied to the graphics
 context during drawing.  The API provides convenience methods for common
@@ -256,9 +260,9 @@ transformations, such as rotation and scaling:</p>
 </div>
 <img alt="../_images/transformed_lines.png" src="../_images/transformed_lines.png" />
 <p>If desired, the user can also supply their own transformations directly.</p>
-</div>
-</div>
-<div class="section" id="paths">
+</section>
+</section>
+<section id="paths">
 <h2>Paths<a class="headerlink" href="#paths" title="Permalink to this headline">¶</a></h2>
 <p>The basic drawing operations are performed by building a path out of primitive
 operations, and then performing stroking and/or filling operations with it.</p>
@@ -411,7 +415,7 @@ there are two different fill modes available:
 </pre></div>
 </div>
 <img alt="../_images/fill.png" src="../_images/fill.png" />
-<div class="section" id="text">
+<section id="text">
 <h3>Text<a class="headerlink" href="#text" title="Permalink to this headline">¶</a></h3>
 <p>Text can be rendered at a point by first setting the font to use, then setting
 the text location using <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractGraphicsContextset_text_position()</span></code>
@@ -431,18 +435,18 @@ render the text:</p>
 </div>
 <img alt="../_images/text.png" src="../_images/text.png" />
 <p>Text defaults to being rendered filled, but can be rendered with an outline.</p>
-</div>
-<div class="section" id="images">
+</section>
+<section id="images">
 <h3>Images<a class="headerlink" href="#images" title="Permalink to this headline">¶</a></h3>
 <p>Raster images from NumPy arrays, Pillow <code class="docutils literal notranslate"><span class="pre">Image</span></code> objects, or some Kiva
 graphics contexts can be rendered into a graphics context using the
 <a class="reference internal" href="../api/kiva.abstract_graphics_context.html#kiva.abstract_graphics_context.AbstractGraphicsContext.draw_image" title="kiva.abstract_graphics_context.AbstractGraphicsContext.draw_image"><code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_image()</span></code></a> method.</p>
-</div>
-</div>
-<div class="section" id="kiva-backends">
+</section>
+</section>
+<section id="kiva-backends">
 <h2>Kiva Backends<a class="headerlink" href="#kiva-backends" title="Permalink to this headline">¶</a></h2>
 <p>The Kiva package comes with a number of backends included.</p>
-<div class="section" id="gui-capable">
+<section id="gui-capable">
 <h3>GUI-capable<a class="headerlink" href="#gui-capable" title="Permalink to this headline">¶</a></h3>
 <p>Each of these backends can be used to draw the contents of windows in a
 graphical user interface.</p>
@@ -468,8 +472,8 @@ This is only available on macOS.</p>
 <a class="reference external" href="https://github.com/jwiggins/blend2d-python">Python wrapper</a>.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="file-only">
+</section>
+<section id="file-only">
 <h3>File-only<a class="headerlink" href="#file-only" title="Permalink to this headline">¶</a></h3>
 <p>Each of these backends can be used to create an output file.</p>
 <dl class="simple">
@@ -480,9 +484,9 @@ This is only available on macOS.</p>
 <dt>svg</dt><dd><p>A backend which writes SVG files.</p>
 </dd>
 </dl>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>
@@ -556,7 +560,7 @@ This is only available on macOS.</p>
         &copy; Copyright 2005-2022 Enthought
       </li>
       <li>
-      Last updated on Apr 28, 2022.
+      Last updated on Aug 12, 2022.
       </li>
       <li>
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.

@@ -3,17 +3,19 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>Kiva Drawing In-depth &mdash; enable 5.3.0 documentation</title>
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Kiva Drawing In-depth &mdash; enable 5.3.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '5.3.0',
+        VERSION:     '5.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -24,12 +26,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/clipboard.min.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="enable 5.3.0 documentation" href="../index.html" >
+    <link rel="top" title="enable 5.3.1 documentation" href="../index.html" >
     <link rel="next" title="Kiva Interface Quick Reference" href="quickref.html" >
     <link rel="prev" title="Kiva" href="overview.html" > 
   </head>
@@ -48,7 +52,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">enable 5.3.0 documentation</a></li>
+        <li class="active"><a href="../index.html">enable 5.3.1 documentation</a></li>
 	 
     </ul>
               
@@ -83,9 +87,9 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="kiva-drawing-in-depth">
+  <section id="kiva-drawing-in-depth">
 <h1>Kiva Drawing In-depth<a class="headerlink" href="#kiva-drawing-in-depth" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="kiva-state">
+<section id="kiva-state">
 <h2>Kiva State<a class="headerlink" href="#kiva-state" title="Permalink to this headline">¶</a></h2>
 <p>Kiva is a “stateful” drawing API. What this means is that the graphics context
 has a collection of state which affects the results of its drawing actions.
@@ -93,7 +97,7 @@ Furthermore, Kiva enables this state to be managed with a stack such that state
 can be “pushed” onto the stack before making some temporary changes and then
 “popped” off the stack to restore the state to a version which no longer
 includes those changes.</p>
-<div class="section" id="state-components">
+<section id="state-components">
 <h3>State Components<a class="headerlink" href="#state-components" title="Permalink to this headline">¶</a></h3>
 <p>Here is a list of all the pieces of state tracked by a Kiva graphics context,
 along with the methods which operate on them:</p>
@@ -129,8 +133,8 @@ along with the methods which operate on them:</p>
 <a class="reference internal" href="../api/kiva.abstract_graphics_context.html#kiva.abstract_graphics_context.AbstractGraphicsContext.get_image_interpolation" title="kiva.abstract_graphics_context.AbstractGraphicsContext.get_image_interpolation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_image_interpolation()</span></code></a>)</p></li>
 <li><p>Text drawing mode: <a class="reference internal" href="../api/kiva.abstract_graphics_context.html#kiva.abstract_graphics_context.AbstractGraphicsContext.set_text_drawing_mode" title="kiva.abstract_graphics_context.AbstractGraphicsContext.set_text_drawing_mode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_text_drawing_mode()</span></code></a></p></li>
 </ul>
-</div>
-<div class="section" id="color">
+</section>
+<section id="color">
 <h3>Color<a class="headerlink" href="#color" title="Permalink to this headline">¶</a></h3>
 <p>Kiva has two colors in its graphics state: stroke color and fill color. Stroke
 color is used for the lines in paths when the drawing mode is <code class="docutils literal notranslate"><span class="pre">STROKE</span></code>,
@@ -150,8 +154,8 @@ will only work if the backend supports it.</p>
 color components is <code class="docutils literal notranslate"><span class="pre">(R,</span> <span class="pre">G,</span> <span class="pre">B[,</span> <span class="pre">A])</span></code> and values must be floating point numbers
 in the range [0, 1]. Even if a graphics context is not able to draw with alpha
 blending, it’s still OK to pass a 4 component color value when setting state.</p>
-</div>
-<div class="section" id="state-stack-management">
+</section>
+<section id="state-stack-management">
 <h3>State Stack Management<a class="headerlink" href="#state-stack-management" title="Permalink to this headline">¶</a></h3>
 <p>Graphics context instances have two methods for saving and restoring the state,
 <a class="reference internal" href="../api/kiva.abstract_graphics_context.html#kiva.abstract_graphics_context.AbstractGraphicsContext.save_state" title="kiva.abstract_graphics_context.AbstractGraphicsContext.save_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save_state()</span></code></a> (“push”) and
@@ -175,8 +179,8 @@ other changes don’t leak into other code.</p>
 <p>Well-behaved code should take care to only modify graphics state inside a
 <code class="docutils literal notranslate"><span class="pre">with</span></code> block.</p>
 </div>
-</div>
-<div class="section" id="example">
+</section>
+<section id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
 <a class="reference internal image-reference" href="../_images/state_ex.png"><img alt="../_images/state_ex.png" src="../_images/state_ex.png" style="width: 300px; height: 300px;" /></a>
 <p>First, the whole example:</p>
@@ -307,9 +311,9 @@ and so use the defaults set at the top.</p>
         <span class="n">gc</span><span class="o">.</span><span class="n">stroke_path</span><span class="p">()</span>
 </pre></div>
 </td></tr></table></div>
-</div>
-</div>
-<div class="section" id="compiledpath">
+</section>
+</section>
+<section id="compiledpath">
 <h2>CompiledPath<a class="headerlink" href="#compiledpath" title="Permalink to this headline">¶</a></h2>
 <p>A path is a collection of geometric objects that can be drawn in a graphics
 context with coloring and an affine transformation applied to it. It is the
@@ -332,7 +336,7 @@ adds the path to the current path) and then calling any of the
 <a class="reference internal" href="../api/kiva.abstract_graphics_context.html#kiva.abstract_graphics_context.EnhancedAbstractGraphicsContext.draw_path_at_points" title="kiva.abstract_graphics_context.EnhancedAbstractGraphicsContext.draw_path_at_points"><code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_path_at_points()</span></code></a> method can be
 used to draw a path object at many different positions with a single function
 call.</p>
-<div class="section" id="id1">
+<section id="id1">
 <h3>Example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <a class="reference internal image-reference" href="../_images/compiled_path_ex.png"><img alt="../_images/compiled_path_ex.png" src="../_images/compiled_path_ex.png" style="width: 300px; height: 300px;" /></a>
 <div class="highlight-default notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
@@ -376,9 +380,9 @@ call.</p>
 <span class="n">gc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;compiled_path_ex.png&quot;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
-</div>
-</div>
-<div class="section" id="kiva-image-rendering">
+</section>
+</section>
+<section id="kiva-image-rendering">
 <h2>Kiva Image Rendering<a class="headerlink" href="#kiva-image-rendering" title="Permalink to this headline">¶</a></h2>
 <p>Drawing images in kiva is accomplished via
 <a class="reference internal" href="../api/kiva.abstract_graphics_context.html#kiva.abstract_graphics_context.AbstractGraphicsContext.draw_image" title="kiva.abstract_graphics_context.AbstractGraphicsContext.draw_image"><code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_image()</span></code></a>. A unique feature of drawing
@@ -421,7 +425,7 @@ scaling to an image. The translation is the x,y position of the rectangle and
 the scaling is the ratio of the image’s width and height to those of the
 rectangle. In every case, <code class="docutils literal notranslate"><span class="pre">rect</span></code> will be transformed by the current
 transformation matrix.</p>
-<div class="section" id="special-considerations">
+<section id="special-considerations">
 <h3>Special Considerations<a class="headerlink" href="#special-considerations" title="Permalink to this headline">¶</a></h3>
 <p>If you only want to draw a subset of an image, you should pass only that subset
 to <code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_image()</span></code>. The Kiva API does not support defining a “source”
@@ -435,8 +439,8 @@ with the <code class="xref py py-meth docutils literal notranslate"><span class=
 <code class="docutils literal notranslate"><span class="pre">kiva.agg</span></code> backend. Other backends may have the method, but it is
 effectively a no-op.</p>
 </div>
-</div>
-<div class="section" id="saving-images">
+</section>
+<section id="saving-images">
 <h3>Saving images<a class="headerlink" href="#saving-images" title="Permalink to this headline">¶</a></h3>
 <p>One can also save the contents of a graphics context to an image. This is done
 via the <a class="reference internal" href="../api/kiva.abstract_graphics_context.html#kiva.abstract_graphics_context.AbstractGraphicsContext.save" title="kiva.abstract_graphics_context.AbstractGraphicsContext.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a> method.  Different backends
@@ -457,19 +461,19 @@ this can be used to control the compression level of JPEG or PNG
 output. Unrecognized options are silently ignored.</p>
 </dd></dl>
 
-</div>
-</div>
-<div class="section" id="kiva-text-rendering">
+</section>
+</section>
+<section id="kiva-text-rendering">
 <h2>Kiva Text Rendering<a class="headerlink" href="#kiva-text-rendering" title="Permalink to this headline">¶</a></h2>
 <p>Drawing text in kiva is accomplished via a few methods on
 <code class="xref py py-class docutils literal notranslate"><span class="pre">GraphicsContext</span></code>. There are three basic topics: selecting a font,
 measuring the size of rendered text, and drawing the text.</p>
-<div class="section" id="font-selection">
+<section id="font-selection">
 <h3>Font Selection<a class="headerlink" href="#font-selection" title="Permalink to this headline">¶</a></h3>
 <p>Font selection for use with the text rendering capabilities of
 <code class="xref py py-class docutils literal notranslate"><span class="pre">GraphicsContext</span></code> can be accomplished in a few different ways depending
 on the amount of control needed by your drawing code.</p>
-<div class="section" id="simplest-select-font">
+<section id="simplest-select-font">
 <h4>Simplest: <code class="docutils literal notranslate"><span class="pre">select_font</span></code><a class="headerlink" href="#simplest-select-font" title="Permalink to this headline">¶</a></h4>
 <p>The simplest form of font selection is the
 <a class="reference internal" href="../api/kiva.abstract_graphics_context.html#kiva.abstract_graphics_context.AbstractGraphicsContext.select_font" title="kiva.abstract_graphics_context.AbstractGraphicsContext.select_font"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_font()</span></code></a> method.</p>
@@ -478,8 +482,8 @@ on the amount of control needed by your drawing code.</p>
 “Futura Medium Italic”, etc.</p>
 <p><code class="docutils literal notranslate"><span class="pre">size</span></code> is the size in points.</p>
 <p><em>Supported backends</em>: cairo, celiagg, pdf, ps, qpainter, quartz, svg.</p>
-</div>
-<div class="section" id="the-kivafont-trait-and-set-font">
+</section>
+<section id="the-kivafont-trait-and-set-font">
 <h4>The <code class="docutils literal notranslate"><span class="pre">KivaFont</span></code> trait and <code class="docutils literal notranslate"><span class="pre">set_font</span></code><a class="headerlink" href="#the-kivafont-trait-and-set-font" title="Permalink to this headline">¶</a></h4>
 <p>If you’re already doing your drawing within an application using traits, you can
 use the <a class="reference internal" href="../api/enable.trait_defs.kiva_font_trait.html#enable.trait_defs.kiva_font_trait.KivaFont" title="enable.trait_defs.kiva_font_trait.KivaFont"><code class="xref py py-class docutils literal notranslate"><span class="pre">KivaFont</span></code></a> trait.</p>
@@ -496,8 +500,8 @@ generic serif-style font family, so for example a face name of “Times New
 Roman” will not resolve as expected.  In these cases, use a
 <a class="reference internal" href="../api/kiva.fonttools.font.html#kiva.fonttools.font.Font" title="kiva.fonttools.font.Font"><code class="xref py py-class docutils literal notranslate"><span class="pre">Font</span></code></a> instance.</p>
 </div>
-</div>
-<div class="section" id="font-objects">
+</section>
+<section id="font-objects">
 <h4><code class="docutils literal notranslate"><span class="pre">Font</span></code> objects<a class="headerlink" href="#font-objects" title="Permalink to this headline">¶</a></h4>
 <p>If you don’t want to rely on the font description parsing in <code class="docutils literal notranslate"><span class="pre">KivaFont</span></code>, you
 can also manually construct a <a class="reference internal" href="../api/kiva.fonttools.font.html#kiva.fonttools.font.Font" title="kiva.fonttools.font.Font"><code class="xref py py-class docutils literal notranslate"><span class="pre">Font</span></code></a> instance. Once
@@ -523,9 +527,9 @@ treat any weight of semi-bold or more as bold, and all others as normal weight.<
 <p><code class="docutils literal notranslate"><span class="pre">style</span></code> is a constant from <a class="reference internal" href="../api/kiva.constants.html#module-kiva.constants" title="kiva.constants"><code class="xref py py-mod docutils literal notranslate"><span class="pre">kiva.constants</span></code></a>. Pick from <code class="docutils literal notranslate"><span class="pre">NORMAL</span></code> or
 <code class="docutils literal notranslate"><span class="pre">ITALIC</span></code>.</p>
 <p><em>Supported backends</em>: all backends</p>
-</div>
-</div>
-<div class="section" id="resolving-fonts">
+</section>
+</section>
+<section id="resolving-fonts">
 <h3>Resolving Fonts<a class="headerlink" href="#resolving-fonts" title="Permalink to this headline">¶</a></h3>
 <p>In all of the above cases, Kiva attempts to find a good concrete font that
 matches the specification to do the drawing.  However it is possible that the
@@ -545,8 +549,8 @@ fonttools management system via the
 <a class="reference internal" href="font_manager.html#adding-custom-fonts"><span class="std std-ref">Adding Custom Fonts</span></a> for more details).</p>
 <p>Further details are available in the
 <a class="reference internal" href="font_manager.html#kiva-font-management"><span class="std std-ref">Kiva Font Management</span></a> section.</p>
-</div>
-<div class="section" id="measuring-text">
+</section>
+<section id="measuring-text">
 <h3>Measuring Text<a class="headerlink" href="#measuring-text" title="Permalink to this headline">¶</a></h3>
 <p>Before drawing text, one often wants to know what the bounding rectangle of the
 rendered text will be so that the text can be positioned correctly. To do this,
@@ -568,8 +572,8 @@ should split the text into individual lines first and then measure and draw
 each line in sequence. A blank line’s height should be the same as the
 height of the selected font.</p>
 </div>
-</div>
-<div class="section" id="drawing-text">
+</section>
+<section id="drawing-text">
 <h3>Drawing Text<a class="headerlink" href="#drawing-text" title="Permalink to this headline">¶</a></h3>
 <p>Text can be drawn in a graphics context with the
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphicsContext.show_text()</span></code> and
@@ -591,9 +595,9 @@ method.</p>
 allows a text-specific affine transform to be set. Unfortunately it’s not
 implemented uniformly across backends, so it’s recommended not to use it.</p>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>
@@ -679,7 +683,7 @@ implemented uniformly across backends, so it’s recommended not to use it.</p>
         &copy; Copyright 2005-2022 Enthought
       </li>
       <li>
-      Last updated on Apr 28, 2022.
+      Last updated on Aug 12, 2022.
       </li>
       <li>
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.

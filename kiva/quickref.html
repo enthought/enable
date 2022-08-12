@@ -3,17 +3,19 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>Kiva Interface Quick Reference &mdash; enable 5.3.0 documentation</title>
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Kiva Interface Quick Reference &mdash; enable 5.3.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '5.3.0',
+        VERSION:     '5.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -24,12 +26,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/clipboard.min.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="enable 5.3.0 documentation" href="../index.html" >
+    <link rel="top" title="enable 5.3.1 documentation" href="../index.html" >
     <link rel="next" title="Enable" href="../enable/overview.html" >
     <link rel="prev" title="Kiva Drawing In-depth" href="drawing_details.html" > 
   </head>
@@ -48,7 +52,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">enable 5.3.0 documentation</a></li>
+        <li class="active"><a href="../index.html">enable 5.3.1 documentation</a></li>
 	 
     </ul>
               
@@ -83,14 +87,14 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="kiva-interface-quick-reference">
+  <section id="kiva-interface-quick-reference">
 <h1>Kiva Interface Quick Reference<a class="headerlink" href="#kiva-interface-quick-reference" title="Permalink to this headline">¶</a></h1>
 <p>This document is a summary of the classes and functions available in
 Kiva.  More specifically, it describes some of the details of the
 kiva.agg backend, including enumerated types and helper classes.</p>
-<div class="section" id="graphics-context">
+<section id="graphics-context">
 <h2>Graphics Context<a class="headerlink" href="#graphics-context" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="construction">
+<section id="construction">
 <h3>Construction<a class="headerlink" href="#construction" title="Permalink to this headline">¶</a></h3>
 <dl>
 <dt>__init__(ary_or_size, pix_format=”bgra32”, base_pixel_scale=1.0):</dt><dd><p><code class="docutils literal notranslate"><span class="pre">ary_or_size</span></code> can be either a numpy array or a tuple of the form
@@ -104,10 +108,10 @@ transformation matrix before all other transformations. It is used for
 rendering to high-resolution displays.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="state-functions">
+</section>
+<section id="state-functions">
 <h3>State functions<a class="headerlink" href="#state-functions" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="saving-and-restoring-state">
+<section id="saving-and-restoring-state">
 <h4>Saving and restoring state<a class="headerlink" href="#saving-and-restoring-state" title="Permalink to this headline">¶</a></h4>
 <p>In addtion to the <code class="docutils literal notranslate"><span class="pre">save_state</span></code> and <code class="docutils literal notranslate"><span class="pre">restore_state</span></code> methods, it is also possible
 to use a <code class="docutils literal notranslate"><span class="pre">GraphicsContext</span></code> instance as a context manager.</p>
@@ -123,8 +127,8 @@ to use a <code class="docutils literal notranslate"><span class="pre">GraphicsCo
 <dd><p>Pop the previous graphics state from the stack</p>
 </dd></dl>
 
-</div>
-<div class="section" id="methods-controlling-state">
+</section>
+<section id="methods-controlling-state">
 <h4>Methods controlling state<a class="headerlink" href="#methods-controlling-state" title="Permalink to this headline">¶</a></h4>
 <dl class="py method">
 <dt>
@@ -314,9 +318,9 @@ are sorted from lowest offset to highest.</p></li>
 <dd><p>Get the type of interpolation to use when scaling images</p>
 </dd></dl>
 
-</div>
-</div>
-<div class="section" id="current-transformation-matrix">
+</section>
+</section>
+<section id="current-transformation-matrix">
 <h3>Current Transformation Matrix<a class="headerlink" href="#current-transformation-matrix" title="Permalink to this headline">¶</a></h3>
 <p>These methods control the affine transformation applied to drawing operations.
 The current transformation matrix is part of the graphic state and therefore
@@ -363,8 +367,8 @@ transformation matrix.</p>
 <dd><p>Get the current transformation matrix</p>
 </dd></dl>
 
-</div>
-<div class="section" id="clipping-functions">
+</section>
+<section id="clipping-functions">
 <h3>Clipping functions<a class="headerlink" href="#clipping-functions" title="Permalink to this headline">¶</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -394,8 +398,8 @@ transformation matrix.</p>
 <dd><p>Modify clipping region with current path using even-odd rule</p>
 </dd></dl>
 
-</div>
-<div class="section" id="path-functions">
+</section>
+<section id="path-functions">
 <span id="kiva-path-functions"></span><h3>Path functions<a class="headerlink" href="#path-functions" title="Permalink to this headline">¶</a></h3>
 <p>The path has the concept of a “current point”, which can be though of as the
 pen position. Many path manipulations use the current point as a starting
@@ -540,8 +544,8 @@ Let “r” be the radius of rounding. Let the current point be
 <code class="docutils literal notranslate"><span class="pre">(x_left,</span> <span class="pre">y_top)</span></code>.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="drawing-functions">
+</section>
+<section id="drawing-functions">
 <span id="kiva-drawing-functions"></span><h3>Drawing functions<a class="headerlink" href="#drawing-functions" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
 <dt>
@@ -606,7 +610,7 @@ the graphics context are used as the rectangle.</p></li>
 </dl>
 </dd></dl>
 
-<div class="section" id="enhanced-drawing-functions">
+<section id="enhanced-drawing-functions">
 <h4>Enhanced drawing functions<a class="headerlink" href="#enhanced-drawing-functions" title="Permalink to this headline">¶</a></h4>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -656,9 +660,9 @@ and the drawing mode is specified by the third argument.</p>
 </dl>
 </dd></dl>
 
-</div>
-</div>
-<div class="section" id="text-functions">
+</section>
+</section>
+<section id="text-functions">
 <h3>Text functions<a class="headerlink" href="#text-functions" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
 <dt>
@@ -798,8 +802,8 @@ list for the font face.</p>
 <dd><p>Set the size of the current font</p>
 </dd></dl>
 
-</div>
-<div class="section" id="misc-functions">
+</section>
+<section id="misc-functions">
 <h3>Misc functions<a class="headerlink" href="#misc-functions" title="Permalink to this headline">¶</a></h3>
 <dl class="py method">
 <dt>
@@ -864,11 +868,11 @@ this can be used to control the compression level of JPEG or PNG
 output. Unrecognized options are silently ignored.</p>
 </dd></dl>
 
-</div>
-</div>
-<div class="section" id="types">
+</section>
+</section>
+<section id="types">
 <h2>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="primitive-types">
+<section id="primitive-types">
 <h3>Primitive types<a class="headerlink" href="#primitive-types" title="Permalink to this headline">¶</a></h3>
 <p>The following conventions are used to describe input and output types:</p>
 <dl class="simple">
@@ -888,8 +892,8 @@ graphics context’s pixel format.</p>
 inclusive and the entries are sorted from lowest offset to highest.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="affinematrix">
+</section>
+<section id="affinematrix">
 <h3>AffineMatrix<a class="headerlink" href="#affinematrix" title="Permalink to this headline">¶</a></h3>
 <p>All of the following member functions modify the instance on which they
 are called:</p>
@@ -951,8 +955,8 @@ to create specific kinds of <code class="xref py py-class docutils literal notra
 <li><p><code class="docutils literal notranslate"><span class="pre">scaling_matrix(float</span> <span class="pre">x_scale,</span> <span class="pre">float</span> <span class="pre">y_scale)</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">skewing_matrix(float</span> <span class="pre">x_shear,</span> <span class="pre">float</span> <span class="pre">y_shear)</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="enumerations">
+</section>
+<section id="enumerations">
 <h3>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline">¶</a></h3>
 <p>The following enumerations are represented by top-level constants in the “agg”
 namespace.  They are fundamentally integers.  Some of them also have dicts that
@@ -1013,9 +1017,9 @@ path_cmd_line_to, path_cmd_mask, path_cmd_move_to, path_cmd_stop</p>
 path_flags_mask, path_flags_none</p>
 </dd>
 </dl>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>
@@ -1097,7 +1101,7 @@ path_flags_mask, path_flags_none</p>
         &copy; Copyright 2005-2022 Enthought
       </li>
       <li>
-      Last updated on Apr 28, 2022.
+      Last updated on Aug 12, 2022.
       </li>
       <li>
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.

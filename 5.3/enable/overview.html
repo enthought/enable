@@ -3,17 +3,19 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>Enable &mdash; enable 5.3.0 documentation</title>
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Enable &mdash; enable 5.3.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '5.3.0',
+        VERSION:     '5.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -24,12 +26,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/clipboard.min.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="enable 5.3.0 documentation" href="../index.html" >
+    <link rel="top" title="enable 5.3.1 documentation" href="../index.html" >
     <link rel="next" title="Enable Tools" href="tools.html" >
     <link rel="prev" title="Kiva Interface Quick Reference" href="../kiva/quickref.html" > 
   </head>
@@ -48,7 +52,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">enable 5.3.0 documentation</a></li>
+        <li class="active"><a href="../index.html">enable 5.3.1 documentation</a></li>
 	 
     </ul>
               
@@ -83,7 +87,7 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="enable">
+  <section id="enable">
 <h1>Enable<a class="headerlink" href="#enable" title="Permalink to this headline">¶</a></h1>
 <p>Enable is a library which provides an interactive 2D canvas, upon which one can
 build <a class="reference external" href="https://docs.enthought.com/chaco">interactive plots</a> or other
@@ -94,7 +98,7 @@ and provides a similar 2D drawing interface via <a class="reference internal" hr
 responsible for handling user interaction and interfacing with the underlying
 GUI toolkit. Developers interested in writing code that implements tools for
 Chaco will need to be familiar with the Enable API.</p>
-<div class="section" id="enable-concepts">
+<section id="enable-concepts">
 <h2>Enable Concepts<a class="headerlink" href="#enable-concepts" title="Permalink to this headline">¶</a></h2>
 <p>Fundamentally an Enable application is made up of a few key parts. Most
 important is the <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code>, which is the interactive canvas which a
@@ -103,8 +107,8 @@ instances which handle the event dispatches. A root component might also contain
 one or more child component instances which are held in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">overlays</span></code> or
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">underlays</span></code> traits. These child components often handle display of
 individual tools, depending on need.</p>
-</div>
-<div class="section" id="component">
+</section>
+<section id="component">
 <h2>Component<a class="headerlink" href="#component" title="Permalink to this headline">¶</a></h2>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code> is the most important object in Enable, the center of
 everything. It represents a visual component. It both draws a screen object, and
@@ -115,7 +119,7 @@ receives input for it (keyboard, mouse, and multitouch events).</p>
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">invisible_layout</span></code>: Whether it uses space even when not visible (by
 default, invisible objects don’t take up space in layout)</p></li>
 </ul>
-<div class="section" id="padding">
+<section id="padding">
 <h3>Padding<a class="headerlink" href="#padding" title="Permalink to this headline">¶</a></h3>
 <p>Layout in Enable uses padding, similar to CSS. In Chaco, it’s used for things
 around the edges of plot, like labels and tick marks that extend outside the
@@ -135,8 +139,8 @@ vertical padding</p></li>
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">padding_accepts_focus</span></code>: Whether the component responds to mouse events
 over the padding area</p></li>
 </ul>
-</div>
-<div class="section" id="parent-classes">
+</section>
+<section id="parent-classes">
 <h3>Parent Classes<a class="headerlink" href="#parent-classes" title="Permalink to this headline">¶</a></h3>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code> subclasses both <code class="xref py py-class docutils literal notranslate"><span class="pre">CoordinateBox</span></code> (for drawing) and
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Interactor</span></code> (for input). <code class="xref py py-class docutils literal notranslate"><span class="pre">CoordinateBox</span></code> has <code class="xref py py-attr docutils literal notranslate"><span class="pre">position</span></code> and
@@ -151,16 +155,16 @@ something that doesn’t draw but does respond to events, subclass
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">pointer</span></code>: The cursor shape when the interactor is active</p></li>
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">event_state</span></code>: The object’s event state, used for event dispatch</p></li>
 </ul>
-</div>
-<div class="section" id="container">
+</section>
+<section id="container">
 <h3>Container<a class="headerlink" href="#container" title="Permalink to this headline">¶</a></h3>
 <p>All components have a <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>. They can only have a single
 container. One component can’t be contained by two objects.</p>
 <p>Whenever you request a component to redraw itself, it actually requests its
 container to redraw it, and a whole chain goes all the up to the top-level
 window.</p>
-</div>
-<div class="section" id="top-level-window">
+</section>
+<section id="top-level-window">
 <h3>Top-level Window<a class="headerlink" href="#top-level-window" title="Permalink to this headline">¶</a></h3>
 <p>A component also has a reference to the top-level window. This window serves as
 a bridge between the OS and GUI toolkit. The <code class="xref py py-attr docutils literal notranslate"><span class="pre">window</span></code> trait delegates all
@@ -169,8 +173,8 @@ reference to the actual window.</p>
 <p>The reference to the window is useful because Enable doesn’t make calls directly
 to the GUI toolkit. Rather, it asks the window to do things for it, such as
 creating a context menu.</p>
-</div>
-<div class="section" id="event-dispatch">
+</section>
+<section id="event-dispatch">
 <h3>Event Dispatch<a class="headerlink" href="#event-dispatch" title="Permalink to this headline">¶</a></h3>
 <p>The key methods of <code class="xref py py-class docutils literal notranslate"><span class="pre">Interactor</span></code> are <code class="xref py py-meth docutils literal notranslate"><span class="pre">dispatch()</span></code> and
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">_dispatch_stateful_event()</span></code>. There’s a complex method resolution that
@@ -231,8 +235,8 @@ down the containment stack and things happen in response; a draw or update
 doesn’t actually happen until the next <code class="xref py py-meth docutils literal notranslate"><span class="pre">paint()</span></code>. By that time, the
 component no longer has a reference to the event or the event’s window; instead
 it uses its own reference to the window, <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.window</span></code>.</p>
-</div>
-<div class="section" id="coordinate-systems">
+</section>
+<section id="coordinate-systems">
 <h3>Coordinate Systems<a class="headerlink" href="#coordinate-systems" title="Permalink to this headline">¶</a></h3>
 <p>Every component has <code class="xref py py-attr docutils literal notranslate"><span class="pre">x</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">y</span></code> traits from <code class="xref py py-class docutils literal notranslate"><span class="pre">CoordinateBox</span></code>.
 These are positions relative to the component’s parent container. When a
@@ -255,15 +259,15 @@ don’t usually have to think about this, but the interactor does have to be
 able to do it. Containers implement this, so if you’re just writing a standard
 component, you don’t have to worry about it.</p>
 </div>
-</div>
-<div class="section" id="viewports">
+</section>
+<section id="viewports">
 <h3>Viewports<a class="headerlink" href="#viewports" title="Permalink to this headline">¶</a></h3>
 <p>A component can have a list of viewports, which are views onto the component.
 Currently, this is used for the canvas, and for geophysical plotting. You could
 use it for something like a magnifying-glass view of a portion of a component or
 plot without duplicating it.</p>
-</div>
-<div class="section" id="layout">
+</section>
+<section id="layout">
 <h3>Layout<a class="headerlink" href="#layout" title="Permalink to this headline">¶</a></h3>
 <p>Containers are the sizers that do layout. Components within containers can
 declare that they are resizable, for example, but that doesn’t matter if
@@ -277,8 +281,8 @@ padding with the <code class="samp docutils literal notranslate"><span class="pr
 the thickness of any border around the component.</p>
 <p>For more control over layout, there is a
 <a class="reference internal" href="constraints_layout.html#constraints-layout"><span class="std std-ref">constraints-based layout</span></a> system available.</p>
-</div>
-<div class="section" id="rendering">
+</section>
+<section id="rendering">
 <h3>Rendering<a class="headerlink" href="#rendering" title="Permalink to this headline">¶</a></h3>
 <p>Every component can have several layers:</p>
 <ul class="simple">
@@ -308,7 +312,7 @@ container to render the component when it gets to the ‘overlay’ layer.</p>
 the overlay; otherwise it draws as part of the background. By default,
 the border is drawn just inside the plot area; set <code class="xref py py-attr docutils literal notranslate"><span class="pre">inset_border</span></code> to
 False to draw it just outside the plot area.</p>
-<div class="section" id="backbuffer">
+<section id="backbuffer">
 <h4>Backbuffer<a class="headerlink" href="#backbuffer" title="Permalink to this headline">¶</a></h4>
 <p>A backbuffer provides the ability to render into an offscreen buffer, which is
 blitted on every draw, until it is invalidated. Various traits such as
@@ -318,17 +322,17 @@ and on OS X. If <code class="xref py py-attr docutils literal notranslate"><span
 even if a backbuffer is referenced by a component.</p>
 <p>Users typically subclass Chaco <code class="xref py py-class docutils literal notranslate"><span class="pre">PlotComponent</span></code>, but may need features
 from Enable <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code>.</p>
-</div>
-</div>
-</div>
-<div class="section" id="id1">
+</section>
+</section>
+</section>
+<section id="id1">
 <h2>Container<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code> is a subclass of Enable <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code>. Containers can be
 nested. Containers are responsible for event dispatch, draw dispatch, and
 layout. Containers override a lot of Component methods, so that they behave more
 like containers than plain components do.</p>
-</div>
-<div class="section" id="top-level-windows">
+</section>
+<section id="top-level-windows">
 <h2>Top-level Windows<a class="headerlink" href="#top-level-windows" title="Permalink to this headline">¶</a></h2>
 <p>When a component is shown on screen via a GUI toolkit, its <code class="xref py py-attr docutils literal notranslate"><span class="pre">window</span></code> trait
 contains an instance of <a class="reference internal" href="../api/enable.abstract_window.html#enable.abstract_window.AbstractWindow" title="enable.abstract_window.AbstractWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractWindow</span></code></a> which serves as a delegate
@@ -336,7 +340,7 @@ between the underlying window system and the component.</p>
 <p>For the most part, code doesn’t need to interact with the underlying window.
 However one common exception is tools which want to set a custom cursor. This
 is accomplished via the <code class="xref py py-meth docutils literal notranslate"><span class="pre">set_pointer()</span></code> method.</p>
-<div class="section" id="abstractwindow">
+<section id="abstractwindow">
 <h3>AbstractWindow<a class="headerlink" href="#abstractwindow" title="Permalink to this headline">¶</a></h3>
 <p>The following methods are the public interface of <code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractWindow</span></code>.</p>
 <dl class="py method">
@@ -400,37 +404,37 @@ dispatch.</p></li>
 </dl>
 </dd></dl>
 
-</div>
-</div>
-<div class="section" id="enable-traitsui-editors">
+</section>
+</section>
+<section id="enable-traitsui-editors">
 <h2>Enable TraitsUI Editors<a class="headerlink" href="#enable-traitsui-editors" title="Permalink to this headline">¶</a></h2>
 <p>To facilitate the inclusion of Enable <a class="reference internal" href="../api/enable.component.html#enable.component.Component" title="enable.component.Component"><code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code></a> objects in
 <a class="reference external" href="https://docs.enthought.com/traitsui">TraitsUI GUIs</a>, Enable provides
 <a class="reference internal" href="../api/enable.component_editor.html#enable.component_editor.ComponentEditor" title="enable.component_editor.ComponentEditor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComponentEditor</span></code></a>.</p>
-<div class="section" id="componenteditor">
+<section id="componenteditor">
 <h3>ComponentEditor<a class="headerlink" href="#componenteditor" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="../api/enable.component_editor.html#enable.component_editor.ComponentEditor" title="enable.component_editor.ComponentEditor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComponentEditor</span></code></a> is a fairly simple editor. It only has a few traits
 which are of interest to users:</p>
-<div class="section" id="bgcolor">
+<section id="bgcolor">
 <h4>bgcolor<a class="headerlink" href="#bgcolor" title="Permalink to this headline">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">bgcolor</span></code> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">ColorTrait</span></code> which can be used to specify the background
 color of the component. The default value is <code class="docutils literal notranslate"><span class="pre">&quot;syswindow&quot;</span></code>, which may or may
 not match the default window background color of the GUI toolkit you are using.</p>
-</div>
-<div class="section" id="high-resolution">
+</section>
+<section id="high-resolution">
 <h4>high_resolution<a class="headerlink" href="#high-resolution" title="Permalink to this headline">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">high_resolution</span></code> is a boolean which, if True, tells Enable that you would
 like your component to take advantage of HiDPI displays if the GUI toolkit
 supports it. The default value is True.</p>
-</div>
-<div class="section" id="size">
+</section>
+<section id="size">
 <h4>size<a class="headerlink" href="#size" title="Permalink to this headline">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">size</span></code> is a tuple of integers which can be used to specify the initial size of
 the component in a GUI. The default value is <code class="docutils literal notranslate"><span class="pre">(400,</span> <span class="pre">400)</span></code>.</p>
-</div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
+</section>
 
 
           </div>
@@ -518,7 +522,7 @@ the component in a GUI. The default value is <code class="docutils literal notra
         &copy; Copyright 2005-2022 Enthought
       </li>
       <li>
-      Last updated on Apr 28, 2022.
+      Last updated on Aug 12, 2022.
       </li>
       <li>
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.

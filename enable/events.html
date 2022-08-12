@@ -3,17 +3,19 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>Enable GUI Events &mdash; enable 5.3.0 documentation</title>
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Enable GUI Events &mdash; enable 5.3.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '5.3.0',
+        VERSION:     '5.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -24,12 +26,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/clipboard.min.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="enable 5.3.0 documentation" href="../index.html" >
+    <link rel="top" title="enable 5.3.1 documentation" href="../index.html" >
     <link rel="next" title="Enable Constraints Layout" href="constraints_layout.html" >
     <link rel="prev" title="Enable Tools" href="tools.html" > 
   </head>
@@ -48,7 +52,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">enable 5.3.0 documentation</a></li>
+        <li class="active"><a href="../index.html">enable 5.3.1 documentation</a></li>
 	 
     </ul>
               
@@ -83,9 +87,9 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="enable-gui-events">
+  <section id="enable-gui-events">
 <h1>Enable GUI Events<a class="headerlink" href="#enable-gui-events" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="mouse-events">
+<section id="mouse-events">
 <h2>Mouse Events<a class="headerlink" href="#mouse-events" title="Permalink to this headline">¶</a></h2>
 <p>Enable mouse events are represented by the <a class="reference internal" href="../api/enable.events.html#enable.events.MouseEvent" title="enable.events.MouseEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">MouseEvent</span></code></a> type and their
 event names (which are the suffixes used by
@@ -94,41 +98,41 @@ groups: mouse clicks and mouse movements. The mouse click events have names
 ending in <code class="docutils literal notranslate"><span class="pre">_down</span></code>, <code class="docutils literal notranslate"><span class="pre">_up</span></code>, or <code class="docutils literal notranslate"><span class="pre">_dclick</span></code> and names beginning with <code class="docutils literal notranslate"><span class="pre">left</span></code>,
 <code class="docutils literal notranslate"><span class="pre">right</span></code>, or <code class="docutils literal notranslate"><span class="pre">middle</span></code>. This means that Enable only supports three mouse
 buttons (plus wheel events).</p>
-<div class="section" id="mouse-event-types">
+<section id="mouse-event-types">
 <h3>Mouse Event types<a class="headerlink" href="#mouse-event-types" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="down">
+<section id="down">
 <h4>*_down<a class="headerlink" href="#down" title="Permalink to this headline">¶</a></h4>
 <p>A mouse button was pressed. Dispatched as <code class="docutils literal notranslate"><span class="pre">left_down</span></code>, <code class="docutils literal notranslate"><span class="pre">right_down</span></code>, or
 <code class="docutils literal notranslate"><span class="pre">middle_down</span></code>.</p>
-</div>
-<div class="section" id="up">
+</section>
+<section id="up">
 <h4>*_up<a class="headerlink" href="#up" title="Permalink to this headline">¶</a></h4>
 <p>A mouse button was released. Dispatched as <code class="docutils literal notranslate"><span class="pre">left_up</span></code>, <code class="docutils literal notranslate"><span class="pre">right_up</span></code>, or
 <code class="docutils literal notranslate"><span class="pre">middle_up</span></code>.</p>
-</div>
-<div class="section" id="dclick">
+</section>
+<section id="dclick">
 <h4>*_dclick<a class="headerlink" href="#dclick" title="Permalink to this headline">¶</a></h4>
 <p>A mouse button was double-clicked. Dispatched as <code class="docutils literal notranslate"><span class="pre">left_dclick</span></code>,
 <code class="docutils literal notranslate"><span class="pre">right_dclick</span></code>, or <code class="docutils literal notranslate"><span class="pre">middle_dclick</span></code>.</p>
-</div>
-<div class="section" id="move">
+</section>
+<section id="move">
 <h4>move<a class="headerlink" href="#move" title="Permalink to this headline">¶</a></h4>
 <p>The mouse moved within a component.</p>
-</div>
-<div class="section" id="enter">
+</section>
+<section id="enter">
 <h4>enter<a class="headerlink" href="#enter" title="Permalink to this headline">¶</a></h4>
 <p>The mouse moved into a component’s bounds.</p>
-</div>
-<div class="section" id="leave">
+</section>
+<section id="leave">
 <h4>leave<a class="headerlink" href="#leave" title="Permalink to this headline">¶</a></h4>
 <p>The mouse moved out of a component’s bounds.</p>
-</div>
-<div class="section" id="wheel">
+</section>
+<section id="wheel">
 <h4>wheel<a class="headerlink" href="#wheel" title="Permalink to this headline">¶</a></h4>
 <p>The mouse wheel moved.</p>
-</div>
-</div>
-<div class="section" id="mouseevent">
+</section>
+</section>
+<section id="mouseevent">
 <h3>MouseEvent<a class="headerlink" href="#mouseevent" title="Permalink to this headline">¶</a></h3>
 <p>Below is a listing of the traits on a <cite>MouseEvent</cite> instance.</p>
 <dl class="py class">
@@ -191,9 +195,9 @@ buttons (plus wheel events).</p>
 
 </dd></dl>
 
-</div>
-</div>
-<div class="section" id="keyboard-events">
+</section>
+</section>
+<section id="keyboard-events">
 <h2>Keyboard Events<a class="headerlink" href="#keyboard-events" title="Permalink to this headline">¶</a></h2>
 <p>Previous versions of Enable had just one keyboard event, a ‘key_pressed’
 event.  This event conflated which key(s) were physically being pressed
@@ -204,7 +208,7 @@ by storing them as different attributes on the event object (Qt).</p>
 <p>In addition, there was no way to detect a key-up event.  This is a comparatively
 minor use case, but potentially useful for doing things like toggling pointer
 states to indicate different mouse behaviour when modifiers keys are pressed.</p>
-<div class="section" id="new-events">
+<section id="new-events">
 <h3>New Events<a class="headerlink" href="#new-events" title="Permalink to this headline">¶</a></h3>
 <dl>
 <dt>key_pressed:</dt><dd><p>We will keep the ‘key_pressed’ event.  However the semantics will change so
@@ -251,8 +255,8 @@ will be generated by keyPressEvent, but will access the ‘text()’ attribute
 rather than the ‘key()’ attribute.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="why-three-events">
+</section>
+<section id="why-three-events">
 <h3>Why Three Events?<a class="headerlink" href="#why-three-events" title="Permalink to this headline">¶</a></h3>
 <p>Qt’s two-event model is generally nicer and cleaner, but adapting the other
 backends to use that model would require holding global state from EVT_KEY_DOWN
@@ -263,9 +267,9 @@ fragile.</p>
 <p>On the other hand, adapting Qt to a 3-event model is straightforward: on
 keyPressedEvent we generate a ‘key_pressed’ event, and if text() is non-empty,
 we subsequently also emit a ‘character’ event.</p>
-</div>
-</div>
-<div class="section" id="drag-and-drop-events">
+</section>
+</section>
+<section id="drag-and-drop-events">
 <h2>Drag and Drop Events<a class="headerlink" href="#drag-and-drop-events" title="Permalink to this headline">¶</a></h2>
 <p>Enable has support for objects being dropped onto components built on top of
 the backend’s (and, in practice, PyFace’s) support for drag and drop.</p>
@@ -292,7 +296,7 @@ this event to perform whatever operations need to be performed with the
 dropped objects.</p>
 </dd>
 </dl>
-<div class="section" id="basedroptool">
+<section id="basedroptool">
 <h3>BaseDropTool<a class="headerlink" href="#basedroptool" title="Permalink to this headline">¶</a></h3>
 <p>As a convenience, there is a <code class="docutils literal notranslate"><span class="pre">BaseDropTool</span></code> class which handles most of the
 drag and drop interactions for you correctly.  To use this, you need to
@@ -320,9 +324,9 @@ drag result constants dependin on the position and (possibly) the objects
 being dragged.  If you want cross-toolkit compatibility, you must handle the
 case where the <code class="docutils literal notranslate"><span class="pre">get_drag_result</span></code> method is called with the object being
 <code class="docutils literal notranslate"><span class="pre">None</span></code>, which indicates that the object is not known yet.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
           </div>
@@ -403,7 +407,7 @@ case where the <code class="docutils literal notranslate"><span class="pre">get_
         &copy; Copyright 2005-2022 Enthought
       </li>
       <li>
-      Last updated on Apr 28, 2022.
+      Last updated on Aug 12, 2022.
       </li>
       <li>
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.

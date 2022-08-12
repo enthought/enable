@@ -3,17 +3,19 @@
 <html>
   <head>
     <meta charset="utf-8">
-    
-    <title>Writing A Kiva Backend &mdash; enable 5.3.0 documentation</title>
+    <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Writing A Kiva Backend &mdash; enable 5.3.1 documentation</title>
     
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../_static/css/spc-extend.css">
     <link rel="stylesheet" href="../_static/enthought.css" type="text/css" >
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" >
+    <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" >
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '5.3.0',
+        VERSION:     '5.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         LINK_SUFFIX: '.html',
@@ -24,12 +26,14 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/clipboard.min.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/copybutton.js"></script>
     <script type="text/javascript" src="../_static/js/wrap_on_dot.js"></script>
     <link rel="shortcut icon" href="../_static/img/favicon.png">
     <link rel="index" title="Index" href="../genindex.html" >
     <link rel="search" title="Search" href="../search.html" >
-    <link rel="top" title="enable 5.3.0 documentation" href="../index.html" >
+    <link rel="top" title="enable 5.3.1 documentation" href="../index.html" >
     <link rel="prev" title="Kiva Font Management" href="font_manager.html" > 
   </head>
   <body>
@@ -47,7 +51,7 @@
               
     <ul class="nav nav-pills pull-left">
 	
-        <li class="active"><a href="../index.html">enable 5.3.0 documentation</a></li>
+        <li class="active"><a href="../index.html">enable 5.3.1 documentation</a></li>
 	 
     </ul>
               
@@ -78,7 +82,7 @@
         <div class="bodywrapper">
           <div class="body" id="spc-section-body" role="main">
             
-  <div class="section" id="writing-a-kiva-backend">
+  <section id="writing-a-kiva-backend">
 <span id="writing-a-backend"></span><h1>Writing A Kiva Backend<a class="headerlink" href="#writing-a-kiva-backend" title="Permalink to this headline">¶</a></h1>
 <p>To write a Kiva backend you need to implement all the abstract methods of the
 <a class="reference internal" href="../api/kiva.abstract_graphics_context.html#kiva.abstract_graphics_context.AbstractGraphicsContext" title="kiva.abstract_graphics_context.AbstractGraphicsContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractGraphicsContext</span></code></a>.  Once this is done, instances of the new
@@ -87,7 +91,7 @@ backends is.  Most sophisticated 2D drawing libraries are very similar to
 Kiva in terms of the facilities they offer, and so in many cases this is just
 a matter of translating between the Kiva API and the underlying library.</p>
 <p>In some cases, however, the underlying drawing capabilities are more primitive.</p>
-<div class="section" id="graphicscontextbase">
+<section id="graphicscontextbase">
 <h2>GraphicsContextBase<a class="headerlink" href="#graphicscontextbase" title="Permalink to this headline">¶</a></h2>
 <p>Kiva provides a core set of functionality in
 <code class="xref py py-class docutils literal notranslate"><span class="pre">GraphicsContextBase</span></code> that makes it easier to
@@ -112,8 +116,8 @@ required state internally, including saving and restoring state.  However the
 device code needs to be able to handle applying the current affine
 transformations and styling when drawing polygons, text and images, either in
 the implementation code or in the underlying graphics library.</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -169,7 +173,7 @@ the implementation code or in the underlying graphics library.</p>
         &copy; Copyright 2005-2022 Enthought
       </li>
       <li>
-      Last updated on Apr 28, 2022.
+      Last updated on Aug 12, 2022.
       </li>
       <li>
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 3.5.4.
