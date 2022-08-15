@@ -483,6 +483,7 @@ if __name__ == "__main__":
           platforms=['Windows', 'Linux', 'macOS', 'Unix', 'Solaris'],
           description='low-level drawing and interaction',
           long_description=long_description,
+          long_description_content_type="text/x-rst",
           install_requires=__requires__,
           extras_require=__extras_require__,
           cmdclass={
