@@ -29,12 +29,12 @@ __extras_require__ = {
     # Dependencies for constrained layout
     "layout": ["kiwisolver"],
     # Dependencies for PDF backend
-    "pdf": ["reportlab<3.0"],
+    "pdf": ["reportlab"],
     # Dependencies for SVG backend
     "svg": ["pyparsing"],
     # Dependencies purely for running tests.
     "test": [
-        "PyPDF2",  # for pdf drawing tests in kiva.
+        "PyPDF2<3.0",  # for pdf drawing tests in kiva.
         "setuptools",
     ],
 }
