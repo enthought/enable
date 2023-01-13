@@ -54,10 +54,8 @@ jobs:
       - name: Install test environment
         run: edm run -- python ci/edmtool.py install --toolkit=${{ matrix.toolkit }} --runtime=${{ matrix.runtime }}
       - name: Run tests
-        with:
-          # kiva agg requires at least 15-bit color depth.
-          # The --server-args assumes xvfb-run is called, hence Linux only.
-          run: xvfb-run --server-args="-screen 0 1024x768x24" edm run -- python ci/edmtool.py test --toolkit=${{ matrix.toolkit }} --runtime=${{ matrix.runtime }}
+        # kiva agg requires at least 15-bit color depth.
+        run: xvfb-run --server-args="-screen 0 1024x768x24" edm run -- python ci/edmtool.py test --toolkit=${{ matrix.toolkit }} --runtime=${{ matrix.runtime }}
 
   # Test against EDM packages on Windows and OSX
   test-with-edm:

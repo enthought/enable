@@ -67,17 +67,14 @@ jobs:
       - name: Run enable test suite
         env:
           PYTHONFAULTHANDLER: 1
-        with:
-          # kiva agg requires at least 15-bit color depth.
-          # The --server-args assumes xvfb-run is called, hence Linux only.
-          run: xvfb-run --server-args="-screen 0 1024x768x24" python -m unittest discover -v enable
-          working-directory: ${{ runner.temp }}
+        # kiva agg requires at least 15-bit color depth.
+        run: xvfb-run --server-args="-screen 0 1024x768x24" python -m unittest discover -v enable
+        working-directory: ${{ runner.temp }}
       - name: Run kiva test suite
         env:
           PYTHONFAULTHANDLER: 1
-        with:
-          run: xvfb-run python -m unittest discover -v kiva
-          working-directory: ${{ runner.temp }}
+        run: xvfb-run python -m unittest discover -v kiva
+        working-directory: ${{ runner.temp }}
 
   notify-on-failure:
     needs: test-ets
