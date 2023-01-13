@@ -7,7 +7,7 @@ name: Test with EDM
 on: pull_request
 
 env:
-  INSTALL_EDM_VERSION: 3.2.1
+  INSTALL_EDM_VERSION: 3.4.0
 
 jobs:
 
@@ -20,12 +20,17 @@ jobs:
         include:
           - toolkit: 'pyside6'
             runtime: '3.8'
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Install Qt dependencies for Linux
         run: |
           sudo apt-get update
+          sudo apt-get install qtbase5-dev
+          sudo apt-get install qtchooser
+          sudo apt-get install qt5-qmake
+          sudo apt-get install qtbase5-dev-tools
+          sudo apt-get install libegl1
           sudo apt-get install libxkbcommon-x11-0
         if: matrix.toolkit != 'wx'
       - name: Install Wx dependencies for Linux
@@ -49,11 +54,10 @@ jobs:
       - name: Install test environment
         run: edm run -- python ci/edmtool.py install --toolkit=${{ matrix.toolkit }} --runtime=${{ matrix.runtime }}
       - name: Run tests
-        uses: GabrielBB/xvfb-action@v1
         with:
           # kiva agg requires at least 15-bit color depth.
           # The --server-args assumes xvfb-run is called, hence Linux only.
-          run: --server-args="-screen 0 1024x768x24" edm run -- python ci/edmtool.py test --toolkit=${{ matrix.toolkit }} --runtime=${{ matrix.runtime }}
+          run: xvfb-run --server-args="-screen 0 1024x768x24" edm run -- python ci/edmtool.py test --toolkit=${{ matrix.toolkit }} --runtime=${{ matrix.runtime }}
 
   # Test against EDM packages on Windows and OSX
   test-with-edm:
