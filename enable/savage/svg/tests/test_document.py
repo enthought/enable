@@ -65,7 +65,7 @@ class TestBrushFromColourValue(unittest.TestCase):
 
     @patch('urllib.request.urlopen')
     def testURLFallback(self, mock_urlopen):
-        mock_urlopen.return_value = BytesIO(b"<html></html>")
+        mock_urlopen.return_value = BytesIO(b"<!doctype html><html></html>")
         self.document.state["fill"] = "url(http://example.com) red"
         self.assertEqual(
             self.document.getBrushFromState().color, (255, 0, 0, 255)
