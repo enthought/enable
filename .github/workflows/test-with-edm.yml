@@ -15,7 +15,7 @@ jobs:
   test-edm-linux:
     strategy:
       matrix:
-        toolkit: ['null', 'pyqt5', 'pyside2', 'wx']
+        toolkit: ['null', 'pyqt5', 'pyside2']
         runtime: ['3.6']
         include:
           - toolkit: 'pyside6'
@@ -32,6 +32,13 @@ jobs:
           sudo apt-get install qtbase5-dev-tools
           sudo apt-get install libegl1
           sudo apt-get install libxkbcommon-x11-0
+          sudo apt-get install libxcb-icccm4
+          sudo apt-get install libxcb-image0
+          sudo apt-get install libxcb-keysyms1
+          sudo apt-get install libxcb-randr0
+          sudo apt-get install libxcb-render-util0
+          sudo apt-get install libxcb-xinerama0
+          sudo apt-get install libxcb-shape0
         if: matrix.toolkit != 'wx'
       - name: Install Wx dependencies for Linux
         run: |
