@@ -8,8 +8,9 @@
 #
 # Thanks for using Enthought open source!
 
-from io import StringIO
+from io import BytesIO, StringIO
 import unittest
+from unittest.mock import patch
 import xml.etree.cElementTree as etree
 
 import enable.savage.svg.document as document
@@ -62,8 +63,10 @@ class TestBrushFromColourValue(unittest.TestCase):
         self.document.state["fill-opacity"] = -100
         self.assertEqual(self.document.getBrushFromState().color[-1], 0)
 
-    def testURLFallback(self):
-        self.document.state["fill"] = "url(http://google.com) red"
+    @patch('urllib.request.urlopen')
+    def testURLFallback(self, mock_urlopen):
+        mock_urlopen.return_value = BytesIO(b"<html></html")
+        self.document.state["fill"] = "url(http://example.com) red"
         self.assertEqual(
             self.document.getBrushFromState().color, (255, 0, 0, 255)
         )
