@@ -14,13 +14,13 @@ to have their state tracked by Python, rather than by an internal graphics
 state (eg. Wx, SVG and PDF backends, but not Agg or QPainter).
 """
 
-from numpy import alltrue, array, asarray, shape, sometrue
+from numpy import all, array, asarray, shape, sometrue
 
 from .constants import NO_DASH
 
 
 def exactly_equal(arr1, arr2):
-    return shape(arr1) == shape(arr2) and alltrue(arr1 == arr2)
+    return shape(arr1) == shape(arr2) and all(arr1 == arr2)
 
 
 def is_dashed(dash):
