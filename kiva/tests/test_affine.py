@@ -19,7 +19,7 @@
 """
 import unittest
 
-from numpy import allclose, alltrue, array, cos, dot, identity, pi, ravel
+from numpy import allclose, all, array, cos, dot, identity, pi, ravel
 
 from kiva import affine
 
@@ -33,21 +33,21 @@ class AffineConstructorsTestCase(unittest.TestCase):
         a, b, c, d, tx, ty = 1, 2, 3, 4, 5, 6
         mat = affine.affine_from_values(a, b, c, d, tx, ty)
         desired = array([[a, b, 0], [c, d, 0], [tx, ty, 1]])
-        assert alltrue(ravel(mat) == ravel(desired))
+        assert all(ravel(mat) == ravel(desired))
 
     def test_from_scale(self):
         transform = affine.affine_from_scale(5.0, 6.0)
         pt1 = array([1.0, 1.0, 1.0])
         actual = dot(pt1, transform)
         desired = pt1 * array((5.0, 6.0, 1.0))
-        assert alltrue(actual == desired)
+        assert all(actual == desired)
 
     def test_from_translation(self):
         transform = affine.affine_from_translation(5.0, 6.0)
         pt1 = array([1.0, 1.0, 1.0])
         actual = dot(pt1, transform)
         desired = pt1 + array((5.0, 6.0, 0.0))
-        assert alltrue(actual == desired)
+        assert all(actual == desired)
 
     def test_from_rotation(self):
         transform = affine.affine_from_rotation(pi / 4.0)
@@ -55,7 +55,7 @@ class AffineConstructorsTestCase(unittest.TestCase):
         actual = dot(pt1, transform)
         cos_pi_4 = cos(pi / 4.0)
         desired = array((cos_pi_4, cos_pi_4, 1.0))
-        assert alltrue((actual - desired) < 1e-6)
+        assert all((actual - desired) < 1e-6)
 
 
 class AffineOperationsTestCase(unittest.TestCase):
@@ -73,7 +73,7 @@ class AffineOperationsTestCase(unittest.TestCase):
         actual = dot(pt1, transform2)
         # this does the first transform and the scaling separately
         desired = dot(pt1, transform1) * array((0.5, 1.5, 1.0))
-        assert alltrue((actual - desired) < 1e-6)
+        assert all((actual - desired) < 1e-6)
 
     def test_translate(self):
         a, b, c, d, tx, ty = 1, 2, 3, 4, 5, 6
@@ -84,7 +84,7 @@ class AffineOperationsTestCase(unittest.TestCase):
         actual = dot(pt1, tot_transform)
         # this does the first transform and the translate separately
         desired = dot(dot(pt1, translate_transform), transform1)
-        assert alltrue((actual - desired) < 1e-6)
+        assert all((actual - desired) < 1e-6)
 
     def test_rotate(self):
         a, b, c, d, tx, ty = 1.0, 0, 0, 1.0, 0, 0
@@ -95,7 +95,7 @@ class AffineOperationsTestCase(unittest.TestCase):
         # this does the first transform and the translate separately
         cos_pi_4 = 0.707_106_781_186_547_57
         desired = array((cos_pi_4, cos_pi_4, 1.0))
-        assert alltrue((actual - desired) < 1e-6)
+        assert all((actual - desired) < 1e-6)
 
     def test_invert(self):
         """ An matrix times its inverse should produce the identity matrix
@@ -105,7 +105,7 @@ class AffineOperationsTestCase(unittest.TestCase):
         transform2 = affine.invert(transform1)
         desired = affine.affine_identity()
         actual = dot(transform2, transform1)
-        assert alltrue((ravel(actual) - ravel(desired)) < 1e-6)
+        assert all((ravel(actual) - ravel(desired)) < 1e-6)
 
     def test_concat(self):
         a, b, c, d, tx, ty = 1, 2, 3, 4, 5, 6
@@ -117,7 +117,7 @@ class AffineOperationsTestCase(unittest.TestCase):
         actual = dot(pt1, tot_transform)
         # this does the first transform and the scaling separately
         desired = dot(dot(pt1, transform2), transform1)
-        assert alltrue((actual - desired) < 1e-6)
+        assert all((actual - desired) < 1e-6)
 
 
 class AffineInformationTestCase(unittest.TestCase):
@@ -169,7 +169,7 @@ class TransformPointsTestCase(unittest.TestCase):
         ctm = affine.affine_identity()
         ctm = affine.translate(ctm, 5, 5)
         new_pt = affine.transform_point(ctm, pt)
-        assert alltrue(new_pt == array((6, 6)))
+        assert all(new_pt == array((6, 6)))
 
         ctm = affine.rotate(ctm, pi)
         new_pt = affine.transform_point(ctm, pt)
@@ -185,7 +185,7 @@ class TransformPointsTestCase(unittest.TestCase):
         ctm = affine.affine_identity()
         ctm = affine.translate(ctm, 5, 5)
         new_pt = affine.transform_points(ctm, pt)
-        assert alltrue(new_pt[0] == array((6, 6)))
+        assert all(new_pt[0] == array((6, 6)))
 
         ctm = affine.rotate(ctm, pi)
         new_pt = affine.transform_points(ctm, pt)

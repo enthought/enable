@@ -13,7 +13,7 @@ from timeit import Timer
 import unittest
 
 from numpy import (
-    alltrue, array, concatenate, dtype, frombuffer, newaxis, ones, pi, ravel,
+    all, array, concatenate, dtype, frombuffer, newaxis, ones, pi, ravel,
     zeros,
 )
 from PIL import Image
@@ -76,7 +76,7 @@ def alpha_blend(src1, src2, alpha=1.0, ambient_alpha=1.0):
 def assert_equal(desired, actual):
     """ Only use for small arrays. """
     try:
-        assert alltrue(ravel(actual) == ravel(desired))
+        assert all(ravel(actual) == ravel(desired))
     except AssertionError:
         size = sum(array(desired.shape))
         if size < 10:
@@ -97,7 +97,7 @@ def assert_close(desired, actual, diff_allowed=2):
     try:
         # cast up so math doesn't underflow
         diff = abs(ravel(actual.astype(Int32)) - ravel(desired.astype(Int32)))
-        assert alltrue(diff <= diff_allowed)
+        assert all(diff <= diff_allowed)
     except AssertionError:
         size = sum(array(desired.shape))
         if size < 10:
