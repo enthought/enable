@@ -25,7 +25,7 @@ __extras_require__ = {
     # Dependencies for running enable/kiva's examples
     "examples": ["chaco", "mayavi", "scipy", "kiwisolver", "pyglet"],
     # Dependencies for GL backend support
-    "gl": ["pygarrayimage", "pyglet"],
+    "gl": ["pygarrayimage", "pyglet<2.0"],
     # Dependencies for constrained layout
     "layout": ["kiwisolver"],
     # Dependencies for PDF backend
@@ -34,7 +34,7 @@ __extras_require__ = {
     "svg": ["pyparsing"],
     # Dependencies purely for running tests.
     "test": [
-        "PyPDF2",  # for pdf drawing tests in kiva.
+        "PyPDF2<3.0",  # for pdf drawing tests in kiva.
         "setuptools",
     ],
 }
