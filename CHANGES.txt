@@ -1,11 +1,58 @@
 Enable CHANGELOG
 ================
 
-This release focused on support for PySide6, modernization of Traits code,
-and improving font handling.
+Enable 5.3.1
+============
+
+This is a bugfix release that aims to improve compatibility and completeness
+of the various Kiva backends.  In particular, there are improvements for font
+selection and rendering, and some fixes for path and curve rendering
+(particularly for arcs).  There are still some discrepancies in how things are
+drawn, but it is more likely that something reasonable will be produced on all
+backends.
+
+This also includes some fixes provided by Brecht Machiels to return the
+wxPython backend to a working condition.
+
+On the build and CI front, we have added SWIG to the pyproject.toml, and no
+longer ship any Cython-generated C++ files.  With these changes it should be
+possible to pip install Enable in an environment with the appropriate C/C++
+compilers.
+
+Thanks to:
+
+* Mark Dickinson
+* Brecht Machiels
+* Rahul Poruri
+* Corran Webster
+* John Wiggins
+
+Fixes
+-----
+
+* Fix the SCRIPT font family (#975)
+* Improve font rendering (#973, #978, #980, #990)
+* Fix curve and path rendering (#970, #987, #988)
+* Correct Quartz backend string encoding (#966)
+* Restore the WxPython backends to working order (#950)
+
+Documentation
+-------------
+
+* Sphinx copy button support in documentation (#948)
+
+Build and Continuous Integration
+--------------------------------
+
+* add a github workflow for publishing releases to PyPI (#967)
+* don't ship Cython-generated C++ files (#958)
+* add SWIG to pyproject.toml dependencies (#954)
 
 Enable 5.3.0
 ============
+
+This release focused on support for PySide6, modernization of Traits code,
+and improving font handling.
 
 Thanks to:
 
