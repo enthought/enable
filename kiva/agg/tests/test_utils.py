@@ -7,11 +7,12 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 # Thanks for using Enthought open source!
-from numpy import alltrue, ravel
+import numpy as np
+from numpy import all, ravel
 
 
 class Utils(object):
     def assertRavelEqual(self, x, y):
         self.assertTrue(
-            alltrue(ravel(x) == ravel(y)), "\n%s\n !=\n%s" % (x, y)
+            np.all(ravel(x) == ravel(y)), "\n%s\n !=\n%s" % (x, y)
         )
