@@ -10,6 +10,7 @@
 from math import pi
 import unittest
 
+import numpy as np
 from numpy import array, allclose, ones
 
 from kiva import agg
@@ -24,7 +25,7 @@ class AffineMatrixTestCase(unittest.TestCase):
         m = agg.AffineMatrix(a)
         desired = ones(6, "d")
         result = m.asarray()
-        assert (result == desired).all()
+        assert np.all(result == desired)
 
     def test_init_from_array1(self):
         a = ones(6, "D")
@@ -53,19 +54,19 @@ class AffineMatrixTestCase(unittest.TestCase):
         a *= a
         actual = a
         desired = agg.AffineMatrix((4.0, 0, 0, 4.0, 0, 0))
-        assert (desired == actual).all()
+        assert np.all(desired == actual)
 
     def test_asarray(self):
         m = agg.AffineMatrix()
         result = m.asarray()
         desired = array((1.0, 0.0, 0.0, 1.0, 0.0, 0.0))
-        assert (result == desired).all()
+        assert np.all(result == desired)
 
     def _test_zero_arg_transform(self, method, orig, desired):
         m = agg.AffineMatrix(orig)
         method(m)
         result = m.asarray()
-        assert (result == desired).all()
+        assert np.all(result == desired)
 
     def test_flip_x(self):
         method = agg.AffineMatrix.flip_x
@@ -92,14 +93,14 @@ class AffineMatrixTestCase(unittest.TestCase):
         other = agg.AffineMatrix(orig)
         m.multiply(other)
         result = m.asarray()
-        assert (result == desired).all()
+        assert np.all(result == desired)
 
     def test_determinant(self):
         orig = array((1.0, 2.0, 3.0, 1.0, 4.0, 5.0))
         desired = -5.0
         m = agg.AffineMatrix(orig)
         result = m.determinant()
-        assert (result == desired).all()
+        assert np.all(result == desired)
 
     def test_invert(self):
         orig = agg.AffineMatrix((1.0, 2.0, 3.0, 1.0, 4.0, 5.0))

@@ -19,6 +19,7 @@
 """
 import unittest
 
+import numpy as np
 from numpy import allclose, array, cos, dot, identity, pi, ravel
 
 from kiva import affine
@@ -40,14 +41,14 @@ class AffineConstructorsTestCase(unittest.TestCase):
         pt1 = array([1.0, 1.0, 1.0])
         actual = dot(pt1, transform)
         desired = pt1 * array((5.0, 6.0, 1.0))
-        assert (actual == desired).all()
+        assert np.all(actual == desired)
 
     def test_from_translation(self):
         transform = affine.affine_from_translation(5.0, 6.0)
         pt1 = array([1.0, 1.0, 1.0])
         actual = dot(pt1, transform)
         desired = pt1 + array((5.0, 6.0, 0.0))
-        assert (actual == desired).all()
+        assert np.all(actual == desired)
 
     def test_from_rotation(self):
         transform = affine.affine_from_rotation(pi / 4.0)
