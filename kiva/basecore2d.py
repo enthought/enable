@@ -353,10 +353,10 @@ class GraphicsContextBase(AbstractGraphicsContext):
             to start.  phase defaults to 0.
 
         """
-        if not pattern.all():
+        pattern = asarray(pattern)
+        if (pattern == 0).any():
             self.state.line_state.line_dash = NO_DASH
             return
-        pattern = asarray(pattern)
         if len(pattern) < 2:
             raise ValueError("dash pattern should have at least two entries.")
         # not sure if this check is really needed.

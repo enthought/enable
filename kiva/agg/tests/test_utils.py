@@ -14,5 +14,5 @@ from numpy import all, ravel
 class Utils(object):
     def assertRavelEqual(self, x, y):
         self.assertTrue(
-            np.all(ravel(x) == ravel(y)), "\n%s\n !=\n%s" % (x, y)
+            (ravel(x) == ravel(y)).all(), "\n%s\n !=\n%s" % (x, y)
         )
