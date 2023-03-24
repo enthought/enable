@@ -13,8 +13,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        toolkit: ['pyside6', 'pyside2']
-        python-version: [3.8]
+        toolkit: ['null', 'pyqt5', 'pyside2', 'pyside6']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out
