@@ -15,6 +15,7 @@ try:
     import kiwisolver
     del kiwisolver
 except ImportError:
+    print("kiwisolver not imported successfully imported. Please check it is installed.")
     ENABLE_CONSTRAINTS = False
 else:
     ENABLE_CONSTRAINTS = True
