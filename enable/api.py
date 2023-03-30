@@ -283,6 +283,7 @@ from .stacked_container import HStackedContainer, VStackedContainer
 try:
     import kiwisolver
 except ImportError:
+    print("kiwisolver not imported successfully imported. Please check it is installed.")
     pass
 else:
     from .constraints_container import ConstraintsContainer
