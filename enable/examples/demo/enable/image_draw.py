@@ -15,7 +15,7 @@ import os
 # check kiwisolver installation
 import importlib.util
 if importlib.util.find_spec('kiwisolver') is None:
-    print("kiwisolver import not failed!!!! Please check it is installed.")
+    print("kiwisolver import failed. Please check it is installed.")
 
 from enable.api import ConstraintsContainer
 from enable.examples._example_support import DemoFrame, demo_main
