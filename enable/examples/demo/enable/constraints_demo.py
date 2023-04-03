@@ -8,6 +8,11 @@
 #
 # Thanks for using Enthought open source!
 
+# check kiwisolver installation
+import importlib.util
+if importlib.util.find_spec('kiwisolver') is None:
+    print("kiwisolver import not failed!!!! Please check it is installed.")
+
 from enable.api import Component, ComponentEditor, ConstraintsContainer
 from enable.layout.api import (
     align, grid, hbox, horizontal, spacer, vbox, vertical
