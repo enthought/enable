@@ -16,7 +16,6 @@ from .enable_traits import bounds_trait, coordinate_trait
 try:
     import kiwisolver
 except ImportError:
-    print("kiwisolver not imported successfully imported. Please check it is installed.")
     ENABLE_CONSTRAINTS = False
 else:
     ENABLE_CONSTRAINTS = True
