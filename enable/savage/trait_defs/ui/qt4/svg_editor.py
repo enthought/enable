@@ -26,9 +26,9 @@ from pyface.qt import QtCore
 
 # import widget for different package cases
 try:
-    from pyface.qt import QtSvg as QWidget
+    from pyface.qt.QtSvg import QSvgWidget
 except:
-    from PySide6.QtSvgWidgets import QSvgWidget as QWidget
+    from PySide6.QtSvgWidgets import QSvgWidget
 
 
 # -----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ class SVGEditor(Editor):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
-        self.control = QWidget()
+        self.control = QSvgWidget()
 
     # -------------------------------------------------------------------------
     #  Updates the editor when the object trait changes external to the editor:
