@@ -17,13 +17,18 @@
 
 from io import BytesIO
 from xml.etree.cElementTree import ElementTree
-from PySide6.QtSvgWidgets import QSvgWidget
 
 from enable.savage.svg.document import SVGDocument
 
 from traitsui.qt4.editor import Editor
 
 from pyface.qt import QtCore
+
+# import widget for different package cases
+try:
+    from pyface.qt import QtSvg as QWidget
+except:
+    from PySide6.QtSvgWidgets import QSvgWidget as QWidget
 
 
 # -----------------------------------------------------------------------------
@@ -46,7 +51,7 @@ class SVGEditor(Editor):
         """ Finishes initializing the editor by creating the underlying toolkit
             widget.
         """
-        self.control = QSvgWidget()
+        self.control = QWidget()
 
     # -------------------------------------------------------------------------
     #  Updates the editor when the object trait changes external to the editor:
