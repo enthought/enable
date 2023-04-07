@@ -16,7 +16,7 @@
 # -----------------------------------------------------------------------------
 
 from pyface.qt import QtGui
-from pyface.ui.qt4.color import toolkit_color_to_rgba, rgba_to_toolkit_color
+from pyface.ui.qt.color import toolkit_color_to_rgba, rgba_to_toolkit_color
 
 from traits.trait_base import SequenceTypes
 
