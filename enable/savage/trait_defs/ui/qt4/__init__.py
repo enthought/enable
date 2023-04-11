@@ -28,7 +28,7 @@ if (
         enable.savage.trait_defs.ui.qt.*
 
         Backward compatibility import hooks have been automatically applied.
-        They will be removed in a future release of Pyface.
+        They will be removed in a future release of Enable.
         """,
         DeprecationWarning,
         stacklevel=2,
@@ -43,7 +43,7 @@ else:
         Applications which require backwards compatibility can either:
         - set the ETS_TOOLKIT environment variable to "qt4",
         - the ETSConfig.toolkit to "qt4"
-        - install pyface.ui.ShadowedModuleFinder() into sys.meta_path
+        - install enable.savage.ui.ShadowedModuleFinder() into sys.meta_path
         """,
         FutureWarning,
         stacklevel=2,
