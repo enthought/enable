@@ -76,7 +76,7 @@ class ShadowedModuleFinder(MetaPathFinder):
         The prefix of the "real" package which contains the actual code.
     """
 
-    def __init__(self, package="enable.savage.trait_defs.ui.qt.", true_package="enable.savage.trait_defs.ui.qt4."):
+    def __init__(self, package="enable.savage.trait_defs.ui.qt4.", true_package="enable.savage.trait_defs.ui.qt."):
         self.package = package
         self.true_package = true_package
 
