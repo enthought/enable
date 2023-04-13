@@ -287,7 +287,6 @@ def docs(runtime, toolkit, environment):
         "kiva/qpainter.py",
         "kiva/svg.py",
         "kiva/agg",
-        "kiva/gl",
         "kiva/quartz",
         "*/tests",
     ])
