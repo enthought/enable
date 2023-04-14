@@ -14,13 +14,14 @@ import warnings
 
 from traits.etsconfig.api import ETSConfig
 
-from enable.savage.trait_defs.ui import ShadowedModuleFinder
+from pyface.ui import ShadowedModuleFinder
 
 if (
     os.environ.get('ETS_TOOLKIT', None) == "qt4"  # environment says old qt4
     or ETSConfig.toolkit == "qt4"  # the ETSConfig toolkit says old qt4
 ):
-    sys.meta_path.append(ShadowedModuleFinder())
+    sys.meta_path.append(ShadowedModuleFinder(package="enable.savage.trait_defs.ui.qt4.",
+                                              true_package="enable.savage.trait_defs.ui.qt."))
 
     # Importing from enable.savage.trait_defs.ui.qt4.* is deprecated
     warnings.warn(
