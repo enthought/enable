@@ -20,13 +20,13 @@ if (
     os.environ.get('ETS_TOOLKIT', None) == "qt4"  # environment says old qt4
     or ETSConfig.toolkit == "qt4"  # the ETSConfig toolkit says old qt4
 ):
-    sys.meta_path.append(ShadowedModuleFinder(package="enable.savage.trait_defs.ui.qt4.",
-                                              true_package="enable.savage.trait_defs.ui.qt."))
+    sys.meta_path.append(ShadowedModuleFinder(package="enable.trait_defs.ui.qt4.",
+                                              true_package="enable.trait_defs.ui.qt."))
 
-    # Importing from enable.savage.trait_defs.ui.qt4.* is deprecated
+    # Importing from enable.trait_defs.ui.qt4.* is deprecated
     warnings.warn(
-        """The enable.savage.trait_defs.ui.qt4.* modules have moved to
-        enable.savage.trait_defs.ui.qt.*
+        """The enable.trait_defs.ui.qt4.* modules have moved to
+        enable.trait_defs.ui.qt.*
 
         Backward compatibility import hooks have been automatically applied.
         They will be removed in a future release of Enable.
@@ -38,8 +38,8 @@ else:
     # Don't import from this module, use a future warning as we want end-users
     # of ETS apps to see the hints about environment variables.
     warnings.warn(
-        """The enable.savage.trait_defs.ui.qt4.* modules have moved to
-        enable.savage.trait_defs.ui.qt.*.
+        """The enable.trait_defs.ui.qt4.* modules have moved to
+        enable.trait_defs.ui.qt.*.
 
         Applications which require backwards compatibility can either:
         - set the ETS_TOOLKIT environment variable to "qt4",
