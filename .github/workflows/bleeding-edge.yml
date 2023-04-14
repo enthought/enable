@@ -58,7 +58,7 @@ jobs:
       - name: Install source dependencies
         run: |
           python -m pip install git+http://github.com/enthought/traits.git#egg=traits
-          python -m pip install git+http://github.com/enthought/pyface.git#egg=pyface
+          python -m pip install git+http://github.com/enthought/pyface.git#egg=pyface[${{ matrix.toolkit }}]
           python -m pip install git+http://github.com/enthought/traitsui.git#egg=traitsui[${{ matrix.toolkit }}]
       - name: Install local packages
         run: python -m pip install .[gl,layout,pdf,svg,test]
