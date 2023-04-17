@@ -32,6 +32,8 @@ __extras_require__ = {
     "pdf": ["reportlab"],
     # Dependencies for SVG backend
     "svg": ["pyparsing"],
+    # Dependencies for Celiagg backend
+    "celiagg": ["celiagg"],
     # Dependencies purely for running tests.
     "test": [
         "PyPDF2<3.0",  # for pdf drawing tests in kiva.
