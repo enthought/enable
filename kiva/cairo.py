@@ -972,7 +972,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         else:
             weight = cairo.FONT_WEIGHT_NORMAL
 
-        if font.style in contants.italic_styles:
+        if font.style in constants.italic_styles:
             style = cairo.FONT_SLANT_ITALIC
         else:
             style = cairo.FONT_SLANT_NORMAL
