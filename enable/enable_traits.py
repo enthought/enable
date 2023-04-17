@@ -171,10 +171,10 @@ class ScrollBarRange(TraitType):
                 page_size = max(min(page_size, high - low), 0.0)
                 line_size = max(min(line_size, page_size), 0.0)
                 return (
-                    float(low),
-                    float(high),
-                    float(page_size),
-                    float(line_size),
+                    int(low),
+                    int(high),
+                    int(page_size),
+                    int(line_size),
                 )
             except Exception:
                 self.error(object, name, value)
