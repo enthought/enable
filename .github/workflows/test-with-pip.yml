@@ -12,7 +12,7 @@ jobs:
   test-ets:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: ['ubuntu-latest', 'macos-latest']
         toolkit: ['null', 'pyside2', 'pyside6']
         python-version: ["3.8", "3.10"]
     runs-on: ${{ matrix.os }}
