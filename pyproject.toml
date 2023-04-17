@@ -39,8 +39,8 @@ wx = 'enable.wx.toolkit:toolkit'
 null = 'enable.null.toolkit:toolkit'
 
 [project.entry-points.'etsdemo_data']
-    enable_examples = 'enable.examples._etsdemo_info:info'
-    kiva_examples = 'kiva.examples._etsdemo_info:info'
+enable_examples = 'enable.examples._etsdemo_info:info'
+kiva_examples = 'kiva.examples._etsdemo_info:info'
 
 [project.optional-dependencies]
 # Dependencies for constrained layout
@@ -57,6 +57,14 @@ test = ["PyPDF2<3.0", "setuptools"]
 
 # Dependencies for OpenGL backend
 gl = ["pygarrayimage", "pyglet<2.0"]
+# Dependencies for PDF backend
+pdf = ["reportlab"]
+# Dependencies for SVG backend
+svg = ["pyparsing"]
+# Dependencies for Celiagg backend
+celiagg = ["celiagg"]
+# Dependencies for Cairo backend
+cairo = ["pycairo"]
 
 # Dependencies for PySide6
 pyside6 = ['pyface[pyside6]', 'traitsui[pyside6]']
