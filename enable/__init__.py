@@ -34,6 +34,8 @@ __extras_require__ = {
     "svg": ["pyparsing"],
     # Dependencies for Celiagg backend
     "celiagg": ["celiagg"],
+    # Dependencies for Cairo backend
+    "cairo": ["pycairo"],
     # Dependencies purely for running tests.
     "test": [
         "PyPDF2<3.0",  # for pdf drawing tests in kiva.
