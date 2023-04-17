@@ -1,3 +1,112 @@
+[project]
+name = 'enable'
+description = 'Low-level drawing API and traits-aware graphical interaction'
+readme = 'README.rst'
+requires-python = '>=3.7'
+authors = [{name='Enthought', email='info@enthought.com'}]
+keywords = ['gui', 'traits', 'traitsui', 'pyqt', 'pyside', 'wxpython']
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: OS Independent",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Programming Language :: C",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "fonttools",
+    "numpy",
+    "pillow",
+    "pyface>=7.2.0",
+    "traits>=6.2",
+    "traitsui",
+]
+version = '6.0.0.dev0'
+license = {file = "LICENSE.txt"}
+
+[project.entry-points.'enable.toolkits']
+qt = 'enable.qt.toolkit:toolkit'
+qt4 = 'enable.qt.toolkit:toolkit'
+wx = 'enable.wx.toolkit:toolkit'
+null = 'enable.null.toolkit:toolkit'
+
+[project.entry-points.'etsdemo_data']
+    enable_examples = 'enable.examples._etsdemo_info:info'
+    kiva_examples = 'kiva.examples._etsdemo_info:info'
+
+[project.optional-dependencies]
+# Dependencies for constrained layout
+layout = ["kiwisolver"]
+
+# Dependencies for documentation
+docs = ['enthought-sphinx-theme', 'sphinx', 'sphinx-copybutton']
+
+# Dependencies for examples
+examples = ["chaco", "mayavi", "scipy", "kiwisolver", "pyglet"]
+
+# Dependencies for tetsing
+test = ["PyPDF2<3.0", "setuptools"]
+
+# Dependencies for OpenGL backend
+gl = ["pygarrayimage", "pyglet<2.0"]
+
+# Dependencies for PySide6
+pyside6 = ['pyface[pyside6]', 'traitsui[pyside6]']
+# Dependencies for PySide2
+pyside2 = ['pyface[pyside2]', 'traitsui[pyside2]']
+# Dependencies for PyQt6
+pyqt6 = ['pyface[pyqt6]', 'traitsui[pyqt6]']
+# Dependencies for PyQt5
+pyqt5 = ['pyface[pyqt5]', 'traitsui[pyqt5]']
+# Dependencies for WxPython
+wx = ['pyface[wx]', 'traitsui[wx]']
+# Dependencies for null backend (nothing right now)
+null = []
+
+[project.urls]
+source = 'https://github.com/enthought/enable'
+docs = 'https://docs.enthought.com/enable'
+
 [build-system]
 requires = ["cython", "oldest-supported-numpy", "setuptools<65.2", "swig", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ['kiva', 'enable']
+
+[tool.setuptools.package-data]
+enable = [
+    '*.png',
+    '*.zip',
+    '*.svg',
+    'images/*',
+]
+'enable.examples' = [
+    'demo/*',
+    'demo/*/*',
+    'demo/*/*/*',
+    'demo/*/*/*/*',
+    'demo/*/*/*/*/*',
+]
+'enable.savage.trait_defs.ui.wx' = ['data/*.svg']
+kiva = [
+    'tests/agg/doubleprom_soho_full.jpg',
+    'fonttools/data/*.ttf',
+    'fonttools/tests/data/*.afm',
+    'fonttools/tests/data/*.ttc',
+    'fonttools/tests/data/*.ttf',
+    'fonttools/tests/data/*.txt',
+    '*.png',
+    '*.zip',
+    '*.svg',
+    'images/*',
+]
+'kiva.examples' = ['kiva/*', 'kiva/*/*']
