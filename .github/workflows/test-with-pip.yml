@@ -48,6 +48,8 @@ jobs:
         if: matrix.os == 'ubuntu-latest' && matrix.toolkit == 'wx'
       - name: Install local packages
         run: pip install ".[cairo,gl,layout,pdf,svg,test,${{ matrix.toolkit }}]"
+      - name: Install celiagg manually
+        run: pip install celiagg
       - name: Sanity check package version
         run: pip list
       - name: Run kiva test suite
