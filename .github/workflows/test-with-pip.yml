@@ -53,11 +53,13 @@ jobs:
       - name: Run kiva test suite
         env:
           PYTHONFAULTHANDLER: 1
+          ETS_QT4_IMPORTS: 1
         run: xvfb-run python -m unittest discover -v kiva
         working-directory: ${{ runner.temp }}
       - name: Run enable test suite
         env:
           PYTHONFAULTHANDLER: 1
+          ETS_QT4_IMPORTS: 1
         # kiva agg requires at least 15-bit color depth.
         run: xvfb-run --server-args="-screen 0 1024x768x24" python -m unittest discover -v enable
         working-directory: ${{ runner.temp }}
