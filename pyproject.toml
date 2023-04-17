@@ -62,7 +62,7 @@ pdf = ["reportlab"]
 # Dependencies for SVG backend
 svg = ["pyparsing"]
 # Dependencies for Celiagg backend
-celiagg = ["celiagg"]
+celiagg = ["celiagg@git+https://github.com/celiagg/celiagg"]
 # Dependencies for Cairo backend
 cairo = ["pycairo"]
 
