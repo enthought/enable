@@ -14,7 +14,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         toolkit: ['pyside2', 'pyqt5', 'pyside6']
-        python-version: [3.8, 3.10]
+        python-version: ["3.8", "3.10"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out
