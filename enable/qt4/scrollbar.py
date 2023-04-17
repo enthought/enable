@@ -186,8 +186,8 @@ class NativeScrollBar(Component):
             the scrolled component, less the page size).
         """
         if self.orientation != "vertical":
-            return value
-        return max_value - (value - min_value)
+            return int(value)
+        return int(max_value - (value - min_value))
 
     # ------------------------------------------------------------------------
     # Qt Event handlers
