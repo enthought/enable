@@ -12,7 +12,7 @@ jobs:
   test-ets:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest]
         toolkit: ['null', 'pyside2', 'pyside6']
         python-version: ["3.8", "3.10"]
     runs-on: ${{ matrix.os }}
@@ -40,6 +40,15 @@ jobs:
           # needed for Cairo
           sudo apt-get install libcairo2-dev
         if: matrix.os == 'ubuntu-latest' && matrix.os == 'ubuntu-latest'
+      - name: Install dependencies for MacOS
+        run: |
+          # needed for several backends
+          brew install pkg-config
+          # needed for Celiagg
+          brew install freetype harfbuzz
+          # needed for Cairo
+          brew install cairo
+        if: matrix.os == 'macos-latest'
       - name: Install build dependencies
         run: |
           python -m pip install -U pip wheel
