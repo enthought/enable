@@ -30,7 +30,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install libsdl2-2.0-0
-        if: matrix.toolkit == 'wx'
+        if: matrix.os == 'ubuntu-latest' && matrix.toolkit == 'wx'
       - name: Install dependencies for Linux
         run: |
           # needed for GL
@@ -39,7 +39,11 @@ jobs:
           sudo apt-get install libfreetype-dev libharfbuzz-dev
           # needed for Cairo
           sudo apt-get install libcairo2-dev
-        if: matrix.os == 'ubuntu-latest' && matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-latest'
+      - name: Install dependencies for Mac
+        run: |
+          brew install cairo
+        if: matrix.os == 'macos-latest'
       - name: Install build dependencies
         run: |
           pip install -U pip wheel
