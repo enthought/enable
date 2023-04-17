@@ -50,15 +50,14 @@ jobs:
           brew install cairo
         if: matrix.os == 'macos-latest'
       - name: Install build dependencies
-        run: |
-          python -m pip install -U pip wheel
+        run: pip install --upgrade pip wheel
       - name: Install prebuilt wxPython
         run: python -m pip install -f "https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04" wxPython
         if: matrix.os == 'ubuntu-latest' && matrix.toolkit == 'wx'
       - name: Install local packages
-        run: python -m pip install ".[celiagg,cairo,gl,layout,pdf,svg,test,${{ matrix.toolkit }}]"
+        run: pip install ".[celiagg,cairo,gl,layout,pdf,svg,test,${{ matrix.toolkit }}]"
       - name: Sanity check package version
-        run: python -m pip list
+        run: pip list
       - name: Run kiva test suite
         env:
           PYTHONFAULTHANDLER: 1

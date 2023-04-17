@@ -89,32 +89,3 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ['kiva', 'enable']
-
-[tool.setuptools.package-data]
-enable = [
-    '*.png',
-    '*.zip',
-    '*.svg',
-    'images/*',
-]
-'enable.examples' = [
-    'demo/*',
-    'demo/*/*',
-    'demo/*/*/*',
-    'demo/*/*/*/*',
-    'demo/*/*/*/*/*',
-]
-'enable.savage.trait_defs.ui.wx' = ['data/*.svg']
-kiva = [
-    'tests/agg/doubleprom_soho_full.jpg',
-    'fonttools/data/*.ttf',
-    'fonttools/tests/data/*.afm',
-    'fonttools/tests/data/*.ttc',
-    'fonttools/tests/data/*.ttf',
-    'fonttools/tests/data/*.txt',
-    '*.png',
-    '*.zip',
-    '*.svg',
-    'images/*',
-]
-'kiva.examples' = ['kiva/*', 'kiva/*/*']
