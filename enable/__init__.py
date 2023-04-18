@@ -30,9 +30,25 @@ __extras_require__ = {
     "pdf": ["reportlab"],
     # Dependencies for SVG backend
     "svg": ["pyparsing"],
+    # Dependencies for Celiagg backend
+    "celiagg": ["celiagg"],
+    # Dependencies for Cairo backend
+    "cairo": ["pycairo"],
     # Dependencies purely for running tests.
     "test": [
         "PyPDF2<3.0",  # for pdf drawing tests in kiva.
         "setuptools",
     ],
+    # Dependencies for PySide6
+    "pyside6": ["pyface[pyside6]", "traitsui[pyside6]"],
+    # Dependencies for PySide2
+    "pyside2": ["pyface[pyside2]", "traitsui[pyside2]"],
+    # Dependencies for PyQt6
+    "pyqt6": ["pyface[pyqt6]", "traitsui[pyqt6]"],
+    # Dependencies for PyQt5
+    "pyqt5": ["pyface[pyqt5]", "traitsui[pyqt5]"],
+    # Dependencies for WxPython
+    "wx": ["pyface[wx]", "traitsui[wx]"],
+    # Dependencies for null backend (nothing right now)
+    "null": [],
 }
