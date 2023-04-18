@@ -55,7 +55,7 @@ jobs:
           python -m pip install git+https://github.com/enthought/traits.git
           python -m pip install git+https://github.com/enthought/pyface.git
           python -m pip install git+https://github.com/enthought/traitsui.git
-          python -m pip install git+https://github.com/celagg/celiagg.git
+          python -m pip install git+https://github.com/celiagg/celiagg.git
       - name: Sanity check package version
         run: python -m pip list
       - name: Run kiva test suite (Linux)
