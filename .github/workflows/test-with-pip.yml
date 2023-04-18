@@ -46,7 +46,7 @@ jobs:
         if: matrix.os == 'macos-latest'
       - name: Install build dependencies
         run: |
-          pip install -U pip wheel
+          pip install --upgrade pip wheel
       - name: Install prebuilt wxPython
         run: pip install -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04 wxPython
         if: matrix.os == 'ubuntu-latest' && matrix.toolkit == 'wx'
