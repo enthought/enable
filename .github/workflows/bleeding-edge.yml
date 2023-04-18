@@ -52,10 +52,10 @@ jobs:
         run: pip install ".[cairo,gl,layout,pdf,svg,test,${{ matrix.toolkit }}]"
       - name: Install source dependencies
         run: |
-          python -m pip install git+http://github.com/enthought/traits.git
-          python -m pip install git+http://github.com/enthought/pyface.git
-          python -m pip install git+http://github.com/enthought/traitsui.git
-          python -m pip install git+http://github.com/celagg/celiagg.git
+          python -m pip install git+https://github.com/enthought/traits.git
+          python -m pip install git+https://github.com/enthought/pyface.git
+          python -m pip install git+https://github.com/enthought/traitsui.git
+          python -m pip install git+https://github.com/celagg/celiagg.git
       - name: Sanity check package version
         run: python -m pip list
       - name: Run kiva test suite (Linux)
