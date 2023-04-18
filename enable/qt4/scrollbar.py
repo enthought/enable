@@ -164,11 +164,11 @@ class NativeScrollBar(Component):
         # invert values for vertical ranges because of coordinate system issues
         value = self._correct_value(value, minimum, max_value)
 
-        self._control.setMinimum(minimum)
-        self._control.setMaximum(max_value)
-        self._control.setValue(value)
-        self._control.setPageStep(page_size)
-        self._control.setSingleStep(line_size)
+        self._control.setMinimum(int(minimum))
+        self._control.setMaximum(int(max_value))
+        self._control.setValue(int(value))
+        self._control.setPageStep(int(page_size))
+        self._control.setSingleStep(int(line_size))
 
     def _correct_value(self, value, min_value, max_value):
         """ Correct vertical position values for Qt and Enable conventions
