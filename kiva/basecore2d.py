@@ -29,13 +29,14 @@ transform
 
 """
 import numpy as np
-from numpy import alltrue, array, asarray, concatenate, float64, pi, shape
+from numpy import array, asarray, float64, pi
 
 from .constants import (
     LineCap, DrawMode, PathPrimitive, CTM, LineJoin, NO_DASH, TextMode,
 )
 from .abstract_graphics_context import AbstractGraphicsContext
-from .line_state import LineState, line_state_equal
+from .arc_conversion import arc_to_tangent_points
+from .line_state import LineState, line_state_equal  # noqa: F401
 from .graphics_state import GraphicsState
 from .fonttools import Font
 import kiva.affine as affine
@@ -67,7 +68,7 @@ def is_fully_transparent(color):
 
 def fill_equal(fill1, fill2):
     """ Compares the two fill colors. """
-    return alltrue(fill1 == fill2)
+    return np.all(fill1 == fill2)
 
 
 class GraphicsContextBase(AbstractGraphicsContext):
@@ -347,10 +348,10 @@ class GraphicsContextBase(AbstractGraphicsContext):
             to start.  phase defaults to 0.
 
         """
-        if not alltrue(pattern):
+        pattern = asarray(pattern)
+        if (pattern == 0).any():
             self.state.line_state.line_dash = NO_DASH
             return
-        pattern = asarray(pattern)
         if len(pattern) < 2:
             raise ValueError("dash pattern should have at least two entries.")
         # not sure if this check is really needed.
@@ -499,6 +500,8 @@ class GraphicsContextBase(AbstractGraphicsContext):
             Starts and ends should have the same length.
             The current point is moved to the last point in 'ends'.
         """
+        starts = asarray(starts)
+        ends = asarray(ends)
         self._new_subpath()
         for i in range(min(len(starts), len(ends))):
             self.active_subpath.append((PathPrimitive.POINT, starts[i]))
@@ -634,9 +637,37 @@ class GraphicsContextBase(AbstractGraphicsContext):
         self.state.current_point = pts[-1]
 
     def arc_to(self, x1, y1, x2, y2, radius):
+        """ Draw a circular arc from current point to tangent line
+
+        The arc is tangent to the line from the current point to ``(x1, y1)``,
+        and it is also tangent to the line from ``(x1, y1)`` to ``(x2, y2)``.
+        ``(x1, y1)`` is the imaginary intersection point of the two lines
+        tangent to the arc at the current point and at ``(x2, y2)``.
+
+        If the tangent point on the line from the current point to ``(x1, y1)``
+        is not equal to the current point, a line is drawn to it. Depending on
+        the supplied ``radius``, the tangent point on the line from
+        ``(x1, y1)`` to ``(x2, y2)`` may or may not be ``(x2, y2)``. In either
+        case, the arc is drawn to the point of tangency, which is also the new
+        current point.
+
+        Consider the common case of rounding a rectangle's upper left corner.
+        Let "r" be the radius of rounding. Let the current point be
+        ``(x_left + r, y_top)``. Then ``(x2, y2)`` would be
+        ``(x_left, y_top - r)``, and ``(x1, y1)`` would be
+        ``(x_left, y_top)``.
+
+        Note: this, like many backends, actually draws a quadratic Bezier curve
+        that approximates the arc.
         """
-        """
-        raise NotImplementedError("arc_to is not implemented")
+        # Get the endpoints on the curve where it touches the line segments
+        t1, t2 = arc_to_tangent_points(
+            self.state.current_point, (x1, y1), (x2, y2), radius
+        )
+
+        # This follows Quartz/Agg/QPainter conventions and stops at t2
+        self.line_to(*t1)
+        self.quad_curve_to(x1, y1, *t2)
 
     def _new_subpath(self):
         """ Starts a new drawing subpath.
@@ -649,7 +680,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
             self.path.append(self.active_subpath)
 
     # ----------------------------------------------------------------
-    # Getting infomration on paths
+    # Getting information on paths
     # ----------------------------------------------------------------
 
     def is_path_empty(self):
@@ -1016,7 +1047,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
     def show_text_at_point(self, text, x, y):
         """
         """
-        pass
+        self.show_text(text, (x, y))
 
     def show_glyphs_at_point(self):
         """
@@ -1068,18 +1099,20 @@ class GraphicsContextBase(AbstractGraphicsContext):
             for func, args in subpath:
                 if func == PathPrimitive.POINT:
                     self.draw_subpath(mode)
-                    self.add_point_to_subpath(args)
+                    self.add_point_to_subpath(args.reshape(1, 2))
                     self.first_point = args
                 elif func == PathPrimitive.LINE:
-                    self.add_point_to_subpath(args)
+                    self.add_point_to_subpath(args.reshape(1, 2))
                 elif func == PathPrimitive.LINES:
-                    self.draw_subpath(mode)
                     # add all points in list to subpath.
                     self.add_point_to_subpath(args)
                     self.first_point = args[0]
                 elif func == PathPrimitive.CLOSE:
-                    self.add_point_to_subpath(self.first_point)
-                    self.draw_subpath(mode)
+                    if self.first_point is not None:
+                        self.add_point_to_subpath(
+                            self.first_point.reshape(1, 2)
+                        )
+                        self.draw_subpath(mode)
                 elif func == PathPrimitive.RECT:
                     self.draw_subpath(mode)
                     self.device_draw_rect(
@@ -1088,7 +1121,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
                 elif func in ctm_funcs:
                     self.device_transform_device_ctm(func, args)
                 else:
-                    print("oops:", func)
+                    raise RuntimeError(f"Unrecognised subpath term: {func}")
             # finally, draw any remaining paths.
             self.draw_subpath(mode)
 
@@ -1175,22 +1208,18 @@ class GraphicsContextBase(AbstractGraphicsContext):
 
     def clear_subpath_points(self):
         self.draw_points = []
+        self.first_point = None
 
-    def get_subpath_points(self, debug=0):
-        """ Gets the points that are in the current path.
+    def get_subpath_points(self, debug=False):
+        """ Gets the points that are in the current subpath as an Nx2 array.
 
-            The first entry in the draw_points list may actually
-            be an array.  If this is true, the other points are
-            converted to an array and concatenated with the first
+        The draw_points attribute holds the current set of points as a
+        list of Nx2 arrays.
         """
-        if self.draw_points and len(shape(self.draw_points[0])) > 1:
-            first_points = self.draw_points[0]
-            other_points = asarray(self.draw_points[1:])
-            if len(other_points):
-                pts = concatenate((first_points, other_points), 0)
-            else:
-                pts = first_points
+        if self.draw_points:
+            pts = np.vstack(self.draw_points)
         else:
+            # list is empty, convert to an empty array
             pts = asarray(self.draw_points)
         return pts
 

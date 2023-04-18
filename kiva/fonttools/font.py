@@ -183,7 +183,7 @@ class Font(object):
         FontFamily.ROMAN: "serif",
         FontFamily.MODERN: "sans-serif",
         FontFamily.DECORATIVE: "fantasy",
-        FontFamily.SCRIPT: "script",
+        FontFamily.SCRIPT: "cursive",
         FontFamily.TELETYPE: "monospace",
     }
 

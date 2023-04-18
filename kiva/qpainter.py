@@ -14,7 +14,7 @@ import numpy as np
 import warnings
 
 # Major package imports.
-from pyface.qt import QtCore, QtGui
+from pyface.qt import QtCore, QtGui, is_qt5
 
 # Local imports.
 from .abstract_graphics_context import AbstractGraphicsContext
@@ -42,6 +42,16 @@ draw_modes[constants.DrawMode.STROKE] = 0
 draw_modes[constants.DrawMode.FILL_STROKE] = QtCore.Qt.OddEvenFill
 draw_modes[constants.DrawMode.EOF_FILL_STROKE] = QtCore.Qt.WindingFill
 
+font_family_to_style_hint = {
+    constants.DEFAULT: QtGui.QFont.StyleHint.AnyStyle,
+    constants.SWISS: QtGui.QFont.StyleHint.SansSerif,
+    constants.ROMAN: QtGui.QFont.StyleHint.Serif,
+    constants.MODERN: QtGui.QFont.StyleHint.Monospace,
+    constants.TELETYPE: QtGui.QFont.StyleHint.TypeWriter,
+    constants.DECORATIVE: QtGui.QFont.StyleHint.Decorative,
+    constants.SCRIPT: QtGui.QFont.StyleHint.Cursive,
+}
+
 font_styles = {}
 font_styles["regular"] = constants.FontStyle.NORMAL
 font_styles["bold"] = constants.FontStyle.NORMAL
@@ -65,7 +75,9 @@ weight_to_qt_weight = {
     constants.FontWeight.BOLD: QtGui.QFont.Weight.Bold,
     constants.FontWeight.EXTRABOLD: QtGui.QFont.Weight.ExtraBold,
     constants.FontWeight.HEAVY: QtGui.QFont.Weight.Black,
-    constants.FontWeight.EXTRAHEAVY: 99,
+    constants.FontWeight.EXTRAHEAVY: (
+        99 if is_qt5 else QtGui.QFont.Weight.Black
+    ),
 }
 
 gradient_coord_modes = {}
@@ -432,7 +444,7 @@ class GraphicsContext(object):
         self.path.arc_to(x1, y1, x2, y2, radius)
 
     # ----------------------------------------------------------------
-    # Getting infomration on paths
+    # Getting information on paths
     # ----------------------------------------------------------------
 
     def is_path_empty(self):
@@ -649,12 +661,27 @@ class GraphicsContext(object):
     def set_font(self, font):
         """ Set the font for the current graphics context.
         """
-        qfont = QtGui.QFont(font.face_name, font.size)
-
+        qfont = QtGui.QFont()
+        qfont.setStyleHint(font_family_to_style_hint[font.family])
+        qfont.setPointSizeF(font.size)
         weight = font._get_weight()
         qfont.setWeight(weight_to_qt_weight[weight])
-
         qfont.setItalic(font.style in constants.italic_styles)
+
+        if font.face_name:
+            name = font.face_name
+        else:
+            # if we don't have a face name, see if Qt can suggest one
+            name = qfont.defaultFamily()
+            if not name:
+                # otherwise use kiva.fonttools to suggest one
+                name = font.findfontname()
+
+        # setFamilies() was introduced in Qt 5.13
+        if hasattr(qfont, 'setFamilies'):
+            qfont.setFamilies([name])
+        else:
+            qfont.setFamily(name)
 
         self.gc.setFont(qfont)
 
@@ -892,9 +919,16 @@ class CompiledPath(object):
             if not clockwise
             else start_angle - end_angle
         )
-        self.path.moveTo(x, y)
+        if self.is_empty():
+            # if this is the first point of the path, don't draw a line
+            # to the start point
+            self.path.moveTo(
+                x + r * np.cos(start_angle),
+                y + r * np.sin(start_angle),
+            )
+        # draw arc flipped in y-axis because QPainter has top-left origin
         self.path.arcTo(
-            QtCore.QRectF(x - r, y - r, r * 2, r * 2),
+            QtCore.QRectF(x - r, y + r, r * 2, -r * 2),
             np.rad2deg(start_angle),
             np.rad2deg(sweep_angle),
         )

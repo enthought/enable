@@ -18,6 +18,20 @@ from PIL import Image
 from kiva.api import (
     DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN, SCRIPT, TELETYPE, Font
 )
+from kiva.constants import (
+    WEIGHT_THIN, WEIGHT_EXTRALIGHT, WEIGHT_LIGHT, WEIGHT_NORMAL, WEIGHT_MEDIUM,
+    WEIGHT_SEMIBOLD, WEIGHT_BOLD, WEIGHT_EXTRABOLD, WEIGHT_HEAVY,
+    WEIGHT_EXTRAHEAVY
+)
+
+
+families = [DECORATIVE, DEFAULT, MODERN, ROMAN, SCRIPT, TELETYPE]
+
+weights = [
+    WEIGHT_THIN, WEIGHT_EXTRALIGHT, WEIGHT_LIGHT, WEIGHT_NORMAL, WEIGHT_MEDIUM,
+    WEIGHT_SEMIBOLD, WEIGHT_BOLD, WEIGHT_EXTRABOLD, WEIGHT_HEAVY,
+    WEIGHT_EXTRAHEAVY,
+]
 
 
 class DrawingTester(object):
@@ -78,10 +92,30 @@ class DrawingTester(object):
             self.gc.arc(150, 150, 100, 0.0, numpy.pi / 2)
             self.gc.stroke_path()
 
+    def test_arc_to(self):
+        with self.draw_and_check():
+            self.gc.begin_path()
+            self.gc.move_to(0, 50)
+            self.gc.arc_to(0, 150, 100, 150, 50)
+            self.gc.stroke_path()
+
+    def test_quad_curve_to(self):
+        with self.draw_and_check():
+            self.gc.begin_path()
+            self.gc.move_to(0, 50)
+            self.gc.quad_curve_to(0, 100, 50, 100)
+            self.gc.stroke_path()
+
+    def test_curve_to(self):
+        with self.draw_and_check():
+            self.gc.begin_path()
+            self.gc.move_to(300, 100)
+            self.gc.curve_to(230, 150, 270, 250, 200, 200)
+            self.gc.stroke_path()
+
     def test_text(self):
-        for family in [
-                DECORATIVE, DEFAULT, ITALIC, MODERN, ROMAN, SCRIPT, TELETYPE]:
-            for weight in range(100, 1001, 100):
+        for family in families:
+            for weight in weights:
                 for style in [NORMAL, ITALIC]:
                     with self.subTest(family=family, weight=weight, style=style):
                         self.gc = self.create_graphics_context()

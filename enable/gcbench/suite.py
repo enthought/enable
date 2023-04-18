@@ -22,6 +22,7 @@ import math
 import numpy as np
 
 import kiva.api as kiva_api
+import kiva.fonttools.font as kiva_font
 
 
 def gen_image():
@@ -96,6 +97,90 @@ class draw_rect:
             self.gc.fill_path()
 
 
+class draw_arcs:
+    def __init__(self, gc, module):
+        self.gc = gc
+    
+    def __call__(self):
+        with self.gc:
+            self.gc.set_fill_color((0.33, 0.66, 0.99, 1.0))
+            self.gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
+            for i in range(-5, 11):
+                x = (i + 5) * 32 + 16.0
+                start = i * np.pi / 2
+                for j in range(-5, 11):
+                    y = (j + 5) * 32 + 16.0
+                    end = j * np.pi / 2
+                    with self.gc:
+                        self.gc.begin_path()
+                        self.gc.arc(x, y, 12.0, start, end)
+                        self.gc.draw_path()
+
+
+class draw_arcs_clockwise:
+    def __init__(self, gc, module):
+        self.gc = gc
+    
+    def __call__(self):
+        with self.gc:
+            self.gc.set_fill_color((0.33, 0.66, 0.99, 1.0))
+            self.gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
+            for i in range(-5, 11):
+                x = (i + 5) * 32 + 16.0
+                start = i * np.pi / 2
+                for j in range(-5, 11):
+                    y = (j + 5) * 32 + 16.0
+                    end = j * np.pi / 2
+                    with self.gc:
+                        self.gc.begin_path()
+                        self.gc.arc(x, y, 12.0, start, end, True)
+                        self.gc.draw_path()
+
+
+class draw_arc_path:
+    def __init__(self, gc, module):
+        self.gc = gc
+    
+    def __call__(self):
+         with self.gc:
+            self.gc.set_fill_color((0.33, 0.66, 0.99, 1.0))
+            self.gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
+            for i in range(-5, 11):
+                x = (i + 5) * 32 + 16.0
+                start = i * np.pi / 2
+                for j in range(-5, 11):
+                    y = (j + 5) * 32 + 16.0
+                    end = j * np.pi / 2
+                    with self.gc:
+                        self.gc.begin_path()
+                        self.gc.move_to(x - 12, y - 12)
+                        self.gc.arc(x, y, 12.0, start, end)
+                        self.gc.line_to(x - 12, y - 12)
+                        self.gc.draw_path()
+
+
+class draw_arc_path:
+    def __init__(self, gc, module):
+        self.gc = gc
+    
+    def __call__(self):
+         with self.gc:
+            self.gc.set_fill_color((0.33, 0.66, 0.99, 1.0))
+            self.gc.set_stroke_color((0.0, 0.0, 0.0, 1.0))
+            for i in range(-5, 11):
+                x = (i + 5) * 32 + 16.0
+                start = i * np.pi / 2
+                for j in range(-5, 11):
+                    y = (j + 5) * 32 + 16.0
+                    end = j * np.pi / 2
+                    with self.gc:
+                        self.gc.begin_path()
+                        self.gc.move_to(x, y)
+                        self.gc.arc(x, y, 12.0, start, end, True)
+                        self.gc.line_to(x, y)
+                        self.gc.draw_path()
+
+
 class draw_marker_at_points:
     def __init__(self, gc, module):
         self.points = gen_points(1000)
@@ -151,6 +236,25 @@ class show_text:
                 self.gc.set_text_position(4, y)
                 self.gc.show_text(line)
                 y -= self.font.size * 1.4
+
+
+class show_text_font_styles:
+    def __init__(self, gc, module):
+        self.gc = gc
+    
+    def __call__(self):
+        names = ["default", "sans", "serif", "mono", "fantasy", "script", "type"]
+        for i, family in enumerate(kiva_font.Font.familymap):
+            x = 75 * i + 6.0
+            for j, style in enumerate([kiva_api.NORMAL, kiva_api.ITALIC]):
+                for k, weight in enumerate(kiva_font.WEIGHTS.values()):
+                    y = 48 * k + 24 * j + 6.0
+                    font = kiva_font.Font(size=18, family=family, style=style, weight=weight)
+                    with self.gc:
+                        self.gc.set_fill_color((0.5, 0.5, 0.0, 1.0))
+                        self.gc.set_font(font)
+                        self.gc.set_text_position(x, y)
+                        self.gc.show_text(names[i])
 
 
 class draw_path_linear_gradient:

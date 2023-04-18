@@ -77,6 +77,13 @@ line_join_map = {
     constants.LineJoin.BEVEL: "bevel",
     constants.LineJoin.MITER: "miter",
 }
+font_style_map = {
+    constants.NORMAL: "normal",
+    constants.BOLD: "normal",
+    constants.ITALIC: "italic",
+    constants.BOLD_ITALIC: "italic",
+}
+
 
 xmltemplate = """<?xml version="1.0"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
@@ -139,6 +146,10 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         self._height = size[1]
         self.contents = StringIO()
         self._clipmap = {}
+        self.face_name = "default"
+        self.font_size = 12
+        self.font_style = "normal"
+        self.font_weight = 400
 
     def render(self, format):
         assert format == "svg"
@@ -181,8 +192,13 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
     # Text handling code
 
     def set_font(self, font):
-        self.face_name = font.face_name
+        if font.face_name:
+            self.face_name = font.face_name + ', ' + font.familymap[font.family]
+        else:
+            self.face_name = font.familymap[font.family]
         self.font_size = font.size
+        self.font_style = font_style_map[font.style]
+        self.font_weight = font.weight
 
     # actual implementation =)
 
@@ -202,8 +218,11 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             kw={
                 "font-family": self.face_name,
                 "font-size": str(self.font_size),
+                "font-style": self.font_style,
+                "font-weight": self.font_weight,
                 "xml:space": "preserve",
                 "transform": transform,
+                "fill": "rgba({:.1%},{:.1%},{:.1%},{:.1%})".format(*self.state.fill_color)
             },
         )
 

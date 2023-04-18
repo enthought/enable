@@ -14,8 +14,10 @@ import os
 import unittest
 
 from kiva.constants import (
-    BOLD_ITALIC, FontFamily, FontStyle, FontWeight, 
+    BOLD_ITALIC, FontFamily, FontStyle, FontWeight, DECORATIVE, DEFAULT,
+    MODERN, ROMAN, SCRIPT, TELETYPE, SWISS,
 )
+from kiva.fonttools._constants import font_family_aliases, preferred_fonts
 from kiva.fonttools.tests._testing import patch_global_font_manager
 from kiva.fonttools.font import (
     DECORATIONS, FAMILIES, NOISE, STYLES, WEIGHTS, Font, str_to_font,
@@ -191,6 +193,23 @@ class TestFont(unittest.TestCase):
             query = font._make_font_query()
         self.assertEqual(query.get_weight(), FontWeight.LIGHT)
         self.assertEqual(query.get_style(), "italic")
+
+    def test_family_queries(self):
+        # regression test for Enable #971
+        # this ensures every font family creates a valid query populated
+        # with query families that work
+        families = [
+            DECORATIVE, DEFAULT, MODERN, ROMAN, SCRIPT, SWISS, TELETYPE
+        ]
+        for family in families:
+            with self.subTest(family=family):
+                font = Font(family=family)
+                query = font._make_font_query()
+                query_family = query.get_family()[0]
+
+                self.assertEqual(query_family, Font.familymap.get(family))
+                self.assertIn(query_family, font_family_aliases)
+                self.assertIn(query_family, preferred_fonts)
 
 
 class TestSimpleParser(unittest.TestCase):

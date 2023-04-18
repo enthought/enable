@@ -809,7 +809,11 @@ cdef class CGContext:
             constants.FontStyle.ITALIC: 'italic',
             constants.FontStyle.BOLD | constants.FontStyle.ITALIC: 'bold italic',
         }[font.is_bold() | font.style]
-        self.select_font(font.face_name, font.size, style=style)
+        if font.face_name:
+            name = font.face_name
+        else:
+            name = font.findfontname()
+        self.select_font(name, font.size, style=style)
 
     def set_font_size(self, float size):
         """ Change the size of the currently selected font
@@ -934,7 +938,8 @@ cdef class CGContext:
 
         pointer = self.current_font.get_pointer()
         ct_font = <CTFontRef>pointer
-        ct_line = _create_ct_line(text, ct_font, self.stroke_color)
+        # using fill_color here brings rendering in line with Agg backends
+        ct_line = _create_ct_line(text, ct_font, self.fill_color)
         if ct_line == NULL:
             return
 

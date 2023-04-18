@@ -456,7 +456,7 @@ class GraphicsContext(object):
         self.path.arc_to(x1, y1, x2, y2, radius)
 
     # ----------------------------------------------------------------
-    # Getting infomration on paths
+    # Getting information on paths
     # ----------------------------------------------------------------
 
     def is_path_empty(self):

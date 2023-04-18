@@ -428,20 +428,7 @@ def macos_extensions():
     ]
 
 
-def verify_swig_install():
-    """ Verify that SWIG is installed.
-    """
-    msg = ("SWIG is a required build dependency of Enable. Please install "
-           "SWIG (see http://www.swig.org/).")
-    try:
-        subprocess.run(["swig", "-version"], check=True)
-    except (FileNotFoundError, subprocess.CalledProcessError):
-        raise Exception(msg)
-
-
 if __name__ == "__main__":
-
-    verify_swig_install()
 
     # Write version modules as needed
     enable_version_path = os.path.join('enable', '_version.py')
@@ -496,6 +483,7 @@ if __name__ == "__main__":
           platforms=['Windows', 'Linux', 'macOS', 'Unix', 'Solaris'],
           description='low-level drawing and interaction',
           long_description=long_description,
+          long_description_content_type="text/x-rst",
           install_requires=__requires__,
           extras_require=__extras_require__,
           cmdclass={
