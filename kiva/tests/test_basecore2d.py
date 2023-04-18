@@ -19,11 +19,12 @@
 
 import unittest
 
-from numpy import alltrue, array, ravel
+from numpy import array, ravel
 
 from kiva import affine
 from kiva import basecore2d
 from kiva import constants
+from kiva.line_state import line_state_equal
 
 
 class TestIsFullyTransparent(unittest.TestCase):
@@ -70,31 +71,31 @@ class LineStateTestCase(unittest.TestCase):
         ls1 = self.create_ls()
         ls2 = ls1.copy()
         ls1.line_color[1] = 10
-        self.assertTrue(not basecore2d.line_state_equal(ls1, ls2))
+        self.assertTrue(not line_state_equal(ls1, ls2))
 
     def test_dash_on_copy(self):
         ls1 = self.create_ls()
         ls2 = ls1.copy()
         ls1.line_dash[1][0] = 10
-        self.assertTrue(not basecore2d.line_state_equal(ls1, ls2))
+        self.assertTrue(not line_state_equal(ls1, ls2))
 
     def test_cmp_for_different_length_dash_patterns(self):
         ls1 = self.create_ls()
         ls2 = ls1.copy()
         ls1.line_dash = (ls1.line_dash[0], array([10, 10, 10, 10]))
-        self.assertTrue(not basecore2d.line_state_equal(ls1, ls2))
+        self.assertTrue(not line_state_equal(ls1, ls2))
 
     def test_cmp(self):
         ls1 = self.create_ls()
         ls2 = ls1.copy()
-        self.assertTrue(basecore2d.line_state_equal(ls1, ls2))
+        self.assertTrue(line_state_equal(ls1, ls2))
 
     # line_dash no longer allowed to be none.
     # def test_cmp_with_dash_as_none(self):
     #    ls1 = self.create_ls()
     #    ls2 = ls1.copy()
     #    #ls1.line_dash = None
-    #    assert(not basecore2d.line_state_equal(ls1,ls2))
+    #    assert(not line_state_equal(ls1,ls2))
 
 
 class GraphicsContextTestCase(unittest.TestCase):
@@ -110,7 +111,7 @@ class GraphicsContextTestCase(unittest.TestCase):
         # default ctm should be identity matrix.
         desired = affine.affine_identity()
         actual = gc.get_ctm()
-        self.assertTrue(alltrue(ravel(actual == desired)))
+        self.assertTrue(ravel(actual == desired).all())
 
     def test_scale_ctm(self):
         gc = basecore2d.GraphicsContextBase()
@@ -119,7 +120,7 @@ class GraphicsContextTestCase(unittest.TestCase):
         desired = affine.scale(ident, sx, sy)
         gc.scale_ctm(sx, sy)
         actual = gc.get_ctm()
-        self.assertTrue(alltrue(ravel(actual == desired)))
+        self.assertTrue(ravel(actual == desired).all())
 
     def test_rotate_ctm(self):
         gc = basecore2d.GraphicsContextBase()
@@ -128,7 +129,7 @@ class GraphicsContextTestCase(unittest.TestCase):
         desired = affine.rotate(ident, angle)
         gc.rotate_ctm(angle)
         actual = gc.get_ctm()
-        self.assertTrue(alltrue(ravel(actual == desired)))
+        self.assertTrue(ravel(actual == desired).all())
 
     def test_translate_ctm(self):
         gc = basecore2d.GraphicsContextBase()
@@ -137,7 +138,7 @@ class GraphicsContextTestCase(unittest.TestCase):
         desired = affine.translate(ident, x, y)
         gc.translate_ctm(x, y)
         actual = gc.get_ctm()
-        self.assertTrue(alltrue(ravel(actual == desired)))
+        self.assertTrue(ravel(actual == desired).all())
 
     def test_concat_ctm(self):
         gc = basecore2d.GraphicsContextBase()
@@ -146,7 +147,7 @@ class GraphicsContextTestCase(unittest.TestCase):
         desired = affine.concat(ident, trans)
         gc.concat_ctm(trans)
         actual = gc.get_ctm()
-        self.assertTrue(alltrue(ravel(actual == desired)))
+        self.assertTrue(ravel(actual == desired).all())
 
     # -------------------------------------------------------------------------
     # Setting drawing state variables
@@ -235,17 +236,17 @@ class GraphicsContextTestCase(unittest.TestCase):
         self.assertTrue(gc.state.line_state.is_dashed())
         self.assertEqual(gc.state.line_state.line_dash[0], 0)
         self.assertTrue(
-            alltrue(
+            (
                 ravel(gc.state.line_state.line_dash[1] == array([3.0, 4.0]))
-            )
+            ).all()
         )
         gc.restore_state()
         self.assertTrue(gc.state.line_state.is_dashed())
         self.assertEqual(gc.state.line_state.line_dash[0], 2.0)
         self.assertTrue(
-            alltrue(
+            (
                 ravel(gc.state.line_state.line_dash[1] == array([1.0, 2.0]))
-            )
+            ).all()
         )
 
         # pattern must be a container with atleast two values
@@ -279,29 +280,29 @@ class GraphicsContextTestCase(unittest.TestCase):
     def test_state_fill_color(self):
         gc = basecore2d.GraphicsContextBase()
         # defaults to [0,0,0,1]
-        self.assertTrue(alltrue(gc.state.fill_color == array([0, 0, 0, 1])))
+        self.assertTrue((gc.state.fill_color == array([0, 0, 0, 1])).all())
         gc.set_fill_color((0, 1, 0, 1))
         gc.save_state()
         gc.set_fill_color((1, 1, 1, 1))
-        self.assertTrue(alltrue(gc.state.fill_color == array([1, 1, 1, 1])))
+        self.assertTrue((gc.state.fill_color == array([1, 1, 1, 1])).all())
         gc.restore_state()
-        self.assertTrue(alltrue(gc.state.fill_color == array([0, 1, 0, 1])))
+        self.assertTrue((gc.state.fill_color == array([0, 1, 0, 1])).all())
 
     def test_state_stroke_color(self):
         gc = basecore2d.GraphicsContextBase()
         # defaults to [0,0,0,1]
         self.assertTrue(
-            alltrue(gc.state.line_state.line_color == array([0, 0, 0, 1]))
+            (gc.state.line_state.line_color == array([0, 0, 0, 1])).all()
         )
         gc.set_stroke_color((0, 1, 0, 1))
         gc.save_state()
         gc.set_stroke_color((1, 1, 1, 1))
         self.assertTrue(
-            alltrue(gc.state.line_state.line_color == array([1, 1, 1, 1]))
+            (gc.state.line_state.line_color == array([1, 1, 1, 1])).all()
         )
         gc.restore_state()
         self.assertTrue(
-            alltrue(gc.state.line_state.line_color == array([0, 1, 0, 1]))
+            (gc.state.line_state.line_color == array([0, 1, 0, 1])).all()
         )
 
     def test_state_character_spacing(self):
@@ -348,13 +349,13 @@ class GraphicsContextTestCase(unittest.TestCase):
             self.assertEqual(gc.state.line_state.line_width, 10)
             gc.set_fill_color((1, 1, 1, 1))
             self.assertTrue(
-                alltrue(gc.state.fill_color == array([1, 1, 1, 1]))
+                (gc.state.fill_color == array([1, 1, 1, 1])).all()
             )
 
         # Verify that we're back to the earlier settings.
         self.assertEqual(gc.state.antialias, 0)
         self.assertEqual(gc.state.line_state.line_width, 5)
-        self.assertTrue(alltrue(gc.state.fill_color == array([0, 1, 0, 1])))
+        self.assertTrue((gc.state.fill_color == array([0, 1, 0, 1])).all())
 
     def test_state_context_manager_nested(self):
         gc = basecore2d.GraphicsContextBase()
@@ -372,7 +373,7 @@ class GraphicsContextTestCase(unittest.TestCase):
             self.assertEqual(gc.state.line_state.line_width, 10)
             gc.set_fill_color((1, 1, 1, 1))
             self.assertTrue(
-                alltrue(gc.state.fill_color == array([1, 1, 1, 1]))
+                (gc.state.fill_color == array([1, 1, 1, 1])).all()
             )
 
             with gc:
@@ -383,20 +384,20 @@ class GraphicsContextTestCase(unittest.TestCase):
                 self.assertEqual(gc.state.line_state.line_width, 2)
                 gc.set_fill_color((1, 1, 0, 1))
                 self.assertTrue(
-                    alltrue(gc.state.fill_color == array([1, 1, 0, 1]))
+                    (gc.state.fill_color == array([1, 1, 0, 1])).all()
                 )
 
             # Verify that we're back to the earlier settings.
             self.assertEqual(gc.state.antialias, 1)
             self.assertEqual(gc.state.line_state.line_width, 10)
             self.assertTrue(
-                alltrue(gc.state.fill_color == array([1, 1, 1, 1]))
+                (gc.state.fill_color == array([1, 1, 1, 1])).all()
             )
 
         # Verify that we're back to the earlier settings.
         self.assertEqual(gc.state.antialias, 0)
         self.assertEqual(gc.state.line_state.line_width, 5)
-        self.assertTrue(alltrue(gc.state.fill_color == array([0, 1, 0, 1])))
+        self.assertTrue((gc.state.fill_color == array([0, 1, 0, 1])).all())
 
     # -------------------------------------------------------------------------
     # Begin/End Page
