@@ -17,17 +17,12 @@ jobs:
       matrix:
         toolkit: ['null', 'pyside6']
         runtime: ['3.8']
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v3
       - name: Install Qt dependencies
         uses: ./.github/actions/install-qt-support
         if: matrix.toolkit != 'wx'
-      - name: Install Wx dependencies for Linux
-        run: |
-          sudo apt-get update
-          sudo apt-get install libsdl1.2-dev
-        if: matrix.toolkit == 'wx'
       - name: Install GL dependencies for Linux
         run: sudo apt-get install libglu1-mesa-dev
       - name: Cache EDM packages
@@ -51,9 +46,13 @@ jobs:
   test-with-edm:
     strategy:
       matrix:
-        os: [windows-latest]
-        toolkit: ['pyside6', 'wx']
+        os: ["windows-latest", "macos-latest"]
+        toolkit: ['null', 'pyside6', 'wx']
         runtime: ['3.8']
+        exclude:
+          # No Wx eggs for MacOS in EDM
+          - os: 'macos-latest'
+            toolkit: "wx"
     runs-on: ${{ matrix.os }}
     env:
       # Set root directory, mainly for Windows, so that the EDM Python

@@ -24,6 +24,9 @@ jobs:
           # PyQt5 API doesn't automatically cast float -> int, see #1037
           - toolkit: "pyqt5"
             python-version: "3.10"
+          # Kiva tests hanging on windows, see #1038
+          - os: "windows-latest"
+            toolkit: "pyqt5"
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out
@@ -34,7 +37,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install Qt dependencies
         uses: ./.github/actions/install-qt-support
-        if: matrix.toolkit != 'wx'
+        if: matrix.toolkit != 'wx' && matrix.toolkit != 'null'
       - name: Install dependencies for Linux
         run: |
           # needed for GL
