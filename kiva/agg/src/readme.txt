@@ -15,7 +15,11 @@ compiled_path.i     wrapper for kiva_compiled_path.h
 constants.i         common enumerations and constants used by Agg and Kiva
 font_type.i         wrapper for kiva_font_type.h
 graphic_context.i   the main wrapper defining the Agg graphics context
+<<<<<<< HEAD
 numeric.i           typemaps and wrappers for Numeric array used in kiva
+=======
+numeric.i           typemaps and wrappers for Numpy array used in kiva
+>>>>>>> 0579b063 (Remove more uses of numeric.)
 rect.i              wrapper for kiva_rect.h
 rgba.i              RGBA color class and utility functions
 rgba_array.i        maps Numeric 3- and 4-tuples into RGBA color instances

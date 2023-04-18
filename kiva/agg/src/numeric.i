@@ -32,7 +32,6 @@ Here are the typemap helper functions for numeric arrays:
 %{
 #include "numpy/arrayobject.h"
 #define PyArray_UBYTELTR 'b'
-#endif
 
 #include <string>
 
