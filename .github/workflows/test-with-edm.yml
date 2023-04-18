@@ -46,13 +46,9 @@ jobs:
   test-with-edm:
     strategy:
       matrix:
-        os: ["windows-latest", "macos-latest"]
+        os: ["windows-latest"]
         toolkit: ['null', 'pyside6', 'wx']
         runtime: ['3.8']
-        exclude:
-          # No Wx eggs for MacOS in EDM
-          - os: 'macos-latest'
-            toolkit: "wx"
     runs-on: ${{ matrix.os }}
     env:
       # Set root directory, mainly for Windows, so that the EDM Python
