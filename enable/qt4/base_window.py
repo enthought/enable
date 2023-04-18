@@ -380,7 +380,7 @@ class _Window(AbstractWindow):
             self.control.move(*pos)
 
         if size is not None:
-            self.control.resize(*size)
+            self.control.resize(*(int(x) for x in size))
 
     def _get_base_pixel_scale(self):
         if self.control is None:

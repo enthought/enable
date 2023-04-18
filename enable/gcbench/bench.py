@@ -25,7 +25,6 @@ _BACKENDS = {
         "blend2d": "enable.null.blend2d",
         "cairo": "enable.null.cairo",
         "celiagg": "enable.null.celiagg",
-        "opengl": "enable.gcbench.opengl",
         "pil_image": "enable.null.pil_image",
         "qpainter": "enable.null.qpainter",
         "quartz": "enable.null.quartz",

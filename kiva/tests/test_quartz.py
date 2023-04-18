@@ -70,7 +70,7 @@ class TestQuartz(unittest.TestCase):
         class MyApp(wx.App):
             def OnInit(self):
                 SimpleWindow()
-                return 1
+                return True
 
         app = MyApp(False)
         app.MainLoop()

@@ -260,8 +260,7 @@ Backbuffer
 A backbuffer provides the ability to render into an offscreen buffer, which is
 blitted on every draw, until it is invalidated. Various traits such as
 :attr:`use_backbuffer` and :attr:`backbuffer_padding` control the behavior of
-the backbuffer. A backbuffer is used for non-OpenGL backends, such as `agg`
-and on OS X. If :attr:`use_backbuffer` is False, a backbuffer is never used,
+the backbuffer. If :attr:`use_backbuffer` is False, a backbuffer is never used,
 even if a backbuffer is referenced by a component.
 
 Users typically subclass Chaco :class:`PlotComponent`, but may need features
