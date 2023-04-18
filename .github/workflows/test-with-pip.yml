@@ -18,7 +18,6 @@ jobs:
         exclude:
           - os: 'ubuntu-latest'
             toolkit: "wx"
-            python-version: "3.8"
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out
