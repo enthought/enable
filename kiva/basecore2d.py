@@ -692,14 +692,14 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """ Tests to see whether the current drawing path is empty
         """
         # If the first subpath is empty, then the path is empty
-        res = 0
+        res = False
         if not self.path[0]:
-            res = 1
+            res = True
         else:
-            res = 1
+            res = True
             for sub in self.path:
                 if not is_point(sub[-1]):
-                    res = 0
+                    res = False
                     break
         return res
 
