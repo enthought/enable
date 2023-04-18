@@ -677,7 +677,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
             Y-value of the ending point of the curve.
         """
         # A quadratic Bezier curve is just a special case of the cubic.
-        # Can reuse definition from superclass because we don't
+        # Can't reuse definition from superclass because we don't track current point
         x0, y0 = self._ctx.get_current_point()
         xc1 = (x0 + x_ctrl + x_ctrl) / 3.0
         yc1 = (y0 + y_ctrl + y_ctrl) / 3.0
