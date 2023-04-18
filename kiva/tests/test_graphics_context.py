@@ -10,7 +10,7 @@
 import unittest
 
 from numpy import (
-    alltrue, array, asarray, concatenate, dtype, newaxis, ones, ravel, zeros
+    array, asarray, concatenate, dtype, newaxis, ones, ravel, zeros
 )
 from PIL import Image as PILImage
 
@@ -161,7 +161,7 @@ class TestAlphaBlackImage(unittest.TestCase):
     def assert_images_equal(self, desired, actual):
         """ Only use for small arrays. """
         try:
-            assert alltrue(ravel(actual) == ravel(desired))
+            assert (ravel(actual) == ravel(desired)).all()
         except AssertionError:
             size = sum(array(desired.shape))
             if size < 10:
@@ -183,7 +183,7 @@ class TestAlphaBlackImage(unittest.TestCase):
             diff = abs(
                 ravel(actual.astype(Int32)) - ravel(desired.astype(Int32))
             )
-            assert alltrue(diff <= diff_allowed)
+            assert (diff <= diff_allowed).all()
         except AssertionError:
             size = sum(array(desired.shape))
             if size < 10:
