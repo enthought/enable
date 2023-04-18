@@ -40,8 +40,6 @@ jobs:
         if: matrix.toolkit != 'wx' && matrix.toolkit != 'null'
       - name: Install dependencies for Linux
         run: |
-          # needed for GL
-          sudo apt-get install libglu1-mesa-dev
           # needed for Celiagg
           sudo apt-get install libfreetype-dev libharfbuzz-dev
           # needed for Cairo
@@ -55,7 +53,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip wheel
       - name: Install local packages
-        run: pip install ".[cairo,gl,layout,pdf,svg,test,${{ matrix.toolkit }}]"
+        run: pip install ".[cairo,layout,pdf,svg,test,${{ matrix.toolkit }}]"
       - name: Install celiagg manually
         # This is needed until new release of celiagg
         # - numpy is needed for install in current released version
