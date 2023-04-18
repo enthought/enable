@@ -16,7 +16,12 @@
 # -----------------------------------------------------------------------------
 
 from pyface.qt import QtGui
-from pyface.ui.qt4.color import toolkit_color_to_rgba, rgba_to_toolkit_color
+
+try:
+    from pyface.ui.qt.color import toolkit_color_to_rgba, rgba_to_toolkit_color
+# compatible with pyface < 8.0.0
+except ModuleNotFoundError:
+    from pyface.ui.qt4.color import toolkit_color_to_rgba, rgba_to_toolkit_color
 
 from traits.trait_base import SequenceTypes
 
@@ -24,9 +29,16 @@ from traits.trait_base import SequenceTypes
 # subclass of the abstract ToolkitEditorFactory class
 # (in traitsui.api) with qt4-specific methods defined.
 # We need to override the implementations of the qt4-specific methods here.
-from traitsui.qt4.color_editor import (
-    ToolkitEditorFactory as BaseColorToolkitEditorFactory,
-)
+
+try:
+    from traitsui.qt.color_editor import (
+        ToolkitEditorFactory as BaseColorToolkitEditorFactory,
+    )
+# compatible with pyface < 8.0.0
+except ModuleNotFoundError:
+    from traitsui.qt4.color_editor import (
+        ToolkitEditorFactory as BaseColorToolkitEditorFactory,
+    )
 
 # -----------------------------------------------------------------------------
 #  The PyQt4 ToolkitEditorFactory class:

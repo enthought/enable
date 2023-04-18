@@ -29,7 +29,7 @@ transform
 
 """
 import numpy as np
-from numpy import alltrue, array, asarray, float64, pi
+from numpy import array, asarray, float64, pi
 
 from .constants import (
     CAP_BUTT, CAP_ROUND, CAP_SQUARE, CLOSE, CONCAT_CTM, EOF_FILL_STROKE,
@@ -73,7 +73,7 @@ def is_fully_transparent(color):
 
 def fill_equal(fill1, fill2):
     """ Compares the two fill colors. """
-    return alltrue(fill1 == fill2)
+    return np.all(fill1 == fill2)
 
 
 class GraphicsContextBase(AbstractGraphicsContext):
@@ -353,10 +353,10 @@ class GraphicsContextBase(AbstractGraphicsContext):
             to start.  phase defaults to 0.
 
         """
-        if not alltrue(pattern):
+        pattern = asarray(pattern)
+        if (pattern == 0).any():
             self.state.line_state.line_dash = NO_DASH
             return
-        pattern = asarray(pattern)
         if len(pattern) < 2:
             raise ValueError("dash pattern should have at least two entries.")
         # not sure if this check is really needed.
