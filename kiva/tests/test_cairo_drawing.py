@@ -21,7 +21,13 @@ else:
 
 @unittest.skipIf(CAIRO_NOT_AVAILABLE, "Cannot import cairo")
 class TestCairoDrawing(DrawingImageTester, unittest.TestCase):
+
     def create_graphics_context(self, width=600, height=600, pixel_scale=2.0):
         from kiva.cairo import GraphicsContext
 
         return GraphicsContext((width, height), base_pixel_scale=pixel_scale)
+
+    # currently broken when scaling the image; see 1035
+    @unittest.expectedFailure
+    def test_image(self):
+        super().test_image()

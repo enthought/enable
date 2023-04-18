@@ -662,6 +662,29 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         """
         self._ctx.curve_to(x_ctrl1, y_ctrl1, x_ctrl2, y_ctrl2, x_to, y_to)
 
+    def quad_curve_to(self, x_ctrl, y_ctrl, x_to, y_to):
+        """ Draw a quadratic bezier curve from the current point.
+
+        Parameters
+        ----------
+        x_ctrl : float
+            X-value of the control point
+        y_ctrl : float
+            Y-value of the control point.
+        x_to : float
+            X-value of the ending point of the curve
+        y_to : float
+            Y-value of the ending point of the curve.
+        """
+        # A quadratic Bezier curve is just a special case of the cubic.
+        # Can't reuse definition from superclass because we don't track current point
+        x0, y0 = self._ctx.get_current_point()
+        xc1 = (x0 + x_ctrl + x_ctrl) / 3.0
+        yc1 = (y0 + y_ctrl + y_ctrl) / 3.0
+        xc2 = (x_to + x_ctrl + x_ctrl) / 3.0
+        yc2 = (y_to + y_ctrl + y_ctrl) / 3.0
+        self.curve_to(xc1, yc1, xc2, yc2, x_to, y_to)
+
     def arc(self, x, y, radius, start_angle, end_angle, cw=False):
         """ Draw a circular arc.
 
@@ -972,7 +995,7 @@ class GraphicsContext(basecore2d.GraphicsContextBase):
         else:
             weight = cairo.FONT_WEIGHT_NORMAL
 
-        if font.style in contants.italic_styles:
+        if font.style in constants.italic_styles:
             style = cairo.FONT_SLANT_ITALIC
         else:
             style = cairo.FONT_SLANT_NORMAL
