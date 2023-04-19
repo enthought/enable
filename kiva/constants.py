@@ -156,7 +156,7 @@ WEIGHT_EXTRAHEAVY = FontWeight.EXTRAHEAVY
 
 class TextMode(IntEnum):
     """Text drawing mode.
-    
+
     Determines how text is drawn to the screen.  If a CLIP flag is set, the
     font outline is added to the clipping path. Possible values:
 
@@ -213,7 +213,7 @@ TEXT_OUTLINE = TextMode.OUTLINE
 
 class PathPrimitive(IntEnum):
     """Subpath drawing primitive constants
-    
+
     Used by the drawing state machine to determine what object to draw.
     """
     POINT = 0
@@ -239,9 +239,6 @@ ARC_TO = PathPrimitive.ARC_TO
 
 # -----------------------------------------------------------------------------
 # Subpath CTM Constants
-#
-# These are added so its possible for OpenGL to do the matrix transformations
-# on the data (its much faster than doing it with NumPy).
 # -----------------------------------------------------------------------------
 
 class CTM(IntEnum):
@@ -279,7 +276,7 @@ class Marker(IntEnum):
     These are the marker types for draw_marker_at_points.  Some backends
     (like Agg) have fast implementations for these; other backends manually
     construct the paths representing these markers.
-    
+
     Note that draw_marker_at_points takes a marker name as a string.
     """
     NONE = 0

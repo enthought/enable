@@ -123,12 +123,12 @@ try:
     import reportlab.pdfbase.pdfmetrics as pdfmetrics
     import reportlab.pdfbase._fontdata as _fontdata
 
-    _reportlab_loaded = 1
+    _reportlab_loaded = True
 except ImportError:
     from . import pdfmetrics
     from . import _fontdata
 
-    _reportlab_loaded = 0
+    _reportlab_loaded = False
 
 
 # This backend has no compiled path object, yet.

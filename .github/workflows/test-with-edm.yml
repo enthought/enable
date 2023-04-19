@@ -23,8 +23,6 @@ jobs:
       - name: Install Qt dependencies
         uses: ./.github/actions/install-qt-support
         if: matrix.toolkit != 'wx'
-      - name: Install GL dependencies for Linux
-        run: sudo apt-get install libglu1-mesa-dev
       - name: Cache EDM packages
         uses: actions/cache@v2
         with:

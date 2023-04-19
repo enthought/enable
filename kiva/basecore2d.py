@@ -22,9 +22,8 @@ color
     treat any alpha value greater than 0 as fully opaque.
 transform
     currently a 3x3 array.  This is not the
-    most convenient in some backends.  Mac and OpenGL
-    use a 1-D 6 element array.  We need to either make
-    transform a class or always use accessor functions
+    most convenient in some backends.  Quartz uses a 1-D 6 element array.
+    We need to either make transform a class or always use accessor functions
     to access its values. Currently, I do the latter.
 
 """
@@ -129,8 +128,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         # We're currently maintaining a couple of copies of the ctm around.
         # The state.ctm is used mainly for user querying, etc.  We also have
         # something called the device_ctm which is actually used in the
-        # drawing of objects.  In some implementation (OpenGL), the
-        # device_ctm is actually maintained in hardware.
+        # drawing of objects.
         # --------------------------------------------------------------------
         self.device_prepare_device_ctm()
 
@@ -687,14 +685,14 @@ class GraphicsContextBase(AbstractGraphicsContext):
         """ Tests to see whether the current drawing path is empty
         """
         # If the first subpath is empty, then the path is empty
-        res = 0
+        res = False
         if not self.path[0]:
-            res = 1
+            res = True
         else:
-            res = 1
+            res = True
             for sub in self.path:
                 if not is_point(sub[-1]):
-                    res = 0
+                    res = False
                     break
         return res
 
@@ -1143,9 +1141,8 @@ class GraphicsContextBase(AbstractGraphicsContext):
     def device_transform_device_ctm(self, func, args):
         """ Default implementation for handling scaling matrices.
 
-            Many implementations will just use this function.  Others, like
-            OpenGL, can benefit from overriding the method and using
-            hardware acceleration.
+            Many implementations will just use this function.  Others can
+            benefit from overriding the method and using hardware acceleration.
         """
         if func == CTM.SCALE:
             self.device_ctm = affine.scale(self.device_ctm, args[0], args[1])
@@ -1166,7 +1163,7 @@ class GraphicsContextBase(AbstractGraphicsContext):
         self._new_subpath()
         # When rectangles are rotated, they have to be drawn as a polygon
         # on most devices.  We'll need to specialize this on API's that
-        # can handle rotated rects such as Quartz and OpenGL(?).
+        # can handle rotated rects such as Quartz.
         # All transformations are done in the call to lines().
         pts = array(
             ((x, y), (x, y + sy), (x + sx, y + sy), (x + sx, y), (x, y))
