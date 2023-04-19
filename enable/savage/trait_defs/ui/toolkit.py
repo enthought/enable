@@ -63,7 +63,7 @@ def toolkit_object(name, raise_exceptions=False):
 
         def __init__(self, *args, **kwargs):
             raise NotImplementedError(
-                "The %s Savage backend doesn't implement"
+                "The %s Savage backend doesn't implement "
                 "%s" % (ETSConfig.toolkit, oname)
             )
 
