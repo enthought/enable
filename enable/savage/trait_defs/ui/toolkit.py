@@ -25,7 +25,11 @@ def _init_toolkit():
     traits_toolkit()
 
     # Import the selected backend
-    backend = "enable.savage.trait_defs.ui.%s" % ETSConfig.toolkit
+    if ETSConfig.toolkit == "qt4":
+        backend = "enable.savage.trait_defs.ui.qt"
+    else:
+        backend = "enable.savage.trait_defs.ui.%s" % ETSConfig.toolkit
+
     try:
         __import__(backend)
     except (ImportError, SystemExit):
