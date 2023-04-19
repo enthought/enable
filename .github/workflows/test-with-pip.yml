@@ -14,12 +14,17 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
         toolkit: ['null', 'pyside2', 'pyside6', 'pyqt5', 'wx']
-        python-version: ['3.8', '3.10']
-        include:
-          - os: 'ubuntu-latest'
-            toolkit: 'null'
-            python-version: '3.11'
+        python-version: ['3.8', '3.10', '3.11']
         exclude:
+          # No Wx wheels available for Python 3.11
+          - toolkit: 'wx'
+            python-version: '3.11'
+          # No PySide2 wheels available for Python 3.11
+          - toolkit: 'pyside2'
+            python-version: '3.11'
+          # No PyQt5 wheels available for Python 3.11
+          - toolkit: 'pyqt5'
+            python-version: '3.11'
           # No Wx wheels available for ubuntu or macos
           - os: 'ubuntu-latest'
             toolkit: 'wx'
