@@ -421,8 +421,7 @@ if __name__ == "__main__":
           entry_points={
             'enable.toolkits': [
                 'null = enable.null.toolkit:toolkit',
-                'qt = enable.qt4.toolkit:toolkit',
-                'qt4 = enable.qt4.toolkit:toolkit',
+                'qt = enable.qt.toolkit:toolkit',
                 'wx = enable.wx.toolkit:toolkit',
             ],
             'etsdemo_data': [

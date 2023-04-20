@@ -17,7 +17,7 @@ from enable.container import Container
 from enable.window import Window
 
 try:
-    from enable.qt4.scrollbar import NativeScrollBar
+    from enable.qt.scrollbar import NativeScrollBar
 except Exception:
     NativeScrollBar = None
 
