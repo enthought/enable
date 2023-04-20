@@ -115,8 +115,6 @@ ARC_TO = 8
 # -----------------------------------------------------------------------------
 # Subpath CTM Constants
 #
-# These are added so its possible for OpenGL to do the matrix transformations
-# on the data (its much faster than doing it with Numeric).
 # -----------------------------------------------------------------------------
 
 SCALE_CTM = 5

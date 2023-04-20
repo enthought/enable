@@ -8,10 +8,9 @@ Kiva is a 2D vector drawing interface providing functionality similar to
 `Quartz <http://en.wikipedia.org/wiki/Quartz_2D>`_,
 `Cairo <http://cairographics.org/>`_, the
 `Qt QPainter interface <http://qt-project.org/doc/qt-4.8/qpainter.html>`_,
-the 2D drawing routines of `OpenGL <http://www.opengl.org/>`_ , the HTML5
-Canvas element and many other similar 2D vector drawing APIs.  Rather than
-re-implementing everything, Kiva is a Python interface layer that sits on top
-of many different back-ends, some of which are in fact provided by some of
+the HTML5 Canvas element and many other similar 2D vector drawing APIs.  Rather
+than re-implementing everything, Kiva is a Python interface layer that sits on
+top of many different back-ends, some of which are in fact provided by some of
 these libraries.  Which back-ends are available depends on the platform, GUI
 toolkit, and capabilities of the system. For example the Quartz backend is only
 available on Mac OS systems, while the QPainter backend is available if PyQt
@@ -409,9 +408,6 @@ celiagg
     A newer wrapper of Anti-Grain Geometry which is maintained outside of
     kiva/enable.  It is planned that this will become the default image backend
     in a future release.
-
-gl
-    OpenGL drawing. This backend is quite limited compared to others.
 
 qpainter
     Qt ``QPainter`` drawing. This is only availble with the Qt toolkit.

@@ -72,7 +72,7 @@ class ToolkitEditorFactory(EditorFactory):
             family,
             style,
             weight,
-            (font.underline != 0),
+            font.underline,
             self.face_name(font),
         )
 
