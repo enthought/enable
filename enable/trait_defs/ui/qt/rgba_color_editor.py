@@ -29,7 +29,7 @@ from traits.trait_base import SequenceTypes
 # subclass of the abstract ToolkitEditorFactory class
 # (in traitsui.api) with qt4-specific methods defined.
 # We need to override the implementations of the qt4-specific methods here.
-from traitsui.qt4.color_editor import (
+from traitsui.qt.color_editor import (
     ToolkitEditorFactory as BaseColorToolkitEditorFactory,
 )
 

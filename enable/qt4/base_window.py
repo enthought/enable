@@ -554,11 +554,11 @@ class _Window(AbstractWindow):
             )
 
         try:
-            from traitsui.qt4.clipboard import PyMimeData
+            from traitsui.qt.clipboard import PyMimeData
         except ImportError:
             # traitsui isn't available, warn and just make mimedata available
             # on event
-            warnings.warn("traitsui.qt4 is unavailable", ImportWarning)
+            warnings.warn("traitsui.qt is unavailable", ImportWarning)
             obj = None
         else:
             mimedata = PyMimeData.coerce(mimedata)

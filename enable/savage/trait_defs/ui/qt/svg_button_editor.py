@@ -16,7 +16,7 @@
 import os.path
 
 from traits.api import Bool, Any, Str
-from traitsui.qt4.editor import Editor
+from traitsui.qt.editor import Editor
 
 from pyface.qt import QtCore, QtGui
 

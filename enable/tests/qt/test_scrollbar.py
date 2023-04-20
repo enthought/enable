@@ -26,7 +26,7 @@ except Exception:
 class ScrollBarTest(unittest.TestCase):
     def setUp(self):
         from pyface.qt.QtGui import QApplication
-        from pyface.ui.qt4.util.event_loop_helper import EventLoopHelper
+        from pyface.ui.qt.util.event_loop_helper import EventLoopHelper
 
         qt_app = QApplication.instance()
         if qt_app is None:
