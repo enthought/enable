@@ -14,7 +14,7 @@ from numpy import array
 # This is PyQt specific so force the toolkit selection.
 from traits.etsconfig.api import ETSConfig
 
-ETSConfig.toolkit = "qt4.qpainter"
+ETSConfig.toolkit = "qt.qpainter"
 
 from enable.examples._example_canvas import Canvas
 
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
     w = MyCanvas()
     w.control.resize(500, 500)
-    w.control.setWindowTitle("Simple Kiva.qt4 example")
+    w.control.setWindowTitle("Simple Kiva.qt example")
     w.control.show()
 
     app.exec_()

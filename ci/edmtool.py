@@ -147,10 +147,10 @@ extra_dependencies = {
 }
 
 environment_vars = {
-    'pyside2': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyside2'},
-    'pyside6': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyside6'},
-    'pyqt5': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyqt5'},
-    'pyqt6': {'ETS_TOOLKIT': 'qt4', 'QT_API': 'pyqt6'},
+    'pyside2': {'ETS_TOOLKIT': 'qt', 'QT_API': 'pyside2'},
+    'pyside6': {'ETS_TOOLKIT': 'qt', 'QT_API': 'pyside6'},
+    'pyqt5': {'ETS_TOOLKIT': 'qt', 'QT_API': 'pyqt5'},
+    'pyqt6': {'ETS_TOOLKIT': 'qt', 'QT_API': 'pyqt6'},
     'wx': {'ETS_TOOLKIT': 'wx'},
     'null': {'ETS_TOOLKIT': 'null.image'},
 }
@@ -267,10 +267,10 @@ def docs(runtime, toolkit, environment):
     enable_ignore = " ".join([
         "enable/gcbench",
         "enable/null",
-        "enable/qt4",
-        "enable/savage/trait_defs/ui/qt4",
+        "enable/qt",
+        "enable/savage/trait_defs/ui/qt",
         "enable/savage/trait_defs/ui/wx",
-        "enable/trait_defs/ui/qt4",
+        "enable/trait_defs/ui/qt",
         "enable/trait_defs/ui/wx",
         "enable/wx",
         "*/tests",
