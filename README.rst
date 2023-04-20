@@ -86,7 +86,7 @@ Enable/Kiva also have the following requirements:
 .. rubric:: Optional:
 
 - `apptools <https://pypi.org/project/apptools/>`_
-- (Qt backend) `PySide <https://pypi.org/project/PySide>`_ or `PyQt4 <https://pypi.org/project/PyQt4>`_
+- (Qt backend) `PySide2, PySide6 <https://pypi.org/project/PySide>`_ or `PyQt5 <https://pypi.org/project/PyQt5>`_
 - (WX backend) `WxPython <https://pypi.org/project/wxPython/>`_
 - (SVG backend) `PyParsing <https://pypi.org/project/pyparsing>`_
 - (PDF backend) `ReportLab Toolkit <https://www.reportlab.com/dev/install/version_3_and_up/>`_

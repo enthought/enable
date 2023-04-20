@@ -44,19 +44,10 @@ class MouseWheelTestCase(TestCase):
         self.window._size = (600, 600)
 
     def test_vertical_mouse_wheel(self):
-        from pyface.qt import QtCore, QtGui, is_qt4, is_qt5
-
+        from pyface.qt import QtCore, QtGui, is_qt5
 
         # create and mock a mouse wheel event
-        if is_qt4:
-            qt_event = QtGui.QWheelEvent(
-                QtCore.QPoint(0, 0),  # pos
-                200,  # delta
-                QtCore.Qt.NoButton,  # buttons
-                QtCore.Qt.NoModifier,  # modifiers
-                QtCore.Qt.Vertical,  # orient
-            )
-        elif is_qt5:
+        if is_qt5:
             qt_event = QtGui.QWheelEvent(
                 QtCore.QPoint(0, 0),  # pos
                 self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),  # globalPos
@@ -89,18 +80,10 @@ class MouseWheelTestCase(TestCase):
         self.assertEqual(self.tool.event.mouse_wheel_delta, (0, 200))
 
     def test_horizontal_mouse_wheel(self):
-        from pyface.qt import QtCore, QtGui, is_qt4, is_qt5
+        from pyface.qt import QtCore, QtGui, is_qt5
 
         # create and mock a mouse wheel event
-        if is_qt4:
-            qt_event = QtGui.QWheelEvent(
-                QtCore.QPoint(0, 0),  # pos
-                200,  # delta
-                QtCore.Qt.NoButton,  # buttons
-                QtCore.Qt.NoModifier,  # modifiers
-                QtCore.Qt.Horizontal,  # orient
-            )
-        elif is_qt5:
+        if is_qt5:
             qt_event = QtGui.QWheelEvent(
                 QtCore.QPoint(0, 0),  # pos
                 self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),  # globalPos
@@ -133,18 +116,10 @@ class MouseWheelTestCase(TestCase):
         self.assertEqual(self.tool.event.mouse_wheel_delta, (200, 0))
 
     def test_vertical_mouse_wheel_without_pixel_delta(self):
-        from pyface.qt import QtCore, QtGui, is_qt4, is_qt5
+        from pyface.qt import QtCore, QtGui, is_qt5
 
         # create and mock a mouse wheel event
-        if is_qt4:
-            qt_event = QtGui.QWheelEvent(
-                QtCore.QPoint(0, 0),  # pos
-                200,  # delta
-                QtCore.Qt.NoButton,  # buttons
-                QtCore.Qt.NoModifier,  # modifiers
-                QtCore.Qt.Vertical,  # orient
-            )
-        elif is_qt5:
+        if is_qt5:
             qt_event = QtGui.QWheelEvent(
                 QtCore.QPoint(0, 0),  # pos
                 self.window.control.mapToGlobal(QtCore.QPoint(0, 0)),  # globalPos

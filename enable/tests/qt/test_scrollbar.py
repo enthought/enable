@@ -17,7 +17,7 @@ from enable.container import Container
 from enable.window import Window
 
 try:
-    from enable.qt4.scrollbar import NativeScrollBar
+    from enable.qt.scrollbar import NativeScrollBar
 except Exception:
     NativeScrollBar = None
 
@@ -26,7 +26,10 @@ except Exception:
 class ScrollBarTest(unittest.TestCase):
     def setUp(self):
         from pyface.qt.QtGui import QApplication
-        from pyface.ui.qt4.util.event_loop_helper import EventLoopHelper
+        try:
+            from pyface.ui.qt.util.event_loop_helper import EventLoopHelper
+        except ModuleNotFoundError:
+            from pyface.ui.qt4.util.event_loop_helper import EventLoopHelper
 
         qt_app = QApplication.instance()
         if qt_app is None:
@@ -34,7 +37,7 @@ class ScrollBarTest(unittest.TestCase):
         self.qt_app = qt_app
 
         if NativeScrollBar is None:
-            raise unittest.SkipTest("Qt4 NativeScrollbar not available.")
+            raise unittest.SkipTest("Qt NativeScrollbar not available.")
         self.gui = GUI()
         self.event_loop_helper = EventLoopHelper(gui=self.gui, qt_app=qt_app)
         self.container = Container(position=[0, 0], bounds=[600, 600])

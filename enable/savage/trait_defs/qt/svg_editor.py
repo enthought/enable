@@ -20,7 +20,10 @@ from xml.etree.cElementTree import ElementTree
 
 from enable.savage.svg.document import SVGDocument
 
-from traitsui.qt4.editor import Editor
+try:
+    from traitsui.qt.editor import Editor
+except ModuleNotFoundError:
+    from traitsui.qt4.editor import Editor
 
 from pyface.qt import QtCore, QtSvg
 
