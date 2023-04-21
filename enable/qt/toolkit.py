@@ -20,4 +20,4 @@ def _wrapper(func):
     return wrapped
 
 
-toolkit = _wrapper(Toolkit("enable", "qt4", "enable.qt4"))
+toolkit = _wrapper(Toolkit("enable", "qt", "enable.qt"))

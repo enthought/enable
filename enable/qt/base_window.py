@@ -26,7 +26,7 @@
 import warnings
 
 # Qt imports.
-from pyface.qt import QtCore, QtGui, QtOpenGL, is_qt4, is_qt5, qt_api
+from pyface.qt import QtCore, QtGui, QtOpenGL, is_qt5, qt_api
 
 # Enthought library imports.
 from enable.abstract_window import AbstractWindow
@@ -42,8 +42,6 @@ from .constants import (
     DRAG_RESULTS_MAP,
 )
 
-
-is_qt4 = QtCore.__version_info__[0] <= 4
 
 # QtOpenGLWidgets is not currently exposed in pyface.qt
 if qt_api == "pyside6":
@@ -313,8 +311,6 @@ class _QtGLWindow(QOpenGLWidget):
     def paintEvent(self, event):
         super().paintEvent(event)
         self.handler.paintEvent(event)
-        if is_qt4:
-            self.swapBuffers()
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -457,7 +453,7 @@ class _Window(AbstractWindow):
         # If the event (if there is one) doesn't contain the mouse position,
         # modifiers and buttons then get sensible defaults.
         try:
-            if is_qt4 or is_qt5:
+            if is_qt5:
                 x = event.x()
                 y = event.y()
             else:
@@ -478,29 +474,20 @@ class _Window(AbstractWindow):
         # we treat wheel events like mouse events.
         if isinstance(event, QtGui.QWheelEvent):
             degrees_per_step = 15.0
-            if is_qt4:
-                delta = event.delta()
-                mouse_wheel = delta / float(8 * degrees_per_step)
-                mouse_wheel_axis = MOUSE_WHEEL_AXIS_MAP[event.orientation()]
-                if mouse_wheel_axis == "horizontal":
-                    mouse_wheel_delta = (delta, 0)
-                else:
-                    mouse_wheel_delta = (0, delta)
+            delta = event.pixelDelta()
+            if delta.x() == 0 and delta.y() == 0:  # pixelDelta is optional
+                delta = event.angleDelta()
+            mouse_wheel_delta = (delta.x(), delta.y())
+            if abs(mouse_wheel_delta[0]) > abs(mouse_wheel_delta[1]):
+                mouse_wheel = mouse_wheel_delta[0] / float(
+                    8 * degrees_per_step
+                )
+                mouse_wheel_axis = "horizontal"
             else:
-                delta = event.pixelDelta()
-                if delta.x() == 0 and delta.y() == 0:  # pixelDelta is optional
-                    delta = event.angleDelta()
-                mouse_wheel_delta = (delta.x(), delta.y())
-                if abs(mouse_wheel_delta[0]) > abs(mouse_wheel_delta[1]):
-                    mouse_wheel = mouse_wheel_delta[0] / float(
-                        8 * degrees_per_step
-                    )
-                    mouse_wheel_axis = "horizontal"
-                else:
-                    mouse_wheel = mouse_wheel_delta[1] / float(
-                        8 * degrees_per_step
-                    )
-                    mouse_wheel_axis = "vertical"
+                mouse_wheel = mouse_wheel_delta[1] / float(
+                    8 * degrees_per_step
+                )
+                mouse_wheel_axis = "vertical"
         else:
             mouse_wheel = 0
             mouse_wheel_delta = (0, 0)
@@ -554,11 +541,11 @@ class _Window(AbstractWindow):
             )
 
         try:
-            from traitsui.qt4.clipboard import PyMimeData
+            from traitsui.qt.clipboard import PyMimeData
         except ImportError:
             # traitsui isn't available, warn and just make mimedata available
             # on event
-            warnings.warn("traitsui.qt4 is unavailable", ImportWarning)
+            warnings.warn("traitsui.qt is unavailable", ImportWarning)
             obj = None
         else:
             mimedata = PyMimeData.coerce(mimedata)

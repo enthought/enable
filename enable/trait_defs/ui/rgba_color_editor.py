@@ -12,7 +12,7 @@ from traitsui.api import toolkit
 if toolkit().toolkit == "wx":
     from .wx.rgba_color_editor import RGBAColorEditor
 elif toolkit().toolkit.startswith("qt"):
-    from .qt4.rgba_color_editor import RGBAColorEditor
+    from .qt.rgba_color_editor import RGBAColorEditor
 else:
     class RGBAColorEditor(object):
         """ An unimplemented toolkit object

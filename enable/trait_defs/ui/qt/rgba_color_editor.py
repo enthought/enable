@@ -8,7 +8,7 @@
 #
 # Thanks for using Enthought open source!
 """ Defines the various RGBA color editors and the color editor factory, for
-    the Qt4 user interface toolkit.
+    the Qt user interface toolkit.
 """
 
 # -----------------------------------------------------------------------------
@@ -27,8 +27,8 @@ from traits.trait_base import SequenceTypes
 
 # Note: The ToolkitEditorFactory class imported from color_editor is a
 # subclass of the abstract ToolkitEditorFactory class
-# (in traitsui.api) with qt4-specific methods defined.
-# We need to override the implementations of the qt4-specific methods here.
+# (in traitsui.api) with qt-specific methods defined.
+# We need to override the implementations of the qt-specific methods here.
 
 try:
     from traitsui.qt.color_editor import (
@@ -41,13 +41,13 @@ except ModuleNotFoundError:
     )
 
 # -----------------------------------------------------------------------------
-#  The PyQt4 ToolkitEditorFactory class:
+#  The Qt ToolkitEditorFactory class:
 # -----------------------------------------------------------------------------
 
 
 class ToolkitEditorFactory(BaseColorToolkitEditorFactory):
 
-    def to_qt4_color(self, editor):
+    def to_qt_color(self, editor):
         """ Gets the PyQt color equivalent of the object trait.
         """
         try:
@@ -61,7 +61,7 @@ class ToolkitEditorFactory(BaseColorToolkitEditorFactory):
             c = QtGui.QColor(color)
         return c
 
-    def from_qt4_color(self, color):
+    def from_qt_color(self, color):
         """ Gets the application equivalent of a PyQt value.
         """
         return toolkit_color_to_rgba(color)
