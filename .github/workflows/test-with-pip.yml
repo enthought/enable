@@ -62,7 +62,7 @@ jobs:
         run: pip install ".[cairo,layout,pdf,svg,test,${{ matrix.toolkit }}]"
       - name: Install celiagg main branch manually
         # This is needed until new release of celiagg
-        run: pip install git+https://github.com/celiagg/celiagg.git
+        run: pip install git+https://github.com/celiagg/celiagg.git@rel/2.1.x
       - name: Sanity check package version
         run: pip list
       - name: Run kiva test suite (Linux)
