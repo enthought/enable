@@ -1,10 +1,6 @@
-
-# This workflow installs dependencies from main branch
-
 name: Build wheels
 
 on:
-  pull_request:
   # Make it possible to manually trigger the workflow
   workflow_dispatch:
 
