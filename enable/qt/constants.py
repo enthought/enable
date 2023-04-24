@@ -81,7 +81,7 @@ pointer_shapes = [
 ]
 
 if len(pointer_names) != len(pointer_shapes):
-    warnings.warn("The Qt4 toolkit backend pointer map is out of sync!")
+    warnings.warn("The Qt toolkit backend pointer map is out of sync!")
 
 POINTER_MAP = dict(zip(pointer_names, pointer_shapes))
 
@@ -143,7 +143,7 @@ KEY_MAP = {
 }
 
 # Add all of the other keys registered by Qt.
-# This should work for both PySide and PyQt4.
+# This should work for both PySide and PyQt.
 for enum_name in dir(QtCore.Qt):
     if enum_name.startswith("Key_"):
         enum = getattr(QtCore.Qt, enum_name)
