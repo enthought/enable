@@ -422,6 +422,7 @@ if __name__ == "__main__":
             'enable.toolkits': [
                 'null = enable.null.toolkit:toolkit',
                 'qt = enable.qt.toolkit:toolkit',
+                'qt4 = enable.qt.toolkit:toolkit',
                 'wx = enable.wx.toolkit:toolkit',
             ],
             'etsdemo_data': [

@@ -42,6 +42,7 @@ from .constants import (
     DRAG_RESULTS_MAP,
 )
 
+
 # QtOpenGLWidgets is not currently exposed in pyface.qt
 if qt_api == "pyside6":
     from PySide6.QtOpenGLWidgets import QOpenGLWidget
