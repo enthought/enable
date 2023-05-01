@@ -461,6 +461,11 @@ class _Window(AbstractWindow):
                 y = event.position().y()
             modifiers = event.modifiers()
             buttons = event.buttons()
+        # The AttributeError is usually trigged when the mouse pointer
+        # leaves the ui window since the event of leaving the window
+        # is a "QEvent", which doesn't contain x and y positions like
+        # QMouseEvent (for mouse movement) or QEnterEvent (for mouse
+        # entering the window) from QGui.
         except AttributeError:
             pos = self.control.mapFromGlobal(QtGui.QCursor.pos())
             x = pos.x()
