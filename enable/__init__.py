@@ -16,7 +16,7 @@ except ImportError:
     __version__ = "not-built"
 
 __requires__ = [
-    "numpy", "pillow", "traits>=6.2.0", "traitsui", "pyface>=8.0.0", "fonttools"
+    "numpy", "pillow", "traits>=6.2.0", "traitsui", "pyface>=7.2.0", "fonttools"
 ]
 
 __extras_require__ = {
