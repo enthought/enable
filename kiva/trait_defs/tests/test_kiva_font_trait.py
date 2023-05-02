@@ -92,7 +92,7 @@ class TestKivaFont(unittest.TestCase):
         example = FontExample()
 
         self.assertIsInstance(example.font, Font)
-        self.assertEqual(example.font, Font(size=12, family=constants.MODERN))
+        self.assertEqual(example.font, Font(size=12, family=constants.SWISS))
 
     def test_font_trait_none(self):
         with self.assertRaises(TraitError):
