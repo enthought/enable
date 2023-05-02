@@ -120,14 +120,14 @@ class test_text_image(unittest.TestCase):
     def test_antialias(self):
         gc = agg.GraphicsContextArray((200, 50), pix_format="bgra32")
         gc.set_antialias(1)
-        f = Font("modern")
+        f = Font("sans-serif")
         gc.set_font(f)
         gc.show_text("hello")
         save(gc)
 
     def test_no_antialias(self):
         gc = agg.GraphicsContextArray((200, 50), pix_format="bgra32")
-        f = Font("modern")
+        f = Font("sans-serif")
         gc.set_font(f)
         gc.set_antialias(0)
         gc.show_text("hello")
@@ -136,7 +136,7 @@ class test_text_image(unittest.TestCase):
     def test_rotate(self):
         text = "hello"
         gc = agg.GraphicsContextArray((150, 150), pix_format="bgra32")
-        f = Font("modern")
+        f = Font("sans-serif")
         gc.set_font(f)
         tx, ty, sx, sy = gc.get_text_extent(text)
         gc.translate_ctm(25, 25)

@@ -16,7 +16,6 @@ font_family_aliases = {
     "fantasy",
     "monospace",
     "sans",
-    "modern",
 }
 
 preferred_fonts = {

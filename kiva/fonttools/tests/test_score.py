@@ -23,7 +23,6 @@ class TestFontScoring(unittest.TestCase):
         closest = preferred_fonts["sans-serif"][0]
         self.assertEqual(score_family(["sans-serif"], closest), 0.0)
         self.assertEqual(score_family(["sans"], closest), 0.0)
-        self.assertEqual(score_family(["unknown", "modern"], closest), 0.0)
 
         # fuzzy matches
         sans_count = len(preferred_fonts["sans-serif"])

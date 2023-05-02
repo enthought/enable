@@ -187,7 +187,7 @@ class Font(object):
         MODERN: "monospace",
         DECORATIVE: "fantasy",
         SCRIPT: "cursive",
-        TELETYPE: "monospace",
+        TELETYPE: "typewriter",
     }
 
     def __init__(self, face_name="", size=12, family=SWISS,

@@ -77,7 +77,7 @@ class TestFont(unittest.TestCase):
 
     def test_str_to_font(self):
         # Simple
-        from_str = str_to_font("modern 10")
+        from_str = str_to_font("sans-serif 10")
         from_ctor = Font(family=MODERN, size=10)
         self.assertEqual(from_ctor, from_str)
 

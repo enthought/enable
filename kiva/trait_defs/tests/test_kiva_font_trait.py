@@ -35,6 +35,7 @@ font_styles = {"italic": constants.ITALIC}
 # Mapping of strings to Kiva font weights:
 font_weights = {"bold": constants.WEIGHT_BOLD}
 
+
 class FontExample(HasTraits):
 
     font = KivaFont()
