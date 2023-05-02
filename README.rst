@@ -71,7 +71,6 @@ the Enable/Kiva project:
 - `SWIG <http://www.swig.org/>`_
 - `fonttools <https://pypi.org/project/FontTools>`_
 - (on Linux) X11-devel (development tools for X11)
-- (on Linux) libglu1-mesa-dev (OpenGL utility library for development)
 - (on Mac OS X) `Cython <https://cython.org/>`_
 
 Enable/Kiva also have the following requirements:
@@ -87,10 +86,8 @@ Enable/Kiva also have the following requirements:
 .. rubric:: Optional:
 
 - `apptools <https://pypi.org/project/apptools/>`_
-- (Qt backend) `PySide <https://pypi.org/project/PySide>`_ or `PyQt4 <https://pypi.org/project/PyQt4>`_
+- (Qt backend) `PySide2, PySide6 <https://pypi.org/project/PySide>`_ or `PyQt5 <https://pypi.org/project/PyQt5>`_
 - (WX backend) `WxPython <https://pypi.org/project/wxPython/>`_
-- (GL backend) `pyglet <https://pypi.org/project/pyglet/>`_
-- (GL backend) `pygarrayimage <https://pypi.org/project/pygarrayimage>`_
 - (SVG backend) `PyParsing <https://pypi.org/project/pyparsing>`_
 - (PDF backend) `ReportLab Toolkit <https://www.reportlab.com/dev/install/version_3_and_up/>`_
 - (Cairo backend) `PyCairo <https://cairographics.org/releases/>`_

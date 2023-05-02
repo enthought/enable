@@ -23,9 +23,7 @@ __extras_require__ = {
     # Dependencies for documentation
     "docs": ["enthought-sphinx-theme", "sphinx", "sphinx-copybutton"],
     # Dependencies for running enable/kiva's examples
-    "examples": ["chaco", "mayavi", "scipy", "kiwisolver", "pyglet"],
-    # Dependencies for GL backend support
-    "gl": ["pygarrayimage", "pyglet<2.0"],
+    "examples": ["chaco", "mayavi", "scipy", "kiwisolver"],
     # Dependencies for constrained layout
     "layout": ["kiwisolver"],
     # Dependencies for PDF backend

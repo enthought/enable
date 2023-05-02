@@ -303,79 +303,6 @@ def base_extensions():
     ]
 
 
-def gl_extensions():
-    kiva_gl_dir = os.path.join('kiva', 'gl')
-    agg_dir = os.path.join(kiva_gl_dir, 'src', 'agg')
-
-    kiva_gl_libraries = []
-    define_macros = []
-    extra_compile_args = []
-    extra_link_args = []
-    include_dirs = []
-
-    if sys.platform == 'win32':
-        kiva_gl_libraries += ['opengl32', 'glu32']
-    elif sys.platform == 'darwin':
-        # Options to make macOS link OpenGL
-        darwin_frameworks = ['ApplicationServices', 'OpenGL']
-        for framework in darwin_frameworks:
-            extra_link_args.extend(['-framework', framework])
-
-        include_dirs += [
-            '/System/Library/Frameworks/%s.framework/Versions/A/Headers' % x
-            for x in darwin_frameworks
-        ]
-        define_macros += [
-            ('__DARWIN__', None),
-            # OpenGL is deprecated starting with macOS 10.14 and gone in 10.15
-            # But that doesn't mean we want to hear about it. We know, Apple.
-            ('GL_SILENCE_DEPRECATION', None),
-        ]
-        extra_compile_args = [
-           '-Wfatal-errors',
-           '-Wno-unused-function',
-        ]
-    else:
-        # This should work for most linux distributions
-        kiva_gl_libraries += ['GL', 'GLU']
-        extra_compile_args = [
-           '-Wfatal-errors',
-           '-Wno-unused-function',
-        ]
-
-    kiva_gl_sources = [
-        *glob.glob(os.path.join(kiva_gl_dir, 'src', 'kiva_gl_*.cpp')),
-        *glob.glob(os.path.join(agg_dir, '*.cpp')),
-    ]
-    include_dirs += [
-        os.path.join(kiva_gl_dir, 'src'),
-        agg_dir,
-        numpy.get_include(),
-    ]
-    swig_opts = [
-        '-I' + os.path.join(kiva_gl_dir, 'src', 'swig'),
-        '-I' + os.path.join(kiva_gl_dir, 'src'),
-        '-I' + agg_dir,
-        '-c++',
-    ]
-
-    return [
-        Extension(
-            'kiva.gl._gl',
-            sources=[
-                os.path.join(kiva_gl_dir, 'gl.i'),
-            ] + kiva_gl_sources,
-            swig_opts=swig_opts,
-            include_dirs=include_dirs,
-            extra_compile_args=extra_compile_args,
-            extra_link_args=extra_link_args,
-            define_macros=define_macros,
-            libraries=kiva_gl_libraries,
-            language='c++',
-        ),
-    ]
-
-
 def macos_extensions():
     extra_link_args = []
     frameworks = [
@@ -449,79 +376,87 @@ if __name__ == "__main__":
         long_description = fp.read()
 
     # Collect extensions
-    ext_modules = base_extensions() + agg_extensions() + gl_extensions()
+    ext_modules = base_extensions() + agg_extensions()
     if sys.platform == 'darwin':
         ext_modules += macos_extensions()
 
-    setup(name='enable',
-          version=__version__,
-          author='Enthought, Inc',
-          author_email='info@enthought.com',
-          maintainer='ETS Developers',
-          maintainer_email='enthought-dev@enthought.com',
-          url='https://github.com/enthought/enable/',
-          # Note that this URL is only valid for tagged releases.
-          download_url=('https://github.com/enthought/enable/archive/'
-                        '{0}.tar.gz'.format(__version__)),
-          license='BSD',
-          classifiers=[c.strip() for c in """\
-              Development Status :: 5 - Production/Stable
-              Intended Audience :: Developers
-              Intended Audience :: Science/Research
-              License :: OSI Approved :: BSD License
-              Operating System :: MacOS
-              Operating System :: Microsoft :: Windows
-              Operating System :: OS Independent
-              Operating System :: POSIX
-              Operating System :: Unix
-              Programming Language :: C
-              Programming Language :: Python
-              Topic :: Scientific/Engineering
-              Topic :: Software Development
-              Topic :: Software Development :: Libraries
-              """.splitlines() if len(c.strip()) > 0],
-          platforms=['Windows', 'Linux', 'macOS', 'Unix', 'Solaris'],
-          description='low-level drawing and interaction',
-          long_description=long_description,
-          long_description_content_type="text/x-rst",
-          install_requires=__requires__,
-          extras_require=__extras_require__,
-          cmdclass={
-              'build': PatchedBuild,
-              'install': PatchedInstall,
-              'build_ext': build_ext,
-          },
-          entry_points={
+    setup(
+        name='enable',
+        version=__version__,
+        author='Enthought, Inc',
+        author_email='info@enthought.com',
+        maintainer='ETS Developers',
+        maintainer_email='enthought-dev@enthought.com',
+        url='https://github.com/enthought/enable/',
+        # Note that this URL is only valid for tagged releases.
+        download_url=('https://github.com/enthought/enable/archive/'
+                      '{0}.tar.gz'.format(__version__)),
+        license='BSD',
+        classifiers=[c.strip() for c in """\
+            Development Status :: 5 - Production/Stable
+            Intended Audience :: Developers
+            Intended Audience :: Science/Research
+            License :: OSI Approved :: BSD License
+            Operating System :: MacOS
+            Operating System :: Microsoft :: Windows
+            Operating System :: OS Independent
+            Operating System :: POSIX
+            Operating System :: Unix
+            Programming Language :: C
+            Programming Language :: Python
+            Topic :: Scientific/Engineering
+            Topic :: Software Development
+            Topic :: Software Development :: Libraries
+            """.splitlines() if len(c.strip()) > 0],
+        platforms=['Windows', 'Linux', 'macOS', 'Unix', 'Solaris'],
+        description='low-level drawing and interaction',
+        long_description=long_description,
+        long_description_content_type="text/x-rst",
+        install_requires=__requires__,
+        extras_require=__extras_require__,
+        cmdclass={
+            'build': PatchedBuild,
+            'install': PatchedInstall,
+            'build_ext': build_ext,
+        },
+        entry_points={
             'enable.toolkits': [
                 'null = enable.null.toolkit:toolkit',
-                'qt = enable.qt4.toolkit:toolkit',
-                'qt4 = enable.qt4.toolkit:toolkit',
+                'qt = enable.qt.toolkit:toolkit',
+                'qt4 = enable.qt.toolkit:toolkit',
                 'wx = enable.wx.toolkit:toolkit',
             ],
             'etsdemo_data': [
                 'enable_examples = enable.examples._etsdemo_info:info',
                 'kiva_examples = kiva.examples._etsdemo_info:info',
             ]
-          },
-          ext_modules=ext_modules,
-          packages=find_packages(exclude=['ci', 'docs']),
-          package_data={
-              '': ['*.zip', '*.svg', 'images/*'],
-              'enable': ['tests/primitives/data/PngSuite/*.png'],
-              'enable.examples': ['demo/*',
-                                  'demo/*/*',
-                                  'demo/*/*/*',
-                                  'demo/*/*/*/*',
-                                  'demo/*/*/*/*/*'],
-              'enable.savage.trait_defs.ui.wx': ['data/*.svg'],
-              'kiva': ['tests/agg/doubleprom_soho_full.jpg',
-                       'fonttools/data/*.ttf',
-                       'fonttools/tests/data/*.afm',
-                       'fonttools/tests/data/*.ttc',
-                       'fonttools/tests/data/*.ttf',
-                       'fonttools/tests/data/*.txt'],
-              'kiva.examples': ['kiva/*',
-                                'kiva/*/*'],
-          },
-          zip_safe=False,
-          )
+        },
+        ext_modules=ext_modules,
+        packages=find_packages(exclude=['ci', 'docs']),
+        package_data={
+            '': ['*.zip', '*.svg', 'images/*'],
+            'enable': ['tests/primitives/data/PngSuite/*.png'],
+            'enable.examples': [
+                'demo/*',
+                'demo/*/*',
+                'demo/*/*/*',
+                'demo/*/*/*/*',
+                'demo/*/*/*/*/*',
+            ],
+            'enable.savage.trait_defs.ui.wx': ['data/*.svg'],
+            'kiva': [
+                'tests/agg/doubleprom_soho_full.jpg',
+                'fonttools/data/*.ttf',
+                'fonttools/tests/data/*.afm',
+                'fonttools/tests/data/*.ttc',
+                'fonttools/tests/data/*.ttf',
+                'fonttools/tests/data/*.txt',
+            ],
+            'kiva.examples': [
+                'kiva/*',
+                'kiva/*/*',
+            ],
+        },
+        zip_safe=False,
+        python_requires=">=3.7",
+    )

@@ -23,8 +23,6 @@ jobs:
       - name: Install Qt dependencies
         uses: ./.github/actions/install-qt-support
         if: matrix.toolkit != 'wx'
-      - name: Install GL dependencies for Linux
-        run: sudo apt-get install libglu1-mesa-dev
       - name: Cache EDM packages
         uses: actions/cache@v2
         with:
@@ -40,7 +38,7 @@ jobs:
         run: edm run -- python ci/edmtool.py install --toolkit=${{ matrix.toolkit }} --runtime=${{ matrix.runtime }}
       - name: Run tests
         # kiva agg requires at least 15-bit color depth.
-        run: xvfb-run --server-args="-screen 0 1024x768x24" edm run -- python ci/edmtool.py test --toolkit=${{ matrix.toolkit }} --runtime=${{ matrix.runtime }}
+        run: xvfb-run -a --server-args="-screen 0 1024x768x24" edm run -- python ci/edmtool.py test --toolkit=${{ matrix.toolkit }} --runtime=${{ matrix.runtime }}
 
   # Test against EDM packages on Windows
   test-with-edm:

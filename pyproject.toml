@@ -1,3 +1,10 @@
 [build-system]
 requires = ["cython", "oldest-supported-numpy", "setuptools", "swig", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.cibuildwheel]
+skip = 'pp* *-musllinux* cp36-*'
+
+[tool.cibuildwheel.linux]
+archs = ['auto', 'aarch64']
+before-all = "yum install -y mesa-libGL-devel"
