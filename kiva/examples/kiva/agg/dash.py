@@ -11,8 +11,8 @@ from time import perf_counter
 
 from numpy import array
 
-import kiva
 from kiva import agg
+from kiva import constants
 
 
 def dash(sz=(1000, 1000)):
@@ -26,7 +26,7 @@ def dash(sz=(1000, 1000)):
     phase = width * 2.5
     pattern = width * array((5, 5))
     gc.set_line_dash(pattern, phase)
-    gc.set_line_cap(kiva.CAP_BUTT)
+    gc.set_line_cap(constants.CAP_BUTT)
     t1 = perf_counter()
     gc.move_to(10, 10)
     gc.line_to(sz[0] - 10, sz[1] - 10)

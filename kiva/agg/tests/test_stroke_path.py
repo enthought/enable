@@ -62,7 +62,7 @@ import unittest
 from numpy import array
 
 from kiva.agg import GraphicsContextArray
-import kiva
+from kiva import constants
 
 from .test_utils import Utils
 
@@ -125,8 +125,8 @@ class StrokePathTestCase(unittest.TestCase, Utils):
         gc.set_stroke_color((0.0, 0.0, 0.0))  # black
         gc.set_antialias(False)
         gc.set_line_width(2)
-        gc.set_line_cap(kiva.CAP_ROUND)
-        gc.set_line_join(kiva.JOIN_MITER)
+        gc.set_line_cap(constants.LineCap.ROUND)
+        gc.set_line_join(constants.LineJoin.MITER)
 
         gc.stroke_path()
 
@@ -154,8 +154,8 @@ class StrokePathTestCase(unittest.TestCase, Utils):
         gc.set_stroke_color((0.0, 0.0, 0.0))  # black
         gc.set_antialias(False)
         gc.set_line_width(2)
-        gc.set_line_cap(kiva.CAP_ROUND)
-        gc.set_line_join(kiva.JOIN_BEVEL)
+        gc.set_line_cap(constants.LineCap.ROUND)
+        gc.set_line_join(constants.LineJoin.BEVEL)
 
         gc.stroke_path()
 
@@ -210,8 +210,8 @@ class StrokePathTestCase(unittest.TestCase, Utils):
         gc.set_stroke_color((0.0, 0.0, 0.0))  # black
         gc.set_antialias(False)
         gc.set_line_width(2)
-        gc.set_line_cap(kiva.CAP_ROUND)
-        gc.set_line_join(kiva.JOIN_MITER)
+        gc.set_line_cap(constants.LineCap.ROUND)
+        gc.set_line_join(constants.LineJoin.MITER)
 
         gc.stroke_path()
 
@@ -238,12 +238,12 @@ class StrokePathTestCase(unittest.TestCase, Utils):
         """
         antialias = False
         width = 2
-        cap = kiva.CAP_ROUND
+        cap = constants.LineCap.ROUND
         # join=miter allows the faster outline path through C++ code.
-        gc1 = self.cap_equality_helper(antialias, width, cap, kiva.JOIN_MITER)
+        gc1 = self.cap_equality_helper(antialias, width, cap, constants.LineJoin.MITER)
 
         # join=bevel forces the scanline path through C++ code.
-        gc2 = self.cap_equality_helper(antialias, width, cap, kiva.JOIN_BEVEL)
+        gc2 = self.cap_equality_helper(antialias, width, cap, constants.LineJoin.BEVEL)
 
         # Instead of testing against a known desired value, we are simply
         # testing for equality...
@@ -266,8 +266,8 @@ class StrokePathTestCase(unittest.TestCase, Utils):
         gc.set_stroke_color((0.0, 0.0, 0.0))  # black
         gc.set_antialias(False)
         gc.set_line_width(2)
-        gc.set_line_cap(kiva.CAP_SQUARE)
-        gc.set_line_join(kiva.JOIN_MITER)
+        gc.set_line_cap(constants.LineCap.SQUARE)
+        gc.set_line_join(constants.LineJoin.MITER)
 
         gc.stroke_path()
 
@@ -291,12 +291,12 @@ class StrokePathTestCase(unittest.TestCase, Utils):
         """
         antialias = False
         width = 2
-        cap = kiva.CAP_BUTT
+        cap = constants.LineCap.BUTT
         # join=miter allows the faster outline path through C++ code.
-        gc1 = self.cap_equality_helper(antialias, width, cap, kiva.JOIN_MITER)
+        gc1 = self.cap_equality_helper(antialias, width, cap, constants.LineJoin.MITER)
 
         # join=bevel forces the scanline path through C++ code.
-        gc2 = self.cap_equality_helper(antialias, width, cap, kiva.JOIN_BEVEL)
+        gc2 = self.cap_equality_helper(antialias, width, cap, constants.LineJoin.BEVEL)
 
         # Instead of testing against a known desired value, we are simply
         # testing for equality...
@@ -308,12 +308,12 @@ class StrokePathTestCase(unittest.TestCase, Utils):
         """
         antialias = False
         width = 2
-        cap = kiva.CAP_SQUARE
+        cap = constants.LineCap.SQUARE
         # join=miter allows the faster outline path through C++ code.
-        gc1 = self.cap_equality_helper(antialias, width, cap, kiva.JOIN_MITER)
+        gc1 = self.cap_equality_helper(antialias, width, cap, constants.LineJoin.MITER)
 
         # join=bevel forces the scanline path through C++ code.
-        gc2 = self.cap_equality_helper(antialias, width, cap, kiva.JOIN_BEVEL)
+        gc2 = self.cap_equality_helper(antialias, width, cap, constants.LineJoin.BEVEL)
 
         # Instead of testing against a known desired value, we are simply
         # testing for equality...
@@ -343,8 +343,8 @@ class StrokePathTestCase(unittest.TestCase, Utils):
         gc.set_stroke_color((0.0, 0.0, 0.0))  # black
         gc.set_antialias(True)
         gc.set_line_width(1)
-        gc.set_line_cap(kiva.CAP_BUTT)
-        gc.set_line_join(kiva.JOIN_MITER)
+        gc.set_line_cap(constants.LineCap.BUTT)
+        gc.set_line_join(constants.LineJoin.MITER)
 
         gc.stroke_path()
 
@@ -377,8 +377,8 @@ class StrokePathTestCase(unittest.TestCase, Utils):
         gc.set_stroke_color((0.0, 0.0, 0.0))  # black
         gc.set_antialias(True)
         gc.set_line_width(1)
-        gc.set_line_cap(kiva.CAP_BUTT)
-        gc.set_line_join(kiva.JOIN_BEVEL)
+        gc.set_line_cap(constants.LineCap.BUTT)
+        gc.set_line_join(constants.LineJoin.BEVEL)
 
         gc.stroke_path()
 
@@ -414,8 +414,8 @@ class StrokePathTestCase(unittest.TestCase, Utils):
         gc.set_stroke_color((0.0, 0.0, 0.0))  # black
         gc.set_antialias(True)
         gc.set_line_width(1)
-        gc.set_line_cap(kiva.CAP_BUTT)
-        gc.set_line_join(kiva.JOIN_MITER)
+        gc.set_line_cap(constants.LineCap.BUTT)
+        gc.set_line_join(constants.LineJoin.MITER)
 
         gc.stroke_path()
 

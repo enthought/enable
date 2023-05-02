@@ -1,8 +1,6 @@
 from math import tau
 
-import numpy as np
-
-from kiva.api import CAP_ROUND, CIRCLE_MARKER, FILL, Font, STROKE
+from kiva.api import LineCap, Marker, DrawMode, Font
 from kiva.image import GraphicsContext, CompiledPath
 
 
@@ -92,7 +90,7 @@ def draw_wire_connections_at_points(gc, points):
     """
 
     if hasattr(gc, 'draw_marker_at_points'):
-        gc.draw_marker_at_points(points, 4.0, CIRCLE_MARKER)
+        gc.draw_marker_at_points(points, 4.0, Marker.CIRCLE)
     
     else:
         wire_connection_path = CompiledPath()
@@ -100,7 +98,7 @@ def draw_wire_connections_at_points(gc, points):
         wire_connection_path.arc(0, 0, 4, 0, tau)
 
         if hasattr(gc, 'draw_path_at_points'):
-            gc.draw_path_at_points(points, wire_connection_path, FILL)
+            gc.draw_path_at_points(points, wire_connection_path, DrawMode.FILL)
         else:
             for point in points:
                 with gc:
@@ -145,7 +143,7 @@ def draw_resistors_at_points(gc, points, resistor_path):
     """
 
     if hasattr(gc, 'draw_path_at_points'):
-        gc.draw_path_at_points(points, resistor_path, STROKE)
+        gc.draw_path_at_points(points, resistor_path, DrawMode.STROKE)
     else:
         for point in points:
             with gc:
@@ -230,7 +228,7 @@ def draw_battery(gc, location):
         thick_starts = [(-8, -10), (-8, -28)]
         thick_ends = [(8, -10), (8, -28)]
         gc.set_line_width(8)
-        gc.set_line_cap(CAP_ROUND)
+        gc.set_line_cap(LineCap.ROUND)
         gc.line_set(thick_starts, thick_ends)
         gc.stroke_path()
 

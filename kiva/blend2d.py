@@ -15,21 +15,21 @@ import blend2d
 import numpy as np
 
 from kiva.abstract_graphics_context import AbstractGraphicsContext
-import kiva.constants as constants
+from kiva import constants
 from kiva.fonttools import Font
 
 # These are the symbols that a backend has to define.
 __all__ = ["CompiledPath", "Font", "font_metrics_provider", "GraphicsContext"]
 
 cap_style = {
-    constants.CAP_BUTT: blend2d.StrokeCap.CAP_BUTT,
-    constants.CAP_ROUND: blend2d.StrokeCap.CAP_ROUND,
-    constants.CAP_SQUARE: blend2d.StrokeCap.CAP_SQUARE,
+    constants.LineCap.BUTT: blend2d.StrokeCap.CAP_BUTT,
+    constants.LineCap.ROUND: blend2d.StrokeCap.CAP_ROUND,
+    constants.LineCap.SQUARE: blend2d.StrokeCap.CAP_SQUARE,
 }
 join_style = {
-    constants.JOIN_ROUND: blend2d.StrokeJoin.JOIN_ROUND,
-    constants.JOIN_BEVEL: blend2d.StrokeJoin.JOIN_BEVEL,
-    constants.JOIN_MITER: blend2d.StrokeJoin.JOIN_MITER_BEVEL,
+    constants.LineJoin.ROUND: blend2d.StrokeJoin.JOIN_ROUND,
+    constants.LineJoin.BEVEL: blend2d.StrokeJoin.JOIN_BEVEL,
+    constants.LineJoin.MITER: blend2d.StrokeJoin.JOIN_MITER_BEVEL,
 }
 gradient_spread_modes = {
     "pad": blend2d.ExtendMode.PAD,
@@ -43,10 +43,10 @@ pix_formats = {
 
 # map used in select_font
 font_styles = {
-    "regular": (constants.WEIGHT_NORMAL, constants.NORMAL),
-    "bold": (constants.WEIGHT_BOLD, constants.NORMAL),
-    "italic": (constants.WEIGHT_NORMAL, constants.ITALIC),
-    "bold italic": (constants.WEIGHT_BOLD, constants.ITALIC),
+    "regular": (constants.FontWeight.NORMAL, constants.FontStyle.NORMAL),
+    "bold": (constants.FontWeight.BOLD, constants.FontStyle.NORMAL),
+    "italic": (constants.FontWeight.NORMAL, constants.FontStyle.ITALIC),
+    "bold italic": (constants.FontWeight.BOLD, constants.FontStyle.ITALIC),
 }
 
 class GraphicsContext(object):
@@ -67,7 +67,7 @@ class GraphicsContext(object):
         self.font = None
         self._kiva_font = None
         self.text_pos = (0, 0)
-        self.text_drawing_mode = constants.TEXT_FILL
+        self.text_drawing_mode = constants.TextMode.FILL
 
         # flip y / HiDPI
         self.base_scale = kwargs.pop("base_pixel_scale", 1)
@@ -161,7 +161,7 @@ class GraphicsContext(object):
         """ Set the width of the pen used to stroke a path """
         self.gc.set_stroke_width(width)
 
-    def set_line_join(self, style):
+    def set_line_join(self, style: constants.LineJoin):
         """ Set the style of join to use a path corners
         """
         try:
@@ -174,11 +174,11 @@ class GraphicsContext(object):
     def set_miter_limit(self, limit):
         """ Set the limit at which mitered joins are flattened.
 
-        Only applicable when the line join type is set to ``JOIN_MITER``.
+        Only applicable when the line join type is set to ``Join.MITER``.
         """
         self.gc.set_stroke_miter_limit(limit)
 
-    def set_line_cap(self, style):
+    def set_line_cap(self, style: constants.LineCap):
         """ Set the style of cap to use a path ends
         """
         try:
@@ -267,13 +267,13 @@ class GraphicsContext(object):
         for rect in rects:
             self.path.add_rect(rect)
 
-    def draw_rect(self, rect, mode=constants.FILL_STROKE):
+    def draw_rect(self, rect, mode = constants.DrawMode.FILL_STROKE):
         """ Draw a rect.
         """
         rect = blend2d.Rect(*rect)
-        if mode in (constants.FILL, constants.FILL_STROKE):
+        if mode & constants.DrawMode.FILL:
             self.gc.fill_rect(rect)
-        if mode in (constants.STROKE, constants.FILL_STROKE):
+        if mode & constants.DrawMode.STROKE:
             self.gc.stroke_rect(rect)
 
     def add_path(self, path):
@@ -505,14 +505,14 @@ class GraphicsContext(object):
         msg = "get_character_spacing not implemented on blend2d yet."
         raise NotImplementedError(msg)
 
-    def set_text_drawing_mode(self, mode):
+    def set_text_drawing_mode(self, mode: constants.TextMode):
         """ Set the drawing mode to use with text
         """
         supported_modes = {
-            constants.TEXT_FILL,
-            constants.TEXT_STROKE,
-            constants.TEXT_FILL_STROKE,
-            constants.TEXT_INVISIBLE,
+            constants.TextMode.FILL,
+            constants.TextMode.STROKE,
+            constants.TextMode.FILL_STROKE,
+            constants.TextMode.INVISIBLE,
         }
         if mode not in supported_modes:
             raise NotImplementedError()
@@ -542,7 +542,7 @@ class GraphicsContext(object):
         if self.font is None:
             raise RuntimeError("show_text called before setting a font!")
 
-        if self.text_drawing_mode == constants.TEXT_INVISIBLE:
+        if self.text_drawing_mode == constants.TextMode.INVISIBLE:
             # XXX: This is probably more sophisticated in practice
             return
 
@@ -559,9 +559,9 @@ class GraphicsContext(object):
             self.gc.translate(0, self._height)
             self.gc.scale(1.0, -1.0)
             pos = (pos[0], flip_y(pos[1]))
-            if mode in (constants.TEXT_FILL, constants.TEXT_FILL_STROKE):
+            if mode in (constants.TextMode.FILL, constants.TextMode.FILL_STROKE):
                 self.gc.fill_text(pos, self.font, text)
-            if mode in (constants.TEXT_STROKE, constants.TEXT_FILL_STROKE):
+            if mode in (constants.TextMode.STROKE, constants.TextMode.FILL_STROKE):
                 self.gc.stroke_text(pos, self.font, text)
 
     def show_text_at_point(self, text, x, y):
@@ -618,12 +618,15 @@ class GraphicsContext(object):
             self.gc.set_fill_style(clear_color)
             self.gc.fill_all()
 
-    def draw_path(self, mode=constants.FILL_STROKE):
+    def draw_path(
+        self,
+        mode: constants.DrawMode = constants.DrawMode.FILL_STROKE,
+    ):
         """ Draw the current path with the specified mode
         """
-        if mode in (constants.FILL, constants.FILL_STROKE):
+        if mode & constants.DrawMode.FILL:
             self.gc.fill_path(self.path)
-        if mode in (constants.STROKE, constants.FILL_STROKE):
+        if mode & constants.DrawMode.STROKE:
             self.gc.stroke_path(self.path)
         self.begin_path()
 
@@ -632,13 +635,22 @@ class GraphicsContext(object):
         """
         return CompiledPath()
 
-    def draw_path_at_points(self, points, path, mode=constants.FILL_STROKE):
+    def draw_path_at_points(
+        self,
+        points,
+        path,
+        mode: constants.DrawMode = constants.DrawMode.FILL_STROKE,
+    ):
         """ Draw a path object at many different points.
         """
         raise NotImplementedError()
 
-    def draw_marker_at_points(self, points_array, size,
-                              marker=constants.SQUARE_MARKER):
+    def draw_marker_at_points(
+        self,
+        points_array,
+        size,
+        marker: constants.Marker = constants.Marker.SQUARE
+    ):
         """ Draw a marker at a collection of points
         """
         raise NotImplementedError()

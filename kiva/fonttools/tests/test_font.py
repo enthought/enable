@@ -14,8 +14,8 @@ import os
 import unittest
 
 from kiva.constants import (
-    BOLD, BOLD_ITALIC, DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN,
-    SCRIPT, TELETYPE, WEIGHT_BOLD, WEIGHT_LIGHT, WEIGHT_NORMAL, SWISS,
+    BOLD_ITALIC, FontFamily, FontStyle, FontWeight, DECORATIVE, DEFAULT,
+    MODERN, ROMAN, SCRIPT, TELETYPE, SWISS,
 )
 from kiva.fonttools._constants import font_family_aliases, preferred_fonts
 from kiva.fonttools.tests._testing import patch_global_font_manager
@@ -78,21 +78,21 @@ class TestFont(unittest.TestCase):
     def test_str_to_font(self):
         # Simple
         from_str = str_to_font("modern 10")
-        from_ctor = Font(family=MODERN, size=10)
+        from_ctor = Font(family=FontFamily.MODERN, size=10)
         self.assertEqual(from_ctor, from_str)
 
         # Some complexity
         from_str = str_to_font("roman bold italic 12")
-        from_ctor = Font(family=ROMAN, weight=WEIGHT_BOLD, style=ITALIC, size=12)
+        from_ctor = Font(family=FontFamily.ROMAN, weight=FontWeight.BOLD, style=FontStyle.ITALIC, size=12)
         self.assertEqual(from_ctor, from_str)
 
         # Lots of complexity
         from_str = str_to_font("Times roman bold italic underline 72")
         from_ctor = Font(
             "Times",
-            family=ROMAN,
-            weight=WEIGHT_BOLD,
-            style=ITALIC,
+            family=FontFamily.ROMAN,
+            weight=FontWeight.BOLD,
+            style=FontStyle.ITALIC,
             size=72,
             underline=1,
         )
@@ -102,9 +102,9 @@ class TestFont(unittest.TestCase):
         from_str = str_to_font("Times roman light italic underline 72")
         from_ctor = Font(
             "Times",
-            family=ROMAN,
-            weight=WEIGHT_LIGHT,
-            style=ITALIC,
+            family=FontFamily.ROMAN,
+            weight=FontWeight.LIGHT,
+            style=FontStyle.ITALIC,
             size=72,
             underline=1,
         )
@@ -127,46 +127,46 @@ class TestFont(unittest.TestCase):
     def test_weight_warnings(self):
         # Don't use BOLD as a weight
         with self.assertWarns(DeprecationWarning):
-            font = Font(weight=BOLD)
-        self.assertEqual(font.weight, WEIGHT_BOLD)
+            font = Font(weight=FontStyle.BOLD)
+        self.assertEqual(font.weight, FontWeight.BOLD)
 
         # Don't use BOLD as a style
         with self.assertWarns(DeprecationWarning):
-            font = Font(style=BOLD)
-        self.assertEqual(font.weight, WEIGHT_BOLD)
-        self.assertEqual(font.style, NORMAL)
+            font = Font(style=FontStyle.BOLD)
+        self.assertEqual(font.weight, FontWeight.BOLD)
+        self.assertEqual(font.style, FontStyle.NORMAL)
 
         # Don't use BOLD_ITALIC as a style
         with self.assertWarns(DeprecationWarning):
             font = Font(style=BOLD_ITALIC)
-        self.assertEqual(font.weight, WEIGHT_BOLD)
-        self.assertEqual(font.style, ITALIC)
+        self.assertEqual(font.weight, FontWeight.BOLD)
+        self.assertEqual(font.style, FontStyle.ITALIC)
 
         # Ignore BOLD style if weight is not normal
         with self.assertWarns(DeprecationWarning):
-            font = Font(style=BOLD, weight=WEIGHT_LIGHT)
-        self.assertEqual(font.weight, WEIGHT_LIGHT)
-        self.assertEqual(font.style, NORMAL)
+            font = Font(style=FontStyle.BOLD, weight=FontWeight.LIGHT)
+        self.assertEqual(font.weight, FontWeight.LIGHT)
+        self.assertEqual(font.style, FontStyle.NORMAL)
 
         with self.assertWarns(DeprecationWarning):
-            font = Font(style=BOLD_ITALIC, weight=WEIGHT_LIGHT)
-        self.assertEqual(font.weight, WEIGHT_LIGHT)
-        self.assertEqual(font.style, ITALIC)
+            font = Font(style=BOLD_ITALIC, weight=FontWeight.LIGHT)
+        self.assertEqual(font.weight, FontWeight.LIGHT)
+        self.assertEqual(font.style, FontStyle.ITALIC)
 
     def test_font_query_warnings(self):
         # Don't use BOLD as a weight
         font = Font()
-        font.weight = BOLD
+        font.weight = FontStyle.BOLD
         with self.assertWarns(DeprecationWarning):
             query = font._make_font_query()
-        self.assertEqual(query.get_weight(), WEIGHT_BOLD)
+        self.assertEqual(query.get_weight(), FontWeight.BOLD)
 
         # Don't use BOLD as a style
         font = Font()
-        font.style = BOLD
+        font.style = FontStyle.BOLD
         with self.assertWarns(DeprecationWarning):
             query = font._make_font_query()
-        self.assertEqual(query.get_weight(), WEIGHT_BOLD)
+        self.assertEqual(query.get_weight(), FontWeight.BOLD)
         self.assertEqual(query.get_style(), "normal")
 
         # Don't use BOLD_ITALIC as a style
@@ -174,24 +174,24 @@ class TestFont(unittest.TestCase):
         font.style = BOLD_ITALIC
         with self.assertWarns(DeprecationWarning):
             query = font._make_font_query()
-        self.assertEqual(query.get_weight(), WEIGHT_BOLD)
+        self.assertEqual(query.get_weight(), FontWeight.BOLD)
         self.assertEqual(query.get_style(), "italic")
 
         # Ignore BOLD style if weight is not normal
         font = Font()
-        font.weight = WEIGHT_LIGHT
-        font.style = BOLD
+        font.weight = FontWeight.LIGHT
+        font.style = FontStyle.BOLD
         with self.assertWarns(DeprecationWarning):
             query = font._make_font_query()
-        self.assertEqual(query.get_weight(), WEIGHT_LIGHT)
+        self.assertEqual(query.get_weight(), FontWeight.LIGHT)
         self.assertEqual(query.get_style(), "normal")
 
         font = Font()
-        font.weight = WEIGHT_LIGHT
+        font.weight = FontWeight.LIGHT
         font.style = BOLD_ITALIC
         with self.assertWarns(DeprecationWarning):
             query = font._make_font_query()
-        self.assertEqual(query.get_weight(), WEIGHT_LIGHT)
+        self.assertEqual(query.get_weight(), FontWeight.LIGHT)
         self.assertEqual(query.get_style(), "italic")
 
     def test_family_queries(self):
@@ -220,10 +220,10 @@ class TestSimpleParser(unittest.TestCase):
             properties,
             {
                 'face_name': "",
-                'family': DEFAULT,
+                'family': FontFamily.DEFAULT,
                 'size': 10,
-                'weight': WEIGHT_NORMAL,
-                'style': NORMAL,
+                'weight': FontWeight.NORMAL,
+                'style': FontStyle.NORMAL,
                 'underline': False,
             },
         )
@@ -235,10 +235,10 @@ class TestSimpleParser(unittest.TestCase):
             properties,
             {
                 'face_name': "Helvetica",
-                'family': SWISS,
+                'family': FontFamily.SWISS,
                 'size': 10,
-                'weight': WEIGHT_BOLD,
-                'style': ITALIC,
+                'weight': FontWeight.BOLD,
+                'style': FontStyle.ITALIC,
                 'underline': True,
             },
         )
@@ -251,10 +251,10 @@ class TestSimpleParser(unittest.TestCase):
                     properties,
                     {
                         'face_name': "",
-                        'family': DEFAULT,
+                        'family': FontFamily.DEFAULT,
                         'size': 10,
-                        'weight': WEIGHT_NORMAL,
-                        'style': NORMAL,
+                        'weight': FontWeight.NORMAL,
+                        'style': FontStyle.NORMAL,
                         'underline': False,
                     },
                 )
@@ -269,8 +269,8 @@ class TestSimpleParser(unittest.TestCase):
                         'face_name': "",
                         'family': constant,
                         'size': 10,
-                        'weight': WEIGHT_NORMAL,
-                        'style': NORMAL,
+                        'weight': FontWeight.NORMAL,
+                        'style': FontStyle.NORMAL,
                         'underline': False,
                     },
                 )
@@ -283,10 +283,10 @@ class TestSimpleParser(unittest.TestCase):
                     properties,
                     {
                         'face_name': "",
-                        'family': DEFAULT,
+                        'family': FontFamily.DEFAULT,
                         'size': size,
-                        'weight': WEIGHT_NORMAL,
-                        'style': NORMAL,
+                        'weight': FontWeight.NORMAL,
+                        'style': FontStyle.NORMAL,
                         'underline': False,
                     },
                 )
@@ -299,10 +299,10 @@ class TestSimpleParser(unittest.TestCase):
                     properties,
                     {
                         'face_name': "",
-                        'family': DEFAULT,
+                        'family': FontFamily.DEFAULT,
                         'size': 10,
                         'weight': constant,
-                        'style': NORMAL,
+                        'style': FontStyle.NORMAL,
                         'underline': False,
                     },
                 )
@@ -315,9 +315,9 @@ class TestSimpleParser(unittest.TestCase):
                     properties,
                     {
                         'face_name': "",
-                        'family': DEFAULT,
+                        'family': FontFamily.DEFAULT,
                         'size': 10,
-                        'weight': WEIGHT_NORMAL,
+                        'weight': FontWeight.NORMAL,
                         'style': constant,
                         'underline': False,
                     },
@@ -336,10 +336,10 @@ class TestSimpleParser(unittest.TestCase):
                     properties,
                     {
                         'face_name': "",
-                        'family': DEFAULT,
+                        'family': FontFamily.DEFAULT,
                         'size': 10,
-                        'weight': WEIGHT_NORMAL,
-                        'style': NORMAL,
+                        'weight': FontWeight.NORMAL,
+                        'style': FontStyle.NORMAL,
                         'underline': 'underline' in decorations,
                     },
                 )

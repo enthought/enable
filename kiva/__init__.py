@@ -13,5 +13,4 @@ Part of the Enable project of the Enthought Tool Suite.
 """
 from kiva._version import full_version as __version__
 
-from .constants import *
 from .fonttools import Font

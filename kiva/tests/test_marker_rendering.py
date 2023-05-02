@@ -104,7 +104,7 @@ class TestMarkerDrawing(unittest.TestCase):
         gc.transform(1.0, 1.0, 0.0, 0.0, 110, 110)
         points = np.array([[0.0, 0.0]])
         buffer.fill(255)
-        gc.draw_markers(points, 5, constants.SQUARE_MARKER, fill, stroke)
+        gc.draw_markers(points, 5, constants.Marker.SQUARE, fill, stroke)
         # Transformed the point _out_ of the bounds. We expect nothing drawn
         all_white = (np.sum(buffer == [255, 255, 255]) == buffer.size)
         self.assertTrue(all_white)
@@ -112,7 +112,7 @@ class TestMarkerDrawing(unittest.TestCase):
         # Scale past the bounds
         gc.transform(2.0, 2.0, 0.0, 0.0, 0.0, 0.0)
         points = np.array([[90.0, 90.0]])
-        gc.draw_markers(points, 5, constants.SQUARE_MARKER, fill, stroke)
+        gc.draw_markers(points, 5, constants.Marker.SQUARE, fill, stroke)
         # Transformed the point _out_ of the bounds. We expect nothing drawn
         all_white = (np.sum(buffer == [255, 255, 255]) == buffer.size)
         self.assertTrue(all_white)
@@ -126,17 +126,17 @@ class TestMarkerDrawing(unittest.TestCase):
 
         # Input array shape checking
         with self.assertRaises(ValueError):
-            gc.draw_markers(fill, 5, constants.PLUS_MARKER, fill, stroke)
+            gc.draw_markers(fill, 5, constants.Marker.PLUS, fill, stroke)
         with self.assertRaises(ValueError):
-            gc.draw_markers(points, 5, constants.PLUS_MARKER, fill[:2], stroke)
+            gc.draw_markers(points, 5, constants.Marker.PLUS, fill[:2], stroke)
         with self.assertRaises(ValueError):
-            gc.draw_markers(points, 5, constants.PLUS_MARKER, fill, stroke[:2])
+            gc.draw_markers(points, 5, constants.Marker.PLUS, fill, stroke[:2])
 
         # Argument type coercions
         with self.assertRaises(TypeError):
             gc.draw_markers(points, 5, "plus", fill, stroke)
         with self.assertRaises(TypeError):
-            gc.draw_markers(points, [5], constants.PLUS_MARKER, fill, stroke)
+            gc.draw_markers(points, [5], constants.Marker.PLUS, fill, stroke)
 
         # Finally, check that drawing a bad marker ID returns False
         self.assertFalse(gc.draw_markers(points, 5, 500, fill, stroke))

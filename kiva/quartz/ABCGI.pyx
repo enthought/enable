@@ -144,33 +144,33 @@ import numpy
 from kiva import constants
 
 cap_style = {}
-cap_style[constants.CAP_ROUND]  = kCGLineCapRound
-cap_style[constants.CAP_SQUARE] = kCGLineCapSquare
-cap_style[constants.CAP_BUTT]   = kCGLineCapButt
+cap_style[constants.LineCap.ROUND]  = kCGLineCapRound
+cap_style[constants.LineCap.SQUARE] = kCGLineCapSquare
+cap_style[constants.LineCap.BUTT]   = kCGLineCapButt
 
 join_style = {}
-join_style[constants.JOIN_ROUND] = kCGLineJoinRound
-join_style[constants.JOIN_BEVEL] = kCGLineJoinBevel
-join_style[constants.JOIN_MITER] = kCGLineJoinMiter
+join_style[constants.LineJoin.ROUND] = kCGLineJoinRound
+join_style[constants.LineJoin.BEVEL] = kCGLineJoinBevel
+join_style[constants.LineJoin.MITER] = kCGLineJoinMiter
 
 draw_modes = {}
-draw_modes[constants.FILL]            = kCGPathFill
-draw_modes[constants.EOF_FILL]        = kCGPathEOFill
-draw_modes[constants.STROKE]          = kCGPathStroke
-draw_modes[constants.FILL_STROKE]     = kCGPathFillStroke
-draw_modes[constants.EOF_FILL_STROKE] = kCGPathEOFillStroke
+draw_modes[constants.DrawMode.FILL]            = kCGPathFill
+draw_modes[constants.DrawMode.EOF_FILL]        = kCGPathEOFill
+draw_modes[constants.DrawMode.STROKE]          = kCGPathStroke
+draw_modes[constants.DrawMode.FILL_STROKE]     = kCGPathFillStroke
+draw_modes[constants.DrawMode.EOF_FILL_STROKE] = kCGPathEOFillStroke
 
 text_modes = {}
-text_modes[constants.TEXT_FILL]             = kCGTextFill
-text_modes[constants.TEXT_STROKE]           = kCGTextStroke
-text_modes[constants.TEXT_FILL_STROKE]      = kCGTextFillStroke
-text_modes[constants.TEXT_INVISIBLE]        = kCGTextInvisible
-text_modes[constants.TEXT_FILL_CLIP]        = kCGTextFillClip
-text_modes[constants.TEXT_STROKE_CLIP]      = kCGTextStrokeClip
-text_modes[constants.TEXT_FILL_STROKE_CLIP] = kCGTextFillStrokeClip
-text_modes[constants.TEXT_CLIP]             = kCGTextClip
+text_modes[constants.TextMode.FILL]             = kCGTextFill
+text_modes[constants.TextMode.STROKE]           = kCGTextStroke
+text_modes[constants.TextMode.FILL_STROKE]      = kCGTextFillStroke
+text_modes[constants.TextMode.INVISIBLE]        = kCGTextInvisible
+text_modes[constants.TextMode.FILL_CLIP]        = kCGTextFillClip
+text_modes[constants.TextMode.STROKE_CLIP]      = kCGTextStrokeClip
+text_modes[constants.TextMode.FILL_STROKE_CLIP] = kCGTextFillStrokeClip
+text_modes[constants.TextMode.CLIP]             = kCGTextClip
 # this last one doesn't exist in Quartz
-text_modes[constants.TEXT_OUTLINE]          = kCGTextStroke
+text_modes[constants.TextMode.OUTLINE]          = kCGTextStroke
 
 cdef class CGContext
 cdef class CGContextInABox(CGContext)
@@ -804,10 +804,10 @@ cdef class CGContext:
         """
 
         style = {
-            constants.NORMAL: 'regular',
-            constants.BOLD: 'bold',
-            constants.ITALIC: 'italic',
-            constants.BOLD_ITALIC: 'bold italic',
+            constants.FontStyle.NORMAL: 'regular',
+            constants.FontStyle.BOLD: 'bold',
+            constants.FontStyle.ITALIC: 'italic',
+            constants.FontStyle.BOLD | constants.FontStyle.ITALIC: 'bold italic',
         }[font.is_bold() | font.style]
         if font.face_name:
             name = font.face_name
@@ -1026,7 +1026,7 @@ cdef class CGContext:
         """
         CGContextClearRect(self.context, CGRectMakeFromPython(rect))
 
-    def draw_path(self, object mode=constants.FILL_STROKE):
+    def draw_path(self, object mode=constants.DrawMode.FILL_STROKE):
         """ Walk through all the drawing subpaths and draw each element.
 
             Each subpath is drawn separately.
@@ -1035,7 +1035,7 @@ cdef class CGContext:
         cg_mode = draw_modes[mode]
         CGContextDrawPath(self.context, cg_mode)
 
-    def draw_rect(self, rect, object mode=constants.FILL_STROKE):
+    def draw_rect(self, rect, object mode=constants.DrawMode.FILL_STROKE):
         """ Draw a rectangle with the given mode.
         """
 
@@ -1053,7 +1053,7 @@ cdef class CGContext:
         return CGMutablePath()
 
     def draw_path_at_points(self, points, CGMutablePath marker not None,
-        object mode=constants.FILL_STROKE):
+        object mode=constants.DrawMode.FILL_STROKE):
 
         cdef int i
         cdef int n
@@ -2422,27 +2422,27 @@ cdef class _Markers:
         path : CGMutablePath
         """
 
-        if marker_type == constants.NO_MARKER:
+        if marker_type == constants.Marker.NO:
             return CGMutablePath()
-        elif marker_type == constants.SQUARE_MARKER:
+        elif marker_type == constants.Marker.SQUARE:
             return self.square(size)
-        elif marker_type == constants.DIAMOND_MARKER:
+        elif marker_type == constants.Marker.DIAMOND:
             return self.diamond(size)
-        elif marker_type == constants.CIRCLE_MARKER:
+        elif marker_type == constants.Marker.CIRCLE:
             return self.circle(size)
-        elif marker_type == constants.CROSSED_CIRCLE_MARKER:
+        elif marker_type == constants.Marker.CROSSED_CIRCLE:
             raise NotImplementedError
-        elif marker_type == constants.CROSS_MARKER:
+        elif marker_type == constants.Marker.CROSS:
             return self.cross(size)
-        elif marker_type == constants.TRIANGLE_MARKER:
+        elif marker_type == constants.Marker.TRIANGLE:
             raise NotImplementedError
-        elif marker_type == constants.INVERTED_TRIANGLE_MARKER:
+        elif marker_type == constants.Marker.INVERTED_TRIANGLE:
             raise NotImplementedError
-        elif marker_type == constants.PLUS_MARKER:
+        elif marker_type == constants.Marker.PLUS:
             raise NotImplementedError
-        elif marker_type == constants.DOT_MARKER:
+        elif marker_type == constants.Marker.DOT:
             raise NotImplementedError
-        elif marker_type == constants.PIXEL_MARKER:
+        elif marker_type == constants.Marker.PIXEL:
             raise NotImplementedError
 
 

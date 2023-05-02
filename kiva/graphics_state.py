@@ -17,7 +17,7 @@ import copy
 
 from numpy import array, float64
 
-from .constants import CAP_ROUND, JOIN_MITER, TEXT_FILL
+from .constants import LineCap, LineJoin, TextMode
 from .fonttools import Font
 from .line_state import LineState
 import kiva.affine as affine
@@ -98,8 +98,8 @@ class GraphicsState(LineState):
         # Line state default values.
         line_color = array((0.0, 0.0, 0.0, 1.0))
         line_width = 1
-        line_cap = CAP_ROUND
-        line_join = JOIN_MITER
+        line_cap = LineCap.ROUND
+        line_join = LineJoin.MITER
         line_dash = (0, array([0]))  # This will draw a solid line
 
         # FIXME: This is a very wierd class. The following code is here to
@@ -123,7 +123,7 @@ class GraphicsState(LineState):
         self.miter_limit = 1.0
         self.flatness = 1.0
         self.character_spacing = 0.0
-        self.text_drawing_mode = TEXT_FILL
+        self.text_drawing_mode = TextMode.FILL
         self.alpha = 1.0
 
     def copy(self):

@@ -22,16 +22,16 @@ from .editor_with_component import EditorWithLabelComponent
 
 #: A mapping of Kiva weight constants to strings.
 WEIGHTS = {
-    kc.WEIGHT_THIN: ' Thin',
-    kc.WEIGHT_EXTRALIGHT: ' Extra-light',
-    kc.WEIGHT_LIGHT: ' Light',
-    kc.WEIGHT_NORMAL: '',
-    kc.WEIGHT_MEDIUM: ' Medium',
-    kc.WEIGHT_SEMIBOLD: ' Semi-bold',
-    kc.WEIGHT_BOLD: ' Bold',
-    kc.WEIGHT_EXTRABOLD: ' Extra-bold',
-    kc.WEIGHT_HEAVY: ' Heavy',
-    kc.WEIGHT_EXTRAHEAVY: ' Extra-heavy',
+    kc.FontWeight.THIN: ' Thin',
+    kc.FontWeight.EXTRALIGHT: ' Extra-light',
+    kc.FontWeight.LIGHT: ' Light',
+    kc.FontWeight.NORMAL: '',
+    kc.FontWeight.MEDIUM: ' Medium',
+    kc.FontWeight.SEMIBOLD: ' Semi-bold',
+    kc.FontWeight.BOLD: ' Bold',
+    kc.FontWeight.EXTRABOLD: ' Extra-bold',
+    kc.FontWeight.HEAVY: ' Heavy',
+    kc.FontWeight.EXTRAHEAVY: ' Extra-heavy',
 }
 
 
@@ -123,7 +123,7 @@ class SimpleEditor(ReadOnlyEditor):
             font = Font(
                 face_name=pyface_font.family[0],
                 weight=pyface_font.weight_,
-                style=kc.ITALIC if pyface_font.style == 'italic' else kc.NORMAL,  # noqa: E501
+                style=kc.FontStyle.ITALIC if pyface_font.style == 'italic' else kc.FontStyle.NORMAL,  # noqa: E501
                 size=int(pyface_font.size),
             )
             self.update_object(font)
