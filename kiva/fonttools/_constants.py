@@ -16,6 +16,7 @@ font_family_aliases = {
     "fantasy",
     "monospace",
     "sans",
+    "typewriter",
 }
 
 preferred_fonts = {
@@ -34,15 +35,25 @@ preferred_fonts = {
         "cursive",
     ],
     "monospace": [
+        "Consolas",
+        "Menlo",
+        "Monaco",
         "Bitstream Vera Sans Mono",
         "DejaVu Sans Mono",
         "Andale Mono",
+        "Inconsolata",
+        "Fixed",
+        "Mono",
+    ],
+    "typewriter": [
         "Nimbus Mono L",
+        "FreeMono",
+        "Liberation Mono",
+        "Monospace",  # ironically an OSS serif font: https://en.wikipedia.org/wiki/Monospace_(typeface)
         "Courier New",
         "Courier",
-        "Fixed",
         "Terminal",
-        "monospace",
+        "typewriter",
     ],
     "serif": [
         "Bitstream Vera Serif",
