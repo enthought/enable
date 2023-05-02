@@ -624,7 +624,7 @@ class GraphicsContext(object):
             pixmap = img.qt_dc
             width, height = pixmap.width(), pixmap.height()
         else:
-            msg = "Cannot render image of type '%r' into Qt4 context."
+            msg = "Cannot render image of type '%r' into QPainter context."
             warnings.warn(msg % type(img))
             return
 

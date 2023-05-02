@@ -1,4 +1,2 @@
-pygarrayimage
-pyglet<2.0
 pypdf2<3.0
 reportlab

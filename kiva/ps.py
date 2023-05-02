@@ -77,13 +77,13 @@ try:
     import reportlab.pdfbase.pdfmetrics as pdfmetrics
     import reportlab.pdfbase._fontdata as _fontdata
 
-    _reportlab_loaded = 1
+    _reportlab_loaded = True
 except ImportError:
     # we support the basic 14
     from . import _fontdata
     from . import pdfmetrics
 
-    _reportlab_loaded = 0
+    _reportlab_loaded = False
 
 font_face_map = {"Arial": "Helvetica", "": "Helvetica"}
 
