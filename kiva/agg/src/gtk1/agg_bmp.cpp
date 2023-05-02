@@ -19,7 +19,6 @@
 
 #include "numpy/arrayobject.h"
 #define PyArray_UBYTELTR 'b'
-#endif
 
 #if 0
 #define DEBUG_MTH(NAME) fprintf(stderr, NAME "\n");
