@@ -380,45 +380,46 @@ if __name__ == "__main__":
     if sys.platform == 'darwin':
         ext_modules += macos_extensions()
 
-    setup(name='enable',
-          version=__version__,
-          author='Enthought, Inc',
-          author_email='info@enthought.com',
-          maintainer='ETS Developers',
-          maintainer_email='enthought-dev@enthought.com',
-          url='https://github.com/enthought/enable/',
-          # Note that this URL is only valid for tagged releases.
-          download_url=('https://github.com/enthought/enable/archive/'
-                        '{0}.tar.gz'.format(__version__)),
-          license='BSD',
-          classifiers=[c.strip() for c in """\
-              Development Status :: 5 - Production/Stable
-              Intended Audience :: Developers
-              Intended Audience :: Science/Research
-              License :: OSI Approved :: BSD License
-              Operating System :: MacOS
-              Operating System :: Microsoft :: Windows
-              Operating System :: OS Independent
-              Operating System :: POSIX
-              Operating System :: Unix
-              Programming Language :: C
-              Programming Language :: Python
-              Topic :: Scientific/Engineering
-              Topic :: Software Development
-              Topic :: Software Development :: Libraries
-              """.splitlines() if len(c.strip()) > 0],
-          platforms=['Windows', 'Linux', 'macOS', 'Unix', 'Solaris'],
-          description='low-level drawing and interaction',
-          long_description=long_description,
-          long_description_content_type="text/x-rst",
-          install_requires=__requires__,
-          extras_require=__extras_require__,
-          cmdclass={
-              'build': PatchedBuild,
-              'install': PatchedInstall,
-              'build_ext': build_ext,
-          },
-          entry_points={
+    setup(
+        name='enable',
+        version=__version__,
+        author='Enthought, Inc',
+        author_email='info@enthought.com',
+        maintainer='ETS Developers',
+        maintainer_email='enthought-dev@enthought.com',
+        url='https://github.com/enthought/enable/',
+        # Note that this URL is only valid for tagged releases.
+        download_url=('https://github.com/enthought/enable/archive/'
+                      '{0}.tar.gz'.format(__version__)),
+        license='BSD',
+        classifiers=[c.strip() for c in """\
+            Development Status :: 5 - Production/Stable
+            Intended Audience :: Developers
+            Intended Audience :: Science/Research
+            License :: OSI Approved :: BSD License
+            Operating System :: MacOS
+            Operating System :: Microsoft :: Windows
+            Operating System :: OS Independent
+            Operating System :: POSIX
+            Operating System :: Unix
+            Programming Language :: C
+            Programming Language :: Python
+            Topic :: Scientific/Engineering
+            Topic :: Software Development
+            Topic :: Software Development :: Libraries
+            """.splitlines() if len(c.strip()) > 0],
+        platforms=['Windows', 'Linux', 'macOS', 'Unix', 'Solaris'],
+        description='low-level drawing and interaction',
+        long_description=long_description,
+        long_description_content_type="text/x-rst",
+        install_requires=__requires__,
+        extras_require=__extras_require__,
+        cmdclass={
+            'build': PatchedBuild,
+            'install': PatchedInstall,
+            'build_ext': build_ext,
+        },
+        entry_points={
             'enable.toolkits': [
                 'null = enable.null.toolkit:toolkit',
                 'qt = enable.qt.toolkit:toolkit',
@@ -429,26 +430,33 @@ if __name__ == "__main__":
                 'enable_examples = enable.examples._etsdemo_info:info',
                 'kiva_examples = kiva.examples._etsdemo_info:info',
             ]
-          },
-          ext_modules=ext_modules,
-          packages=find_packages(exclude=['ci', 'docs']),
-          package_data={
-              '': ['*.zip', '*.svg', 'images/*'],
-              'enable': ['tests/primitives/data/PngSuite/*.png'],
-              'enable.examples': ['demo/*',
-                                  'demo/*/*',
-                                  'demo/*/*/*',
-                                  'demo/*/*/*/*',
-                                  'demo/*/*/*/*/*'],
-              'enable.savage.trait_defs.ui.wx': ['data/*.svg'],
-              'kiva': ['tests/agg/doubleprom_soho_full.jpg',
-                       'fonttools/data/*.ttf',
-                       'fonttools/tests/data/*.afm',
-                       'fonttools/tests/data/*.ttc',
-                       'fonttools/tests/data/*.ttf',
-                       'fonttools/tests/data/*.txt'],
-              'kiva.examples': ['kiva/*',
-                                'kiva/*/*'],
-          },
-          zip_safe=False,
-          )
+        },
+        ext_modules=ext_modules,
+        packages=find_packages(exclude=['ci', 'docs']),
+        package_data={
+            '': ['*.zip', '*.svg', 'images/*'],
+            'enable': ['tests/primitives/data/PngSuite/*.png'],
+            'enable.examples': [
+                'demo/*',
+                'demo/*/*',
+                'demo/*/*/*',
+                'demo/*/*/*/*',
+                'demo/*/*/*/*/*',
+            ],
+            'enable.savage.trait_defs.ui.wx': ['data/*.svg'],
+            'kiva': [
+                'tests/agg/doubleprom_soho_full.jpg',
+                'fonttools/data/*.ttf',
+                'fonttools/tests/data/*.afm',
+                'fonttools/tests/data/*.ttc',
+                'fonttools/tests/data/*.ttf',
+                'fonttools/tests/data/*.txt',
+            ],
+            'kiva.examples': [
+                'kiva/*',
+                'kiva/*/*',
+            ],
+        },
+        zip_safe=False,
+        python_requires=">=3.7",
+    )
