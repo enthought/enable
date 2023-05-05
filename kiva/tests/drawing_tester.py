@@ -19,9 +19,9 @@ from kiva.api import (
     DECORATIVE, DEFAULT, ITALIC, MODERN, NORMAL, ROMAN, SCRIPT, TELETYPE, Font
 )
 from kiva.constants import (
-    WEIGHT_THIN, WEIGHT_EXTRALIGHT, WEIGHT_LIGHT, WEIGHT_NORMAL, WEIGHT_MEDIUM,
-    WEIGHT_SEMIBOLD, WEIGHT_BOLD, WEIGHT_EXTRABOLD, WEIGHT_HEAVY,
-    WEIGHT_EXTRAHEAVY
+    FILL_STROKE, WEIGHT_THIN, WEIGHT_EXTRALIGHT, WEIGHT_LIGHT, WEIGHT_NORMAL,
+    WEIGHT_MEDIUM, WEIGHT_SEMIBOLD, WEIGHT_BOLD, WEIGHT_EXTRABOLD,
+    WEIGHT_HEAVY, WEIGHT_EXTRAHEAVY
 )
 
 
@@ -186,6 +186,23 @@ class DrawingTester(object):
 
             self.gc.begin_path()
             self.gc.arc(150, 150, 100, 0.0, 2 * numpy.pi)
+            self.gc.fill_path()
+
+    def test_draw_path_at_points(self):
+        if not hasattr(self.gc, 'draw_path_at_points'):
+            self.skipTest("GC doesn't have 'draw_marker_at_points' method.")
+
+        path = self.gc.get_empty_path()
+        path.move_to(-5, -5)
+        path.line_to(-5, 5)
+        path.line_to(5, 5)
+        path.line_to(5, -5)
+        path.close_path()
+
+        points = numpy.array([[0, 0], [10, 10], [20, 20], [30, 30]])
+
+        with self.draw_and_check():
+            self.gc.draw_path_at_points(points, path, FILL_STROKE)
             self.gc.fill_path()
 
     # Required methods ####################################################
