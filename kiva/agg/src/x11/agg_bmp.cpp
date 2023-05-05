@@ -18,9 +18,7 @@
 #include "agg_color_rgba.h"
 
 #include "bytesobject.h"
-
 #include "numpy/arrayobject.h"
-#define PyArray_UBYTELTR 'b'
 
 #if 0
 #define DEBUG_MTH(NAME) fprintf(stderr, NAME "\n");

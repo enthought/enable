@@ -31,8 +31,6 @@ Here are the typemap helper functions for numeric arrays:
 
 %{
 #include "numpy/arrayobject.h"
-#define PyArray_UBYTELTR 'b'
-
 #include <string>
 
 #define is_array(a) ((a) && PyArray_Check((PyArrayObject *)a))
