@@ -58,8 +58,6 @@
     agg24::rgba _clear_color = agg24::rgba(1,1,1,1);
 %}
 
-%include "numeric_ext.i"
-
 %typemap(out) PyObject*
 {
     $result = $1;

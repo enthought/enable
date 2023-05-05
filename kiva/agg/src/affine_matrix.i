@@ -54,11 +54,7 @@
 
 
 %{
-#ifdef NUMPY
 #include "numpy/arrayobject.h"
-#else
-#include "Numeric/arrayobject.h"
-#endif
 #include "agg_trans_affine.h"
 
 // These factories mimic the functionality of like-named classes in agg.

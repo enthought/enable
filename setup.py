@@ -322,7 +322,6 @@ def macos_extensions():
                 'kiva/quartz/ABCGI.pyx',
                 'kiva/quartz/Python.pxi',
                 'kiva/quartz/numpy.pxi',
-                'kiva/quartz/c_numpy.pxd',
                 'kiva/quartz/CoreFoundation.pxi',
                 'kiva/quartz/CoreGraphics.pxi',
                 'kiva/quartz/CoreText.pxi',

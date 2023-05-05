@@ -30,17 +30,7 @@ Here are the typemap helper functions for numeric arrays:
 */
 
 %{
-#ifdef NUMPY
 #include "numpy/arrayobject.h"
-# ifndef PyArray_SBYTE
-#  include "numpy/oldnumeric.h"
-#  include "numpy/old_defines.h"
-# endif
-#else
-#include "Numeric/arrayobject.h"
-#define PyArray_UBYTELTR 'b'
-#endif
-
 #include <string>
 
 #define is_array(a) ((a) && PyArray_Check((PyArrayObject *)a))
@@ -85,8 +75,8 @@ int type_match(int actual_type, int desired_type)
     // Make sure input has correct numeric type. Allow character and byte to
     // match also allow int and long to match.
     if ( actual_type != desired_type &&
-            !(desired_type == PyArray_CHAR  && actual_type == PyArray_SBYTE) &&
-            !(desired_type == PyArray_SBYTE && actual_type == PyArray_CHAR)  &&
+            !(desired_type == PyArray_CHAR  && actual_type == PyArray_BYTE) &&
+            !(desired_type == PyArray_BYTE && actual_type == PyArray_CHAR)  &&
             !(desired_type == PyArray_INT   && actual_type == PyArray_LONG)  &&
             !(desired_type == PyArray_LONG  && actual_type == PyArray_INT))
     {
@@ -369,9 +359,5 @@ def numpy_check(obj, typecode,
 %init %{
         Py_Initialize();
     import_array();
-#ifdef NUMPY
     PyImport_ImportModule("numpy");
-#else
-    PyImport_ImportModule("Numeric");
-#endif
 %}
