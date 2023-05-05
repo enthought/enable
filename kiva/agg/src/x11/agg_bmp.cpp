@@ -18,18 +18,7 @@
 #include "agg_color_rgba.h"
 
 #include "bytesobject.h"
-
-#ifdef NUMPY
 #include "numpy/arrayobject.h"
-# ifndef PyArray_SBYTE
-#  include "numpy/noprefix.h"
-#  include "numpy/oldnumeric.h"
-#  include "numpy/old_defines.h"
-# endif
-#else
-#include "Numeric/arrayobject.h"
-#define PyArray_UBYTELTR 'b'
-#endif
 
 #if 0
 #define DEBUG_MTH(NAME) fprintf(stderr, NAME "\n");

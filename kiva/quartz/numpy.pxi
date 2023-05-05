@@ -8,11 +8,11 @@
 #
 # Thanks for using Enthought open source!
 
-cdef extern from "numpy/oldnumeric.h":
+cdef extern from "numpy/arrayobject.h":
     ctypedef enum PyArray_TYPES:
         PyArray_CHAR
         PyArray_UBYTE
-        PyArray_SBYTE
+        PyArray_BYTE
         PyArray_SHORT
         PyArray_USHORT
         PyArray_INT
