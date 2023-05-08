@@ -463,15 +463,13 @@ class _Window(AbstractWindow):
             buttons = event.buttons()
         # The AttributeError is usually trigged when the mouse pointer
         # leaves the ui window since the event of leaving the window
-        # is a "QEvent", which doesn't contain x and y positions like
-        # QMouseEvent (for mouse movement) or QEnterEvent (for mouse
-        # entering the window) from QGui.
+        # is a "QEvent", which doesn't contain x and y positions.
         except AttributeError:
             pos = self.control.mapFromGlobal(QtGui.QCursor.pos())
             x = pos.x()
             y = pos.y()
             modifiers = QtCore.Qt.KeyboardModifier.NoModifier
-            buttons = QtCore.Qt.NoButton
+            buttons = QtCore.Qt.MouseButton.NoButton
 
         self.control.handler.last_mouse_pos = (x, y)
 
@@ -507,9 +505,9 @@ class _Window(AbstractWindow):
             alt_down=bool(modifiers & QtCore.Qt.KeyboardModifier.AltModifier),
             shift_down=bool(modifiers & QtCore.Qt.KeyboardModifier.ShiftModifier),
             control_down=bool(modifiers & QtCore.Qt.KeyboardModifier.ControlModifier),
-            left_down=bool(buttons & QtCore.Qt.LeftButton),
-            middle_down=bool(buttons & QtCore.Qt.MiddleButton),
-            right_down=bool(buttons & QtCore.Qt.RightButton),
+            left_down=bool(buttons & QtCore.Qt.MouseButton.LeftButton),
+            middle_down=bool(buttons & QtCore.Qt.MouseButton.MiddleButton),
+            right_down=bool(buttons & QtCore.Qt.MouseButton.RightButton),
             window=self,
         )
 
