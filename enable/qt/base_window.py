@@ -380,12 +380,14 @@ class _Window(AbstractWindow):
         if self.control is None:
             return None
 
-        if is_qt5:
-            x = event.x()
-            y = event.y()
+        if hasattr(event, 'pos'):
+            position = event.pos()
+        elif hasattr(event, 'position'):
+            position = event.position()
         else:
-            x = event.position().x()
-            y = event.position().y()
+            position = self.control.mapFromGlobal(QtGui.QCursor.pos())
+        x = position.x()
+        y = position.y()
 
         # If the event doesn't contain modifiers and/or buttons then get
         # sensible defaults.
