@@ -1062,7 +1062,7 @@ cdef class CGContext:
 
         apoints = <numpy.ndarray>(numpy.asarray(points, dtype=numpy.float32))
 
-        if apoints.nd != 2 or apoints.dimensions[1] != 2:
+        if apoints.ndim != 2 or apoints.shape[1] != 2:
             msg = "must pass array of 2-D points"
             raise ValueError(msg)
 
