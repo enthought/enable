@@ -396,7 +396,7 @@ class _Window(AbstractWindow):
         if hasattr(event, 'modifiers'):
             modifiers = event.modifiers()
         if hasattr(event, 'buttons'):
-            modifiers = event.buttons()
+            buttons = event.buttons()
 
         self.control.handler.last_mouse_pos = (x, y)
 
