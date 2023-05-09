@@ -439,9 +439,9 @@ class _Window(AbstractWindow):
             character=key,
             x=x,
             y=self._flip_y(y),
-            alt_down=bool(modifiers & QtCore.Qt.AltModifier),
-            shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
-            control_down=bool(modifiers & QtCore.Qt.ControlModifier),
+            alt_down=bool(modifiers & QtCore.Qt.KeyboardModifier.AltModifier),
+            shift_down=bool(modifiers & QtCore.Qt.KeyboardModifier.ShiftModifier),
+            control_down=bool(modifiers & QtCore.Qt.KeyboardModifier.ControlModifier),
             event=event,
             window=self,
         )
@@ -461,12 +461,15 @@ class _Window(AbstractWindow):
                 y = event.position().y()
             modifiers = event.modifiers()
             buttons = event.buttons()
+        # The AttributeError is usually trigged when the mouse pointer
+        # leaves the ui window since the event of leaving the window
+        # is a "QEvent", which doesn't contain x and y positions.
         except AttributeError:
             pos = self.control.mapFromGlobal(QtGui.QCursor.pos())
             x = pos.x()
             y = pos.y()
-            modifiers = 0
-            buttons = 0
+            modifiers = QtCore.Qt.KeyboardModifier.NoModifier
+            buttons = QtCore.Qt.MouseButton.NoButton
 
         self.control.handler.last_mouse_pos = (x, y)
 
@@ -499,12 +502,12 @@ class _Window(AbstractWindow):
             mouse_wheel=mouse_wheel,
             mouse_wheel_axis=mouse_wheel_axis,
             mouse_wheel_delta=mouse_wheel_delta,
-            alt_down=bool(modifiers & QtCore.Qt.AltModifier),
-            shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
-            control_down=bool(modifiers & QtCore.Qt.ControlModifier),
-            left_down=bool(buttons & QtCore.Qt.LeftButton),
-            middle_down=bool(buttons & QtCore.Qt.MiddleButton),
-            right_down=bool(buttons & QtCore.Qt.RightButton),
+            alt_down=bool(modifiers & QtCore.Qt.KeyboardModifier.AltModifier),
+            shift_down=bool(modifiers & QtCore.Qt.KeyboardModifier.ShiftModifier),
+            control_down=bool(modifiers & QtCore.Qt.KeyboardModifier.ControlModifier),
+            left_down=bool(buttons & QtCore.Qt.MouseButton.LeftButton),
+            middle_down=bool(buttons & QtCore.Qt.MouseButton.MiddleButton),
+            right_down=bool(buttons & QtCore.Qt.MouseButton.RightButton),
             window=self,
         )
 
