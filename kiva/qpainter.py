@@ -527,11 +527,11 @@ class GraphicsContext(object):
     def set_fill_color(self, color):
         """
         """
-        r, g, b = color[:3]
-        try:
-            a = color[3]
-        except IndexError:
+        if len(color) == 3:
+            r, g, b = color
             a = 1.0
+        else:
+            r, g, b, a = color
         brush = self.gc.brush()
         brush.setColor(QtGui.QColor.fromRgbF(r, g, b, a))
         self.gc.setBrush(brush)
@@ -539,11 +539,11 @@ class GraphicsContext(object):
     def set_stroke_color(self, color):
         """
         """
-        r, g, b = color[:3]
-        try:
-            a = color[3]
-        except IndexError:
+        if len(color) == 3:
+            r, g, b = color
             a = 1.0
+        else:
+            r, g, b, a = color
         pen = self.gc.pen()
         pen.setColor(QtGui.QColor.fromRgbF(r, g, b, a))
         self.gc.setPen(pen)
