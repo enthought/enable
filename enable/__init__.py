@@ -36,6 +36,7 @@ __extras_require__ = {
     "cairo": ["pycairo"],
     # Dependencies purely for running tests.
     "test": [
+        "pyparsing",  # for enable.savage tests
         "PyPDF2<3.0",  # for pdf drawing tests in kiva.
         "setuptools",
     ],
