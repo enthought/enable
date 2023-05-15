@@ -15,7 +15,7 @@ class Demo(DemoFrame):
     def _create_component(self):
         label = Label(
             text="h:\nv:",
-            font="modern 16",
+            font="sans-serif 16",
             position=[20, 50],
             bounds=[100, 100],
             bgcolor="red",

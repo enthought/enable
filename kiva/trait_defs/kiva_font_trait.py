@@ -13,4 +13,4 @@
 from enable.trait_defs.kiva_font_trait import KivaFont as _KivaFont
 
 # old KivaFont defaulted to "modern" family rather than "default"
-KivaFont = _KivaFont("modern 12")
+KivaFont = _KivaFont("sans-serif 12")

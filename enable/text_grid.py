@@ -43,7 +43,7 @@ class TextGrid(Component):
     # ------------------------------------------------------------------------
 
     # The font to use for the text of the grid
-    font = KivaFont("modern 14")
+    font = KivaFont("sans-serif 14")
 
     # The color of the text
     text_color = black_color_trait

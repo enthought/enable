@@ -28,7 +28,7 @@ class MyComponent(Component):
 
     def draw(self, gc, **kwargs):
         if not self._font:
-            self._font = str_to_font("modern 48")
+            self._font = str_to_font("sans-serif 48")
 
         gc.clear((0.5, 0.5, 0.5))
         mx = self.x + self.width / 2.0

@@ -179,7 +179,7 @@ class SimpleColorEditor(Editor):
         from enable.window import Window
 
         window = Window(
-            parent, component=Label("", border_size=1, font="modern 9")
+            parent, component=Label("", border_size=1, font="sans-serif 9")
         )
         self._swatch = window.component
         self.control = window.control
@@ -342,7 +342,7 @@ class ReadonlyColorEditor(ReadonlyEditor):
         from enable.window import Window
 
         window = Window(
-            parent, component=Label("", border_size=1, font="modern 9")
+            parent, component=Label("", border_size=1, font="sans-serif 9")
         )
         self._swatch = window.component
         self.control = window.control

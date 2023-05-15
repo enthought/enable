@@ -47,7 +47,7 @@ class Label(Component):
     border_color = black_color_trait
 
     # The font of the label text.
-    font = KivaFont("modern 10")
+    font = KivaFont("sans-serif 10")
 
     # Number of pixels of margin around the label, for both X and Y dimensions.
     margin = Int(2)

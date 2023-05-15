@@ -16,7 +16,7 @@ import math
 from enable.colors import ColorTrait
 from enable.component import Component
 from enable.enable_traits import Pointer
-from kiva.api import MODERN, Font
+from kiva.api import SWISS, Font
 from traits.api import Float, Property, Str, Tuple
 
 
@@ -157,7 +157,7 @@ class Shape(Component):
         if len(self.text) > 0:
             gc.set_fill_color(self._get_text_color(self.event_state))
 
-            gc.set_font(Font(family=MODERN, size=16))
+            gc.set_font(Font(family=SWISS, size=16))
             tx, ty, tw, th = gc.get_text_extent(self.text)
 
             dx, dy = self.bounds

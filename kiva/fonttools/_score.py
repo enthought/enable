@@ -36,7 +36,7 @@ def score_family(families, family2):
     for i, family1 in enumerate(families):
         family1 = family1.lower()
         if family1 in font_family_aliases:
-            if family1 in {"sans", "sans serif", "modern"}:
+            if family1 in {"sans", "sans serif"}:
                 family1 = "sans-serif"
             options = preferred_fonts[family1]
             options = [x.lower() for x in options]

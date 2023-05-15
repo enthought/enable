@@ -29,7 +29,7 @@ class Button(Component):
 
     label = Str
 
-    label_font = KivaFont("modern 11 bold")
+    label_font = KivaFont("sans-serif 11 bold")
 
     label_color = ColorTrait("white")
 
