@@ -9,10 +9,17 @@
 # Thanks for using Enthought open source!
 import unittest
 
-from kiva.celiagg import GraphicsContext
 from kiva.tests.drawing_tester import DrawingImageTester
 
+try:
+    from kiva.celiagg import GraphicsContext
+except ImportError:
+    CELIAGG_NOT_AVAILABLE = True
+else:
+    CELIAGG_NOT_AVAILABLE = False
 
+
+@unittest.skipIf(CELIAGG_NOT_AVAILABLE, "Cannot import celiagg")
 class TestCeliaggDrawing(DrawingImageTester, unittest.TestCase):
 
     def create_graphics_context(self, width=600, height=600, pixel_scale=2.0):
