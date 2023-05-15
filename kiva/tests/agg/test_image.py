@@ -116,7 +116,7 @@ def assert_close(desired, actual, diff_allowed=2):
 # ----------------------------------------------------------------------------
 
 
-class test_text_image(unittest.TestCase):
+class TestTextImage(unittest.TestCase):
     def test_antialias(self):
         gc = agg.GraphicsContextArray((200, 50), pix_format="bgra32")
         gc.set_antialias(1)
@@ -151,7 +151,7 @@ class test_text_image(unittest.TestCase):
         save(gc)
 
 
-class test_sun(unittest.TestCase):
+class TestSun(unittest.TestCase):
     def generic_sun(self, scheme):
         img = sun(scheme)
         sz = array((img.width(), img.height()))
@@ -224,7 +224,8 @@ def bench(stmt="pass", setup="pass", repeat=5, adjust_runs=True):
 #
 #
 # ----------------------------------------------------------------------------
-class test_interpolation_image(unittest.TestCase):
+class TestInterpolationImage(unittest.TestCase):
+
     size = (1000, 1000)
     color = 0.0
 

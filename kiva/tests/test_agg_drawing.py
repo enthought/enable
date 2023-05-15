@@ -12,7 +12,7 @@ import unittest
 import numpy as np
 
 from kiva.tests.drawing_tester import DrawingImageTester
-from kiva.image import GraphicsContext
+from kiva.oldagg import GraphicsContext
 
 
 class TestAggDrawing(DrawingImageTester, unittest.TestCase):
