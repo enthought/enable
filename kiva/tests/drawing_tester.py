@@ -34,6 +34,19 @@ weights = [
 ]
 
 
+rgba_float_dtype = numpy.dtype([
+    ('red', "float64"),
+    ('green', "float64"),
+    ('blue', "float64"),
+    ('alpha', "float64"),
+])
+rgb_float_dtype = numpy.dtype([
+    ('red', "float64"),
+    ('green', "float64"),
+    ('blue', "float64"),
+])
+
+
 class DrawingTester(object):
     """ Basic drawing tests for graphics contexts.
     """
@@ -204,6 +217,40 @@ class DrawingTester(object):
         with self.draw_and_check():
             self.gc.draw_path_at_points(points, path, FILL_STROKE)
             self.gc.fill_path()
+
+    def test_set_stroke_color(self):
+        # smoke tests for different color types that should be accepted
+        colors = [
+            (0.4, 0.2, 0.6),
+            [0.4, 0.2, 0.6],
+            numpy.array([0.4, 0.2, 0.6]),
+            numpy.array([(0.4, 0.2, 0.6)], dtype=rgb_float_dtype)[0],
+            (0.4, 0.2, 0.6, 1.0),
+            [0.4, 0.2, 0.6, 1.0],
+            numpy.array([0.4, 0.2, 0.6, 1.0]),
+            numpy.array([(0.4, 0.2, 0.6, 1.0)], dtype=rgba_float_dtype)[0],
+        ]
+        for color in colors:
+            with self.subTest(color=color):
+                with self.gc:
+                    self.gc.set_stroke_color(color)
+
+    def test_set_fill_color(self):
+        # smoke tests for different color types that should be accepted
+        colors = [
+            (0.4, 0.2, 0.6),
+            [0.4, 0.2, 0.6],
+            numpy.array([0.4, 0.2, 0.6]),
+            numpy.array([(0.4, 0.2, 0.6)], dtype=rgb_float_dtype)[0],
+            (0.4, 0.2, 0.6, 1.0),
+            [0.4, 0.2, 0.6, 1.0],
+            numpy.array([0.4, 0.2, 0.6, 1.0]),
+            numpy.array([(0.4, 0.2, 0.6, 1.0)], dtype=rgba_float_dtype)[0],
+        ]
+        for color in colors:
+            with self.subTest(color=color):
+                with self.gc:
+                    self.gc.set_fill_color(color)
 
     # Required methods ####################################################
 

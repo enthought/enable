@@ -673,23 +673,23 @@ cdef class CGContext:
     def set_fill_color(self, object color):
         """
         """
-        r,g,b = color[:3]
-        try:
-            a = color[3]
-        except IndexError:
+        if len(color) == 3:
+            r, g, b = color
             a = 1.0
+        elif len(color) == 4:
+            r, g, b, a = color
         self.fill_color = (r,g,b,a)
         CGContextSetRGBFillColor(self.context, r, g, b, a)
 
     def set_stroke_color(self, object color):
         """
         """
-        r,g,b = color[:3]
-        try:
-            a = color[3]
-        except IndexError:
+        if len(color) == 3:
+            r, g, b = color
             a = 1.0
-        self.stroke_color = (r,g,b,a)
+        elif len(color) == 4:
+            r, g, b, a = color
+        self.stroke_color = (r, g, b, a)
         CGContextSetRGBStrokeColor(self.context, r, g, b, a)
 
     def set_alpha(self, float alpha):

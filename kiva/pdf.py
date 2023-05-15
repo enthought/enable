@@ -513,21 +513,21 @@ class GraphicsContext(GraphicsContextBase):
     def set_fill_color(self, color):
         """
         """
-        r, g, b = color[:3]
-        try:
-            a = color[3]
-        except IndexError:
+        if len(color) == 3:
+            r, g, b = color
             a = 1.0
+        else:
+            r, g, b, a = color
         self.gc.setFillColorRGB(r, g, b, a)
 
     def set_stroke_color(self, color):
         """
         """
-        r, g, b = color[:3]
-        try:
-            a = color[3]
-        except IndexError:
+        if len(color) == 3:
+            r, g, b = color
             a = 1.0
+        else:
+            r, g, b, a = color
         self.gc.setStrokeColorRGB(r, g, b, a)
 
     def set_alpha(self, alpha):
