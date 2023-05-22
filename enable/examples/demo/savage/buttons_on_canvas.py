@@ -22,7 +22,7 @@ import xml.etree.cElementTree as etree
 from enable.api import BaseTool, Component, ComponentEditor, Container
 from enable.savage.svg.backends.kiva.renderer import Renderer as KivaRenderer
 from enable.savage.svg.document import SVGDocument
-from kiva.api import MODERN, Font
+from kiva.api import SWISS, Font
 from traits.api import Callable, Enum, HasTraits, Instance, List, Str
 from traitsui.api import Item, View
 
@@ -80,7 +80,7 @@ class CanvasButton(Component):
 
     def _draw_label(self, gc):
         with gc:
-            font = Font(family=MODERN)
+            font = Font(family=SWISS)
             gc.set_font(font)
 
             _x, _y, width, height = gc.get_text_extent(self.label)

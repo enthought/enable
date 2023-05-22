@@ -340,7 +340,7 @@ class GraphicsContextArrayTestCase(unittest.TestCase):
 
     def test_get_set_font(self):
         gc = agg.GraphicsContextArray((5, 5))
-        font1 = Font("modern")
+        font1 = Font("sans-serif")
         gc.set_font(font1)
         font3 = gc.get_font()
         self.assertEqual(font1.face_name, font3.name)

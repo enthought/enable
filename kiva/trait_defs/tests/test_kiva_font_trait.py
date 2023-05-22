@@ -35,6 +35,7 @@ font_styles = {"italic": constants.ITALIC}
 # Mapping of strings to Kiva font weights:
 font_weights = {"bold": constants.WEIGHT_BOLD}
 
+
 class FontExample(HasTraits):
 
     font = KivaFont()
@@ -91,7 +92,7 @@ class TestKivaFont(unittest.TestCase):
         example = FontExample()
 
         self.assertIsInstance(example.font, Font)
-        self.assertEqual(example.font, Font(size=12, family=constants.MODERN))
+        self.assertEqual(example.font, Font(size=12, family=constants.SWISS))
 
     def test_font_trait_none(self):
         with self.assertRaises(TraitError):

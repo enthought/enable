@@ -15,7 +15,7 @@ from numpy import (
 from PIL import Image as PILImage
 
 
-from kiva.image import GraphicsContext
+from kiva.oldagg import GraphicsContext
 
 # alpha blending is approximate in agg, so we allow some "slop" between
 # desired and actual results, allow channel differences of to 2.

@@ -45,7 +45,7 @@ class TestText(unittest.TestCase):
 
         with locale_context(locale.LC_CTYPE, ("en", "utf8")):
             gc = agg.GraphicsContextArray((200, 200))
-            f = Font("modern")
+            f = Font("sans-serif")
             with gc:
                 gc.set_font(f)
                 gc.translate_ctm(50, 50)
@@ -55,7 +55,7 @@ class TestText(unittest.TestCase):
 
         with locale_context(locale.LC_CTYPE, ("C", "ASCII")):
             gc = agg.GraphicsContextArray((200, 200))
-            f = Font("modern")
+            f = Font("sans-serif")
             with gc:
                 gc.set_font(f)
                 gc.translate_ctm(50, 50)

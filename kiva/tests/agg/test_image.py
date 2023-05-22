@@ -116,18 +116,18 @@ def assert_close(desired, actual, diff_allowed=2):
 # ----------------------------------------------------------------------------
 
 
-class test_text_image(unittest.TestCase):
+class TestTextImage(unittest.TestCase):
     def test_antialias(self):
         gc = agg.GraphicsContextArray((200, 50), pix_format="bgra32")
         gc.set_antialias(1)
-        f = Font("modern")
+        f = Font("sans-serif")
         gc.set_font(f)
         gc.show_text("hello")
         save(gc)
 
     def test_no_antialias(self):
         gc = agg.GraphicsContextArray((200, 50), pix_format="bgra32")
-        f = Font("modern")
+        f = Font("sans-serif")
         gc.set_font(f)
         gc.set_antialias(0)
         gc.show_text("hello")
@@ -136,7 +136,7 @@ class test_text_image(unittest.TestCase):
     def test_rotate(self):
         text = "hello"
         gc = agg.GraphicsContextArray((150, 150), pix_format="bgra32")
-        f = Font("modern")
+        f = Font("sans-serif")
         gc.set_font(f)
         tx, ty, sx, sy = gc.get_text_extent(text)
         gc.translate_ctm(25, 25)
@@ -151,7 +151,7 @@ class test_text_image(unittest.TestCase):
         save(gc)
 
 
-class test_sun(unittest.TestCase):
+class TestSun(unittest.TestCase):
     def generic_sun(self, scheme):
         img = sun(scheme)
         sz = array((img.width(), img.height()))
@@ -224,7 +224,8 @@ def bench(stmt="pass", setup="pass", repeat=5, adjust_runs=True):
 #
 #
 # ----------------------------------------------------------------------------
-class test_interpolation_image(unittest.TestCase):
+class TestInterpolationImage(unittest.TestCase):
+
     size = (1000, 1000)
     color = 0.0
 

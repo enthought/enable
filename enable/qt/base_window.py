@@ -26,7 +26,7 @@
 import warnings
 
 # Qt imports.
-from pyface.qt import QtCore, QtGui, QtOpenGL, is_qt4, is_qt5, qt_api
+from pyface.qt import QtCore, QtGui, QtOpenGL, is_qt5, qt_api
 
 # Enthought library imports.
 from enable.abstract_window import AbstractWindow
@@ -37,25 +37,9 @@ from traits.api import Instance, Property
 from .constants import (
     BUTTON_NAME_MAP,
     KEY_MAP,
-    MOUSE_WHEEL_AXIS_MAP,
     POINTER_MAP,
     DRAG_RESULTS_MAP,
 )
-
-
-is_qt4 = QtCore.__version_info__[0] <= 4
-
-# QtOpenGLWidgets is not currently exposed in pyface.qt
-if qt_api == "pyside6":
-    from PySide6.QtOpenGLWidgets import QOpenGLWidget
-elif qt_api == "pyqt6":
-    from PyQt6.QtOpenGLWidgets import QOpenGLWidget
-elif qt_api == "pyside2":
-    from PySide2.QtWidgets import QOpenGLWidget
-elif qt_api == "pyqt5":
-    from PyQt5.QtWidgets import QOpenGLWidget
-else:
-    QOpenGLWidget = QtOpenGL.QGLWidget
 
 
 class _QtWindowHandler(object):
@@ -301,65 +285,6 @@ class _QtWindow(QtGui.QWidget):
         return self.handler.sizeHint(qt_size_hint)
 
 
-class _QtGLWindow(QOpenGLWidget):
-    def __init__(self, parent, enable_window):
-        super().__init__(parent)
-        self.handler = _QtWindowHandler(self, enable_window)
-
-    def closeEvent(self, event):
-        self.handler.closeEvent(event)
-        return super().closeEvent(event)
-
-    def paintEvent(self, event):
-        super().paintEvent(event)
-        self.handler.paintEvent(event)
-        if is_qt4:
-            self.swapBuffers()
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self.handler.resizeEvent(event)
-
-    def keyPressEvent(self, event):
-        self.handler.keyPressEvent(event)
-
-    def keyReleaseEvent(self, event):
-        self.handler.keyReleaseEvent(event)
-
-    def enterEvent(self, event):
-        self.handler.enterEvent(event)
-
-    def leaveEvent(self, event):
-        self.handler.leaveEvent(event)
-
-    def mouseDoubleClickEvent(self, event):
-        self.handler.mouseDoubleClickEvent(event)
-
-    def mouseMoveEvent(self, event):
-        self.handler.mouseMoveEvent(event)
-
-    def mousePressEvent(self, event):
-        self.handler.mousePressEvent(event)
-
-    def mouseReleaseEvent(self, event):
-        self.handler.mouseReleaseEvent(event)
-
-    def wheelEvent(self, event):
-        self.handler.wheelEvent(event)
-
-    def dragEnterEvent(self, event):
-        self.handler.dragEnterEvent(event)
-
-    def dragLeaveEvent(self, event):
-        self.handler.dragLeaveEvent(event)
-
-    def dragMoveEvent(self, event):
-        self.handler.dragMoveEvent(event)
-
-    def dropEvent(self, event):
-        self.handler.dropEvent(event)
-
-
 class _Window(AbstractWindow):
 
     control = Instance(QtGui.QWidget)
@@ -443,9 +368,9 @@ class _Window(AbstractWindow):
             character=key,
             x=x,
             y=self._flip_y(y),
-            alt_down=bool(modifiers & QtCore.Qt.AltModifier),
-            shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
-            control_down=bool(modifiers & QtCore.Qt.ControlModifier),
+            alt_down=bool(modifiers & QtCore.Qt.KeyboardModifier.AltModifier),
+            shift_down=bool(modifiers & QtCore.Qt.KeyboardModifier.ShiftModifier),
+            control_down=bool(modifiers & QtCore.Qt.KeyboardModifier.ControlModifier),
             event=event,
             window=self,
         )
@@ -454,23 +379,24 @@ class _Window(AbstractWindow):
         # If the control no longer exists, don't send mouse event
         if self.control is None:
             return None
-        # If the event (if there is one) doesn't contain the mouse position,
-        # modifiers and buttons then get sensible defaults.
-        try:
-            if is_qt4 or is_qt5:
-                x = event.x()
-                y = event.y()
-            else:
-                x = event.position().x()
-                y = event.position().y()
+
+        if hasattr(event, 'pos'):
+            position = event.pos()
+        elif hasattr(event, 'position'):
+            position = event.position()
+        else:
+            position = self.control.mapFromGlobal(QtGui.QCursor.pos())
+        x = position.x()
+        y = position.y()
+
+        # If the event doesn't contain modifiers and/or buttons then get
+        # sensible defaults.
+        modifiers = QtCore.Qt.KeyboardModifier.NoModifier
+        buttons = QtCore.Qt.MouseButton.NoButton
+        if hasattr(event, 'modifiers'):
             modifiers = event.modifiers()
+        if hasattr(event, 'buttons'):
             buttons = event.buttons()
-        except AttributeError:
-            pos = self.control.mapFromGlobal(QtGui.QCursor.pos())
-            x = pos.x()
-            y = pos.y()
-            modifiers = 0
-            buttons = 0
 
         self.control.handler.last_mouse_pos = (x, y)
 
@@ -478,29 +404,20 @@ class _Window(AbstractWindow):
         # we treat wheel events like mouse events.
         if isinstance(event, QtGui.QWheelEvent):
             degrees_per_step = 15.0
-            if is_qt4:
-                delta = event.delta()
-                mouse_wheel = delta / float(8 * degrees_per_step)
-                mouse_wheel_axis = MOUSE_WHEEL_AXIS_MAP[event.orientation()]
-                if mouse_wheel_axis == "horizontal":
-                    mouse_wheel_delta = (delta, 0)
-                else:
-                    mouse_wheel_delta = (0, delta)
+            delta = event.pixelDelta()
+            if delta.x() == 0 and delta.y() == 0:  # pixelDelta is optional
+                delta = event.angleDelta()
+            mouse_wheel_delta = (delta.x(), delta.y())
+            if abs(mouse_wheel_delta[0]) > abs(mouse_wheel_delta[1]):
+                mouse_wheel = mouse_wheel_delta[0] / float(
+                    8 * degrees_per_step
+                )
+                mouse_wheel_axis = "horizontal"
             else:
-                delta = event.pixelDelta()
-                if delta.x() == 0 and delta.y() == 0:  # pixelDelta is optional
-                    delta = event.angleDelta()
-                mouse_wheel_delta = (delta.x(), delta.y())
-                if abs(mouse_wheel_delta[0]) > abs(mouse_wheel_delta[1]):
-                    mouse_wheel = mouse_wheel_delta[0] / float(
-                        8 * degrees_per_step
-                    )
-                    mouse_wheel_axis = "horizontal"
-                else:
-                    mouse_wheel = mouse_wheel_delta[1] / float(
-                        8 * degrees_per_step
-                    )
-                    mouse_wheel_axis = "vertical"
+                mouse_wheel = mouse_wheel_delta[1] / float(
+                    8 * degrees_per_step
+                )
+                mouse_wheel_axis = "vertical"
         else:
             mouse_wheel = 0
             mouse_wheel_delta = (0, 0)
@@ -512,12 +429,12 @@ class _Window(AbstractWindow):
             mouse_wheel=mouse_wheel,
             mouse_wheel_axis=mouse_wheel_axis,
             mouse_wheel_delta=mouse_wheel_delta,
-            alt_down=bool(modifiers & QtCore.Qt.AltModifier),
-            shift_down=bool(modifiers & QtCore.Qt.ShiftModifier),
-            control_down=bool(modifiers & QtCore.Qt.ControlModifier),
-            left_down=bool(buttons & QtCore.Qt.LeftButton),
-            middle_down=bool(buttons & QtCore.Qt.MiddleButton),
-            right_down=bool(buttons & QtCore.Qt.RightButton),
+            alt_down=bool(modifiers & QtCore.Qt.KeyboardModifier.AltModifier),
+            shift_down=bool(modifiers & QtCore.Qt.KeyboardModifier.ShiftModifier),
+            control_down=bool(modifiers & QtCore.Qt.KeyboardModifier.ControlModifier),
+            left_down=bool(buttons & QtCore.Qt.MouseButton.LeftButton),
+            middle_down=bool(buttons & QtCore.Qt.MouseButton.MiddleButton),
+            right_down=bool(buttons & QtCore.Qt.MouseButton.RightButton),
             window=self,
         )
 
@@ -526,15 +443,13 @@ class _Window(AbstractWindow):
         # If the control no longer exists, don't send mouse event
         if self.control is None:
             return None
-        # If the event (if there is one) doesn't contain the mouse position,
-        # modifiers and buttons then get sensible defaults.
-        try:
-            x = event.x()
-            y = event.y()
-        except AttributeError:
-            pos = self.control.mapFromGlobal(QtGui.QCursor.pos())
-            x = pos.x()
-            y = pos.y()
+
+        if is_qt5:
+            position = event.pos()
+        else:
+            position = event.position()
+        x = position.x()
+        y = position.y()
 
         self.control.handler.last_mouse_pos = (x, y)
 
@@ -554,11 +469,11 @@ class _Window(AbstractWindow):
             )
 
         try:
-            from traitsui.qt4.clipboard import PyMimeData
+            from pyface.mimedata import PyMimeData
         except ImportError:
-            # traitsui isn't available, warn and just make mimedata available
+            # pyface isn't available, warn and just make raw mimedata available
             # on event
-            warnings.warn("traitsui.qt4 is unavailable", ImportWarning)
+            warnings.warn("pyface.mimedata is unavailable", ImportWarning)
             obj = None
         else:
             mimedata = PyMimeData.coerce(mimedata)
@@ -639,16 +554,6 @@ class _Window(AbstractWindow):
         """
         # Handle the pixel scale adjustment here since `self._size` is involved
         return int(self._size[1] / self.base_pixel_scale - y - 1)
-
-
-class BaseGLWindow(_Window):
-    # The toolkit control
-    control = Instance(_QtGLWindow)
-
-    def _create_control(self, parent, enable_window):
-        """ Create the toolkit control.
-        """
-        return _QtGLWindow(parent, enable_window)
 
 
 class BaseWindow(_Window):

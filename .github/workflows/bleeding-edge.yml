@@ -13,14 +13,13 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
-        toolkit: ['null', 'pyside6', 'wx']
-        python-version: ['3.10']
-        exclude:
-          # No Wx wheels available for ubuntu or macos
-          - os: 'ubuntu-latest'
+        toolkit: ['null', 'pyside6']
+        python-version: ['3.11']
+        include:
+          # No Wx wheels available for Python 3.11, so test on 3.10
+          - os: 'windows-latest'
             toolkit: 'wx'
-          - os: 'macos-latest'
-            toolkit: 'wx'
+            python-version: '3.10'
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out
@@ -59,29 +58,25 @@ jobs:
       - name: Run kiva test suite (Linux)
         env:
           PYTHONFAULTHANDLER: 1
-          ETS_QT4_IMPORTS: 1
-        run: xvfb-run python -m unittest discover -v kiva
+        run: xvfb-run -a python -m unittest discover -v kiva
         if: matrix.os == 'ubuntu-latest'
         working-directory: ${{ runner.temp }}
       - name: Run kiva test suite (not Linux)
         env:
           PYTHONFAULTHANDLER: 1
-          ETS_QT4_IMPORTS: 1
         run: python -m unittest discover -v kiva
         if: matrix.os != 'ubuntu-latest'
         working-directory: ${{ runner.temp }}
       - name: Run enable test suite (Linux)
         env:
           PYTHONFAULTHANDLER: 1
-          ETS_QT4_IMPORTS: 1
         # kiva agg requires at least 15-bit color depth.
-        run: xvfb-run --server-args="-screen 0 1024x768x24" python -m unittest discover -v enable
+        run: xvfb-run -a --server-args="-screen 0 1024x768x24" python -m unittest discover -v enable
         if: matrix.os == 'ubuntu-latest'
         working-directory: ${{ runner.temp }}
       - name: Run enable test suite (not Linux)
         env:
           PYTHONFAULTHANDLER: 1
-          ETS_QT4_IMPORTS: 1
         run: python -m unittest discover -v enable
         if: matrix.os != 'ubuntu-latest'
         working-directory: ${{ runner.temp }}

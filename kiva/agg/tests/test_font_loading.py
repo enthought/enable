@@ -9,7 +9,7 @@
 # Thanks for using Enthought open source!
 import time
 
-from kiva.image import font_metrics_provider as FMP
+from kiva.oldagg import font_metrics_provider as FMP
 from kiva.api import Font
 
 counts = (500,)

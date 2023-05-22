@@ -7,7 +7,8 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 # Thanks for using Enthought open source!
-from .image import (
+
+from .oldagg import (
     CompiledPath, font_metrics_provider, GraphicsContext, NativeScrollBar,
     Window
 )

@@ -14,7 +14,7 @@ include "CoreFoundation.pxi"
 include "CoreGraphics.pxi"
 include "CoreText.pxi"
 
-cimport c_numpy
+cimport numpy
 
 import os
 import warnings
@@ -138,7 +138,7 @@ class URLPathStyle:
     hfs = kCFURLHFSPathStyle
     windows = kCFURLWindowsPathStyle
 
-c_numpy.import_array()
+numpy.import_array()
 import numpy
 
 from kiva import constants
@@ -486,7 +486,7 @@ cdef class CGContext:
 
         cdef int n
         cdef int i
-        cdef c_numpy.ndarray apoints
+        cdef numpy.ndarray apoints
         cdef float x, y
 
         n = len(points)
@@ -495,18 +495,18 @@ cdef class CGContext:
         if n < 2:
             return
 
-        apoints = <c_numpy.ndarray>(numpy.asarray(points, dtype=numpy.float32))
+        apoints = <numpy.ndarray>(numpy.asarray(points, dtype=numpy.float32))
 
         if apoints.nd != 2 or apoints.dimensions[1] != 2:
             msg = "must pass array of 2-D points"
             raise ValueError(msg)
 
-        x = (<float*>c_numpy.PyArray_GETPTR2(apoints, 0, 0))[0]
-        y = (<float*>c_numpy.PyArray_GETPTR2(apoints, 0, 1))[0]
+        x = (<float*>numpy.PyArray_GETPTR2(apoints, 0, 0))[0]
+        y = (<float*>numpy.PyArray_GETPTR2(apoints, 0, 1))[0]
         CGContextMoveToPoint(self.context, x, y)
         for i from 1 <= i < n:
-            x = (<float*>c_numpy.PyArray_GETPTR2(apoints, i, 0))[0]
-            y = (<float*>c_numpy.PyArray_GETPTR2(apoints, i, 1))[0]
+            x = (<float*>numpy.PyArray_GETPTR2(apoints, i, 0))[0]
+            y = (<float*>numpy.PyArray_GETPTR2(apoints, i, 1))[0]
             CGContextAddLineToPoint(self.context, x, y)
 
     def line_set(self, object starts, object ends):
@@ -673,23 +673,23 @@ cdef class CGContext:
     def set_fill_color(self, object color):
         """
         """
-        r,g,b = color[:3]
-        try:
-            a = color[3]
-        except IndexError:
+        if len(color) == 3:
+            r, g, b = color
             a = 1.0
+        elif len(color) == 4:
+            r, g, b, a = color
         self.fill_color = (r,g,b,a)
         CGContextSetRGBFillColor(self.context, r, g, b, a)
 
     def set_stroke_color(self, object color):
         """
         """
-        r,g,b = color[:3]
-        try:
-            a = color[3]
-        except IndexError:
+        if len(color) == 3:
+            r, g, b = color
             a = 1.0
-        self.stroke_color = (r,g,b,a)
+        elif len(color) == 4:
+            r, g, b, a = color
+        self.stroke_color = (r, g, b, a)
         CGContextSetRGBStrokeColor(self.context, r, g, b, a)
 
     def set_alpha(self, float alpha):
@@ -1057,12 +1057,12 @@ cdef class CGContext:
 
         cdef int i
         cdef int n
-        cdef c_numpy.ndarray apoints
+        cdef numpy.ndarray apoints
         cdef float x, y
 
-        apoints = <c_numpy.ndarray>(numpy.asarray(points, dtype=numpy.float32))
+        apoints = <numpy.ndarray>(numpy.asarray(points, dtype=numpy.float32))
 
-        if apoints.nd != 2 or apoints.dimensions[1] != 2:
+        if apoints.ndim != 2 or apoints.shape[1] != 2:
             msg = "must pass array of 2-D points"
             raise ValueError(msg)
 
@@ -1070,8 +1070,8 @@ cdef class CGContext:
 
         n = len(points)
         for i from 0 <= i < n:
-            x = (<float*>c_numpy.PyArray_GETPTR2(apoints, i, 0))[0]
-            y = (<float*>c_numpy.PyArray_GETPTR2(apoints, i, 1))[0]
+            x = (<float*>numpy.PyArray_GETPTR2(apoints, i, 0))[0]
+            y = (<float*>numpy.PyArray_GETPTR2(apoints, i, 1))[0]
             CGContextSaveGState(self.context)
             CGContextTranslateCTM(self.context, x, y)
             CGContextAddPath(self.context, marker.path)
@@ -1653,7 +1653,7 @@ cdef class CGBitmapContext(CGContext):
 cdef class CGImage:
     cdef CGImageRef image
     cdef void* data
-    cdef readonly c_numpy.ndarray bmp_array
+    cdef readonly numpy.ndarray bmp_array
 
     def __cinit__(self, *args, **kwds):
         self.image = NULL
@@ -1734,9 +1734,9 @@ cdef class CGImage:
                 alpha_info = kCGImageAlphaPremultipliedLast
             arr = numpy.zeros((height, width, lastdim), dtype=numpy.uint8)
 
-        self.bmp_array = <c_numpy.ndarray>arr
+        self.bmp_array = <numpy.ndarray>arr
         Py_INCREF(self.bmp_array)
-        self.data = <void*>c_numpy.PyArray_DATA(self.bmp_array)
+        self.data = <void*>numpy.PyArray_DATA(self.bmp_array)
 
         if grey_scale:
             alpha_info = kCGImageAlphaNone
@@ -1769,7 +1769,7 @@ cdef class CGImage:
 
         cdef CGDataProviderRef provider
         provider = CGDataProviderCreateWithData(
-            NULL, self.data, c_numpy.PyArray_SIZE(self.bmp_array), NULL)
+            NULL, self.data, numpy.PyArray_SIZE(self.bmp_array), NULL)
         if provider == NULL:
             raise RuntimeError("could not make provider")
 
@@ -1835,7 +1835,7 @@ cdef class CGImageFile(CGImage):
         dims[1] = width
         dims[2] = bits_per_pixel/bits_per_component
 
-        self.bmp_array = c_numpy.PyArray_SimpleNew(3, &(dims[0]), c_numpy.NPY_UBYTE)
+        self.bmp_array = numpy.PyArray_SimpleNew(3, &(dims[0]), numpy.NPY_UBYTE)
 
         data = self.bmp_array.data
         bs = img.tobytes()
@@ -2598,7 +2598,7 @@ cdef class PiecewiseLinearColorFunction(ShadingFunction):
     cdef CGFloat* alpha
 
     def __init__(self, object stop_colors):
-        cdef c_numpy.ndarray stop_array
+        cdef numpy.ndarray stop_array
         cdef int i
 
         stop_colors = numpy.array(stop_colors).astype(numpy.float32)

@@ -15,10 +15,13 @@
 # -----------------------------------------------------------------------------
 import os.path
 
-from traits.api import Bool, Any, Str
-from traitsui.qt4.editor import Editor
-
 from pyface.qt import QtCore, QtGui
+from traits.api import Bool, Any, Str
+try:
+    from traitsui.qt.editor import Editor
+except ModuleNotFoundError:
+    from traitsui.qt4.editor import Editor
+
 
 # add the Qt's installed dir plugins to the library path so the iconengines
 # plugin will be found:

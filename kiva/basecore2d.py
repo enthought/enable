@@ -828,10 +828,11 @@ class GraphicsContextBase(AbstractGraphicsContext):
             between 0.0 and 1.0
         """
         if len(color) == 3:
-            self.state.fill_color[:3] = color
-            self.state.fill_color[3] = 1.0
+            r, g, b = color
+            a = 1.0
         else:
-            self.state.fill_color[:] = color
+            r, g, b, a = color
+        self.state.line_state.fill_color[:] = r, g, b, a
 
     def get_fill_color(self, color):
         """
@@ -856,10 +857,11 @@ class GraphicsContextBase(AbstractGraphicsContext):
             between 0.0 and 1.0
         """
         if len(color) == 3:
-            self.state.line_state.line_color[:3] = color
-            self.state.line_state.line_color[3] = 1.0
+            r, g, b = color
+            a = 1.0
         else:
-            self.state.line_state.line_color[:] = color
+            r, g, b, a = color
+        self.state.line_state.line_color[:] = r, g, b, a
 
     def get_stroke_color(self, color):
         """

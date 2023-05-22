@@ -14,7 +14,7 @@ from unittest import TestCase
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from kiva.celiagg import GraphicsContext
+from kiva.image import GraphicsContext
 from kiva.testing import KivaTestAssistant
 from traits.testing.api import UnittestTools
 
