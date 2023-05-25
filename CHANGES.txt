@@ -1,5 +1,62 @@
+================
 Enable CHANGELOG
 ================
+
+Enable 6.0.0
+============
+
+This is a major version update to add support for Python 3.11, PySide 6.4+, and
+TraitsUI 8.  As part of this update, a number of backwards-incompatible changes
+were made.  Perhaps the most significant of these was the removal of the
+partially implemented and buggy OpenGL Kiva backend, but it also included
+removing support for legacy Numeric APIs, changing modules with "qt4" in their
+name to use "qt" instead, some changes to make the various Kiva APIs more
+consistent, and some changes to the mapping of font families to bring them in
+line with documentation and other libraries.
+
+Building Enable, with its complex dependencies has sometimes been challenging
+for users, so this release includes Github actions that use cibuildwheel to
+automatically build binary wheels across a wide variety of Python versions,
+operating systems and architectures and upload them to PyPI.  This should make
+pip-based installs of Enable significantly easier.
+
+Finally, as is usual for a release, there are a number of smaller bugfixes and
+minor improvements, such as bringing the PyCairo and Quartz backends back into
+a working state.
+
+Thanks to:
+
+* Mark Dickinson
+* Chengyu Lui
+* Didrik Pinte
+* Corran Webster
+* John Wiggins
+
+Enhancements
+------------
+
+* Move `kiva.image` to `kiva.oldagg` and make `kiva.image` a stub (#1054)
+* Map `MODERN` fonts to monospace and `TELETYPE` to typewriter (#977)
+* Normalize setting of colors across backends (#1052)
+* Support for PySide 6.4+ (#1045, #1053)
+* Remove support for old Numeric APIs (#1011)
+* Python 3.11 support (#1042)
+* Remove OpenGL backend (#1029)
+* Code modernization (#933, #1015)
+
+Fixes
+-----
+
+* Fix `draw_path_at_points` for the Quartz Kiva backend (#1051)
+* Do explicit type conversions for PyQt5 on Python 3.10+ (#1041)
+* Handle namespace changes for Pyface 8 and TraitsUI 8 (#1025, #1028, #1033, #1043)
+* Better feedback for constraints examples if kiwisolver unavailable (#1019)
+
+Testing and CI
+--------------
+
+* Automated wheel building (#1039)
+* Maintenance of CI and tests (#1007, #1035, #1044)
 
 Enable 5.3.1
 ============
