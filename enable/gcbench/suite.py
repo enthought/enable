@@ -1,4 +1,4 @@
-# (C) Copyright 2005-2022 Enthought, Inc., Austin, TX
+# (C) Copyright 2005-2023 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
@@ -100,7 +100,7 @@ class draw_rect:
 class draw_arcs:
     def __init__(self, gc, module):
         self.gc = gc
-    
+
     def __call__(self):
         with self.gc:
             self.gc.set_fill_color((0.33, 0.66, 0.99, 1.0))
@@ -120,7 +120,7 @@ class draw_arcs:
 class draw_arcs_clockwise:
     def __init__(self, gc, module):
         self.gc = gc
-    
+
     def __call__(self):
         with self.gc:
             self.gc.set_fill_color((0.33, 0.66, 0.99, 1.0))
@@ -140,7 +140,7 @@ class draw_arcs_clockwise:
 class draw_arc_path:
     def __init__(self, gc, module):
         self.gc = gc
-    
+
     def __call__(self):
          with self.gc:
             self.gc.set_fill_color((0.33, 0.66, 0.99, 1.0))
@@ -162,7 +162,7 @@ class draw_arc_path:
 class draw_arc_path:
     def __init__(self, gc, module):
         self.gc = gc
-    
+
     def __call__(self):
          with self.gc:
             self.gc.set_fill_color((0.33, 0.66, 0.99, 1.0))
@@ -241,7 +241,7 @@ class show_text:
 class show_text_font_styles:
     def __init__(self, gc, module):
         self.gc = gc
-    
+
     def __call__(self):
         names = ["default", "sans", "serif", "mono", "fantasy", "script", "type"]
         for i, family in enumerate(kiva_font.Font.familymap):

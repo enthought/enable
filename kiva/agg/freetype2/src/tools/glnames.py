@@ -1726,7 +1726,7 @@ bsuperior;F6EA
 btopbar;0183
 buhiragana;3076
 bukatakana;30D6
-bullet;2022
+bullet;2023
 bulletinverse;25D8
 bulletoperator;2219
 bullseye;25CE
