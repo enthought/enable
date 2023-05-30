@@ -27,7 +27,7 @@ a working state.
 Thanks to:
 
 * Mark Dickinson
-* Chengyu Lui
+* Chengyu Liu
 * Didrik Pinte
 * Corran Webster
 * John Wiggins
