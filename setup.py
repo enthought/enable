@@ -21,11 +21,11 @@ import numpy
 from setuptools import Extension, find_packages, setup
 from setuptools.command.install import install as base_install
 
-MAJOR = 5
-MINOR = 4
+MAJOR = 6
+MINOR = 0
 MICRO = 0
 PRERELEASE = ""
-IS_RELEASED = False
+IS_RELEASED = True
 
 # Templates for version strings.
 RELEASED_VERSION = "{major}.{minor}.{micro}{prerelease}"
