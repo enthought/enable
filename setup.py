@@ -22,10 +22,10 @@ from setuptools import Extension, find_packages, setup
 from setuptools.command.install import install as base_install
 
 MAJOR = 6
-MINOR = 0
+MINOR = 1
 MICRO = 0
 PRERELEASE = ""
-IS_RELEASED = True
+IS_RELEASED = False
 
 # Templates for version strings.
 RELEASED_VERSION = "{major}.{minor}.{micro}{prerelease}"
