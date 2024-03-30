@@ -22,7 +22,7 @@ from setuptools import Extension, find_packages, setup
 from setuptools.command.install import install as base_install
 
 MAJOR = 6
-MINOR = 1
+MINOR = 2
 MICRO = 0
 PRERELEASE = ""
 IS_RELEASED = False
