@@ -63,7 +63,8 @@ namespace agg24
         end_of_pix_formats
     };
 
-    %name(PixelMap) class pixel_map
+    %rename(PixelMap) pixel_map;
+    class pixel_map
     {
     public:
         ~pixel_map();
