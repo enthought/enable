@@ -1830,7 +1830,7 @@ cdef class CGImageFile(CGImage):
 
         cdef char* data
         cdef char* py_data
-        cdef int numpy.npy_intp dims[3]
+        cdef numpy.npy_intp dims[3]
         dims[0] = height
         dims[1] = width
         dims[2] = bits_per_pixel // bits_per_component
