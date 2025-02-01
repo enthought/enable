@@ -10,6 +10,7 @@
 import cython
 import numpy as np
 from numpy cimport uint8_t
+numpy.import_array()
 
 from . cimport _marker_renderer
 
