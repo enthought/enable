@@ -320,11 +320,6 @@ def macos_extensions():
             'kiva.quartz.ABCGI',
             sources=[
                 'kiva/quartz/ABCGI.pyx',
-                'kiva/quartz/Python.pxi',
-                'kiva/quartz/numpy.pxi',
-                'kiva/quartz/CoreFoundation.pxi',
-                'kiva/quartz/CoreGraphics.pxi',
-                'kiva/quartz/CoreText.pxi',
             ],
             extra_link_args=extra_link_args,
             include_dirs=[numpy.get_include()],
@@ -333,9 +328,6 @@ def macos_extensions():
             'kiva.quartz.CTFont',
             sources=[
                 'kiva/quartz/CTFont.pyx',
-                'kiva/quartz/CoreFoundation.pxi',
-                'kiva/quartz/CoreGraphics.pxi',
-                'kiva/quartz/CoreText.pxi',
             ],
             extra_link_args=extra_link_args,
         ),
