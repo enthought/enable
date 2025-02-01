@@ -11,7 +11,7 @@ import cython
 import numpy as np
 from numpy cimport uint8_t
 
-cimport _marker_renderer
+from . cimport _marker_renderer
 
 ctypedef _marker_renderer.marker_renderer_base renderer_base_t
 
