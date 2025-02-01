@@ -30,6 +30,9 @@ jobs:
             toolkit: 'wx'
           - os: 'macos-latest'
             toolkit: 'wx'
+          # No PySide2 wheels for macos-latest
+          - os: 'macos-latest'
+            toolkit: 'pyside2'
           # Kiva tests hanging on windows, see #1038
           - os: 'windows-latest'
             toolkit: 'pyqt5'
