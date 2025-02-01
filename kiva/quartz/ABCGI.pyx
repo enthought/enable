@@ -19,7 +19,7 @@ cimport numpy
 import os
 import warnings
 
-from CTFont import default_font_info
+from .CTFont import default_font_info
 
 cdef extern from "math.h":
     double sqrt(double arg)
@@ -1479,7 +1479,7 @@ cdef class CGBitmapContext(CGContext):
             raise ValueError("bits_per_component must be 5 or 8")
 
         cdef int min_bytes
-        min_bytes = (width*bits_per_pixel + 7) / 8
+        min_bytes = (width*bits_per_pixel + 7) // 8
         if bytes_per_row < min_bytes:
             bytes_per_row = min_bytes
 
@@ -1763,7 +1763,7 @@ cdef class CGImage:
             raise ValueError("bits_per_component must be 5 or 8")
 
         cdef int min_bytes
-        min_bytes = (width*bits_per_pixel + 7) / 8
+        min_bytes = (width*bits_per_pixel + 7) // 8
         if bytes_per_row < min_bytes:
             bytes_per_row = min_bytes
 
@@ -1826,16 +1826,16 @@ cdef class CGImageFile(CGImage):
             bits_per_pixel = 8
             alpha_info = kCGImageAlphaNone
 
-        bytes_per_row = (bits_per_pixel*width + 7)/ 8
+        bytes_per_row = (bits_per_pixel*width + 7) // 8
 
         cdef char* data
         cdef char* py_data
-        cdef int dims[3]
+        cdef int numpy.npy_intp dims[3]
         dims[0] = height
         dims[1] = width
-        dims[2] = bits_per_pixel/bits_per_component
+        dims[2] = bits_per_pixel // bits_per_component
 
-        self.bmp_array = numpy.PyArray_SimpleNew(3, &(dims[0]), numpy.NPY_UBYTE)
+        self.bmp_array = numpy.PyArray_SimpleNew(3, dims, numpy.NPY_UBYTE)
 
         data = self.bmp_array.data
         bs = img.tobytes()
@@ -2672,7 +2672,7 @@ cdef int bisect_left(PiecewiseLinearColorFunction self, CGFloat t):
     hi = self.num_stops
     lo = 0
     while lo < hi:
-        mid = (lo + hi)/2
+        mid = (lo + hi) / 2
         stop = self.stops[mid]
         if t < stop:
             hi = mid
@@ -2680,7 +2680,7 @@ cdef int bisect_left(PiecewiseLinearColorFunction self, CGFloat t):
             lo = mid + 1
     return lo
 
-cdef void piecewise_callback(void* obj, CGFloat* t, CGFloat* out):
+cdef void piecewise_callback(void* obj, CGFloat* t, CGFloat* out) noexcept:
    cdef int i
    cdef CGFloat eps
    cdef PiecewiseLinearColorFunction self
