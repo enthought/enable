@@ -2672,7 +2672,7 @@ cdef int bisect_left(PiecewiseLinearColorFunction self, CGFloat t):
     hi = self.num_stops
     lo = 0
     while lo < hi:
-        mid = (lo + hi) / 2
+        mid = (lo + hi) // 2
         stop = self.stops[mid]
         if t < stop:
             hi = mid
