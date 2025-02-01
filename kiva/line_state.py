@@ -1,4 +1,4 @@
-# (C) Copyright 2005-2023 Enthought, Inc., Austin, TX
+# (C) Copyright 2005-2025 Enthought, Inc., Austin, TX
 # All rights reserved.
 #
 # This software is provided without warranty under the terms of the BSD
@@ -15,11 +15,8 @@ state (eg. Wx, SVG and PDF backends, but not Agg or QPainter).
 """
 
 from numpy import array, asarray, shape
-try:
-    from numpy import sometrue
-except ImportError:
-    from numpy import any as sometrue
 
+from .compatibility import sometrue
 from .constants import NO_DASH
 
 
