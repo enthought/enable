@@ -14,7 +14,11 @@ to have their state tracked by Python, rather than by an internal graphics
 state (eg. Wx, SVG and PDF backends, but not Agg or QPainter).
 """
 
-from numpy import array, asarray, shape, sometrue
+from numpy import array, asarray, shape
+try:
+    from numpy import sometrue
+except ImportError:
+    from numpy import any as sometrue
 
 from .constants import NO_DASH
 
