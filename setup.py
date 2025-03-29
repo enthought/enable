@@ -255,6 +255,7 @@ def agg_extensions():
             ] + kiva_agg_sources,
             swig_opts=swig_opts,
             include_dirs=include_dirs,
+            extra_compile_args=extra_compile_args,
             extra_link_args=extra_link_args,
             define_macros=define_macros,
             language='c++',
