@@ -191,9 +191,11 @@ def agg_extensions():
             for x in darwin_frameworks
         ]
         define_macros += [('__DARWIN__', None)]
+        compile_args = ['/std:c++14']
     else:
         # This should work for most linux distributions
         plat = 'x11'
+        compile_args = ['-std=c++14']
 
     freetype2_sources = [os.path.join(freetype_dir, 'src', src)
                          for src in freetype2_sources]
