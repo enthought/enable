@@ -192,11 +192,9 @@ def agg_extensions():
             for x in darwin_frameworks
         ]
         define_macros += [('__DARWIN__', None)]
-        compile_args = ['/std:c++14']
     else:
         # This should work for most linux distributions
         plat = 'x11'
-        compile_args = ['-std=c++14']
 
     freetype2_sources = [os.path.join(freetype_dir, 'src', src)
                          for src in freetype2_sources]
@@ -255,7 +253,6 @@ def agg_extensions():
             ] + kiva_agg_sources,
             swig_opts=swig_opts,
             include_dirs=include_dirs,
-            extra_compile_args=extra_compile_args,
             extra_link_args=extra_link_args,
             define_macros=define_macros,
             language='c++',
