@@ -169,6 +169,7 @@ def agg_extensions():
     define_macros = [
         # Numpy defines
         ('NUMPY', None),
+        ("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION"),
         ('PY_ARRAY_TYPES_PREFIX', 'NUMPY_CXX'),
         ('OWN_DIMENSIONS', '0'),
         ('OWN_STRIDES', '0'),
@@ -282,6 +283,9 @@ def base_extensions():
             depends=[
                 'kiva/_hit_test.h',
                 'kiva/_hit_test.pxd',
+            ],
+            define_macros=[
+                ("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION"),
             ],
             include_dirs=['kiva', numpy.get_include()],
             language='c++',
