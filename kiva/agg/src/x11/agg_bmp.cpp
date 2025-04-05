@@ -124,10 +124,10 @@ namespace agg24
     dims[1] = h;
     dims[2] = 3;
     import_array();
-    arr = PyArray_SimpleNew(3,dims,PyArray_BYTE);
+    arr = PyArray_SimpleNew(3,dims,NPY_BYTE);
     if (arr==NULL)
       return NULL;
-    data = ((PyArrayObject *)arr)->data;
+    data = PyArray_BYTES((PyArrayObject *)arr);
 
     switch (format) {
     case pix_format_bgra32:

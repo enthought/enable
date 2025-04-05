@@ -20,10 +20,10 @@
 %typemap(argout) double *out {
    // Append output value $1 to $result
    npy_intp dims = 4;
-   PyArrayObject* ary_obj = (PyArrayObject*) PyArray_SimpleNew(1,&dims,PyArray_DOUBLE);
+   PyArrayObject* ary_obj = (PyArrayObject*) PyArray_SimpleNew(1,&dims,NPY_DOUBLE);
    if( ary_obj == NULL )
     return NULL;
-   double* data = (double*)ary_obj->data;
+   double* data = (double*)PyArray_DATA(ary_obj);
    for (int i=0; i < 4;i++)
        data[i] = $1[i];
    Py_DECREF($result);

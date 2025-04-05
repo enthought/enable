@@ -126,7 +126,7 @@ namespace agg24
     arr = PyArray_SimpleNew(3, dims, PyArray_BYTE);
     if (arr==NULL)
       return NULL;
-    data = ((PyArrayObject *)arr)->data;
+    data = PyArray_DATA((PyArrayObject *)arr);
 
     switch (format) {
     case pix_format_bgra32:

@@ -71,7 +71,7 @@
 %typemap(in) (double* point_array, int point_count) (PyArrayObject* ary=NULL,
                                          int is_new_object)
 {
-    ary = obj_to_array_contiguous_allow_conversion($input, PyArray_DOUBLE,
+    ary = obj_to_array_contiguous_allow_conversion($input, NPY_DOUBLE,
                                                    is_new_object);
     int size[2] = {-1,2};
     if (!ary ||
@@ -80,8 +80,8 @@
     {
         goto fail;
     }
-    $1 = (double*) ary->data;
-    $2 = ary->dimensions[0];
+    $1 = (double*)PyArray_DATA(ary);
+    $2 = array_size(ary, 0);
 }
 
 %typemap(freearg) (double* point_array, int point_count)
@@ -104,7 +104,7 @@
 %typemap(in) (unsigned char* results, int Nresults) (PyArrayObject* ary=NULL,
                                            int is_new_object)
 {
-    ary = obj_to_array_contiguous_allow_conversion($input, PyArray_BOOL,
+    ary = obj_to_array_contiguous_allow_conversion($input, NPY_BOOL,
                                                    is_new_object);
     int size[1] = {-1};
     if (!ary ||
@@ -113,8 +113,8 @@
     {
         goto fail;
     }
-    $1 = (unsigned char*) ary->data;
-    $2 = ary->dimensions[0];
+    $1 = (unsigned char*)PyArray_DATA(ary);
+    $2 = array_size(ary, 0);
 }
 
 %typemap(freearg) (unsigned char* results, int Nresults)
@@ -139,7 +139,7 @@
 %typemap(in)  (double* rect_array, int rect_count) (PyArrayObject* ary=NULL,
                                                     int is_new_object)
 {
-    ary = obj_to_array_contiguous_allow_conversion($input, PyArray_DOUBLE,
+    ary = obj_to_array_contiguous_allow_conversion($input, NPY_DOUBLE,
                                                    is_new_object);
     int size[2] = {-1,4};
     if (!ary ||
@@ -148,8 +148,8 @@
     {
         goto fail;
     }
-    $1 = (double*) ary->data;
-    $2 = ary->dimensions[0];
+    $1 = (double*)PyArray_DATA(ary);
+    $2 = array_size(ary, 0);
 }
 
 %typemap(freearg) (double* rect_array, int rect_count)
@@ -220,10 +220,10 @@
 %typemap(argout) double *array6 {
    // Append output value $1 to $result
    npy_intp dims = 6;
-   PyArrayObject* ary_obj = (PyArrayObject*) PyArray_SimpleNew(1,&dims,PyArray_DOUBLE);
+   PyArrayObject* ary_obj = (PyArrayObject*) PyArray_SimpleNew(1,&dims,NPY_DOUBLE);
    if( ary_obj == NULL )
     return NULL;
-   double* data = (double*)ary_obj->data;
+   double* data = (double*)PyArray_DATA(ary_obj);
    for (int i=0; i < 6;i++)
        data[i] = $1[i];
    Py_DECREF($result);
@@ -255,15 +255,15 @@
     }
     else
     {
-        ary = obj_to_array_contiguous_allow_conversion($input, PyArray_DOUBLE,
+        ary = obj_to_array_contiguous_allow_conversion($input, NPY_DOUBLE,
                                                        is_new_object);
         if (!ary ||
             !require_dimensions(ary,1))
         {
             goto fail;
         }
-        $1 = (double*) ary->data;
-        $2 = ary->dimensions[0];
+        $1 = (double*)PyArray_DATA(ary);
+        $2 = array_size(ary, 0);
     }
 }
 
@@ -288,7 +288,7 @@
 
 %typemap(in) (unsigned char *image_data=NULL, int width, int height, int stride)
 {
-    PyArrayObject* ary = obj_to_array_no_conversion($input, PyArray_UBYTE);
+    PyArrayObject* ary = obj_to_array_no_conversion($input, NPY_UBYTE);
     int dimensions[2] = {2,3};
 // !! No longer requiring contiguity because some bitmaps are padded at the
 // !! end (i.e. Windows).  We should probably special case that one though,
@@ -301,11 +301,11 @@
     {
         goto fail;
     }
-    $1 = (unsigned char*) ary->data;
+    $1 = (unsigned char*)PyArray_DATA(ary);
     // notice reversed orders...
-    $2 = ary->dimensions[1];
-    $3 = ary->dimensions[0];
-    $4 = ary->strides[0];
+    $2 = PyArray_DIM(ary,1);
+    $3 = PyArray_DIM(ary,0);
+    $4 = PyArray_STRIDE(ary,0);
 }
 
 // --------------------------------------------------------------------------
@@ -328,7 +328,7 @@
 %typemap(in) std::vector<kiva::gradient_stop> (PyArrayObject* ary=NULL,
                                          		   int is_new_object)
 {
-    PyArrayObject* ary = obj_to_array_no_conversion($input, PyArray_DOUBLE);
+    PyArrayObject* ary = obj_to_array_no_conversion($input, NPY_DOUBLE);
     if (ary == NULL)
     {
         goto fail;
@@ -336,10 +336,10 @@
 
     std::vector<kiva::gradient_stop> stops;
 
-    for (int i = 0; i < ary->dimensions[0]; i++)
+    for (int i = 0; i < PyArray_DIM(ary, 0); i++)
     {
         // the stop is offset, red, green, blue, alpha
-        double* data = (double*)(ary->data);
+      double* data = (double*)(PyArray_DATA(ary));
         agg24::rgba8 color(data[5*i+1]*255, data[5*i+2]*255, data[5*i+3]*255, data[5*i+4]*255);
         stops.push_back(kiva::gradient_stop(data[5*i], color));
     }

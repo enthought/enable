@@ -30,14 +30,15 @@ Here are the typemap helper functions for numeric arrays:
 */
 
 %{
-#include "numpy/arrayobject.h"
 #include <string>
+#include "numpy/arrayobject.h"
 
 #define is_array(a) ((a) && PyArray_Check((PyArrayObject *)a))
-#define array_type(a) (int)(((PyArrayObject *)a)->descr->type_num)
-#define array_dimensions(a) (((PyArrayObject *)a)->nd)
-#define array_size(a,i) (((PyArrayObject *)a)->dimensions[i])
-#define array_is_contiguous(a) (PyArray_ISCONTIGUOUS(ary))
+#define array_type(a) (int)(PyArray_TYPE((PyArrayObject *)a))
+#define array_dimensions(a) PyArray_NDIM((PyArrayObject *)a)
+#define array_size(a,i) PyArray_DIM((PyArrayObject *)a, i)
+#define array_is_contiguous(a) PyArray_ISCONTIGUOUS(a)
+
 
 std::string pytype_string(PyObject* py_obj)
 {
@@ -75,10 +76,10 @@ int type_match(int actual_type, int desired_type)
     // Make sure input has correct numeric type. Allow character and byte to
     // match also allow int and long to match.
     if ( actual_type != desired_type &&
-            !(desired_type == PyArray_CHAR  && actual_type == PyArray_BYTE) &&
-            !(desired_type == PyArray_BYTE && actual_type == PyArray_CHAR)  &&
-            !(desired_type == PyArray_INT   && actual_type == PyArray_LONG)  &&
-            !(desired_type == PyArray_LONG  && actual_type == PyArray_INT))
+            !(desired_type == NPY_CHAR  && actual_type == NPY_BYTE) &&
+            !(desired_type == NPY_BYTE && actual_type == NPY_CHAR)  &&
+            !(desired_type == NPY_INT   && actual_type == NPY_LONG)  &&
+            !(desired_type == NPY_LONG  && actual_type == NPY_INT))
     {
         match = 0;
     }
