@@ -124,7 +124,7 @@ dependencies = {
         "traits",
         "traitsui",
         "wheel",
-    }
+    },
     '3.11': {
         "apptools",
         "celiagg",
