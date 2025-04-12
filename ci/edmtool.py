@@ -234,7 +234,7 @@ def install(runtime, toolkit, environment, source):
                 "edm run -e {environment} -- python -m pip install wxPython"
             )
     elif toolkit == "wx":
-        commands.append("edm install -e {environment} wxpython")
+        commands.append("edm --config {edm_config} install -e {environment} wxpython")
 
     click.echo("Creating environment '{environment}'".format(**parameters))
     execute(commands, parameters)
