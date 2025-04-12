@@ -465,7 +465,7 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
 
     ctypedef void* CGFunctionRef
 
-    ctypedef void (*CGFunctionEvaluateCallback)(void *info, CGFloat *in_data, CGFloat *out)
+    ctypedef void (*CGFunctionEvaluateCallback)(void *info, const CGFloat *in_data, CGFloat *out)
 
     ctypedef void (*CGFunctionReleaseInfoCallback)(void *info)
 
@@ -508,4 +508,3 @@ cdef extern from "ApplicationServices/ApplicationServices.h":
     CFTypeID CGLayerGetTypeID()
 
     CFTypeID CGContextGetTypeID()
-
