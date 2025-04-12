@@ -90,6 +90,17 @@ supported_combinations = {
     '3.11': {'pyside6', 'pyqt6', 'wx', 'null'},
 }
 
+platforms = {
+    ('3.6', 'Linux') : 'rh7_x86_64',
+    ('3.8', 'Linux') : 'rh7_x86_64',
+    ('3.11', 'Linux') : 'rh8_x86_64',
+    ('3.6', 'Windows') : 'win_x86_64',
+    ('3.8', 'Windows') : 'win_x86_64',
+    ('3.11', 'Windows') : 'win_x86_64',
+    ('3.6', 'Darwin') : 'osx_x86_64',
+    ('3.8', 'Darwin') : 'osx_x86_64',
+    ('3.11', 'Darwin') : 'osx_x86_64'}
+
 dependencies = {
     '3.6': {
         "apptools",
@@ -212,7 +223,7 @@ def install(runtime, toolkit, environment, source):
     # edm commands to setup the development environment
     commands = [
         ("edm --config {edm_config} environments create {environment} "
-         "--force --version={runtime}"),
+         "--force --version={runtime} --platform={platform}"),
         ("edm --config {edm_config} install -y -e {environment} {packages} "
          "--add-repository enthought/lgpl"),
         ("edm run -e {environment} -- pip install -r ci/requirements_{runtime}.txt"
@@ -496,7 +507,8 @@ def get_parameters(runtime, toolkit, environment):
         tmpl = 'enable-test-{runtime}-{toolkit}'
         environment = tmpl.format(**parameters)
         parameters['environment'] = environment
-
+    os = platform.system()
+    parameters['platform'] = platforms[(runtime, os)]
     parameters["edm_config"] = EDM_CONFIG
     return parameters
 
