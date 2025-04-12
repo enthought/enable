@@ -133,7 +133,7 @@ dependencies = {
         "fonttools",
         "kiwisolver",
         "numpy",
-        "pillow_simd",
+        "pillow",
         "pyface",
         "pygments",
         "pyparsing",
