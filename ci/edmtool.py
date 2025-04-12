@@ -87,6 +87,7 @@ import click
 supported_combinations = {
     '3.6': {'pyside2', 'pyqt5', 'wx', 'null'},
     '3.8': {'pyside6', 'pyqt6', 'wx', 'null'},
+    '3.11': {'pyside6', 'pyqt6', 'wx', 'null'},
 }
 
 dependencies = {
@@ -109,6 +110,22 @@ dependencies = {
         "wheel",
     },
     '3.8': {
+        "apptools",
+        "celiagg",
+        "coverage",
+        "Cython",
+        "fonttools",
+        "kiwisolver",
+        "numpy",
+        "pillow_simd",
+        "pyface",
+        "pygments",
+        "pyparsing",
+        "traits",
+        "traitsui",
+        "wheel",
+    }
+    '3.11': {
         "apptools",
         "celiagg",
         "coverage",
@@ -202,7 +219,7 @@ def install(runtime, toolkit, environment, source):
          " --no-dependencies"),
     ]
 
-    if toolkit == "wx":
+    if toolkit == "wx" and runtime in ("3.6", "3.8"):
         if sys.platform == "darwin":
             commands.append(
                 "edm run -e {environment} -- python -m pip install wxPython<4.1"  # noqa: E501
@@ -216,6 +233,8 @@ def install(runtime, toolkit, environment, source):
             commands.append(
                 "edm run -e {environment} -- python -m pip install wxPython"
             )
+    elif toolkit == "wx":
+        commands.append("edm install -e {environment} wxpython")
 
     click.echo("Creating environment '{environment}'".format(**parameters))
     execute(commands, parameters)
