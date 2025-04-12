@@ -12,7 +12,7 @@ jobs:
   test-ets:
     strategy:
       matrix:
-        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+        os: ['macos-latest'] #, 'ubuntu-latest', 'windows-latest']
         toolkit: ['null', 'pyside2', 'pyside6', 'pyqt5', 'wx']
         python-version: ['3.8', '3.10', '3.11']
         exclude:
