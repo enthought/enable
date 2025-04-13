@@ -40,3 +40,6 @@ dash.bmp
 sun.test_*.bmp
 text_image.test_*.bmp
 .hypothesis/
+
+# Sublime Text
+*.sublime-workspace
