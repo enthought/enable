@@ -2526,7 +2526,7 @@ cdef class ShadingFunction:
         if self.function == NULL:
             raise RuntimeError("could not make CGFunctionRef")
 
-cdef void shading_callback(object self, CGFloat* in_data, CGFloat* out_data):
+cdef void shading_callback(object self, const CGFloat* in_data, CGFloat* out_data):
     cdef int i
     out = self(in_data[0])
     for i from 0 <= i < self.n_dims:
@@ -2680,7 +2680,7 @@ cdef int bisect_left(PiecewiseLinearColorFunction self, CGFloat t):
             lo = mid + 1
     return lo
 
-cdef void piecewise_callback(void* obj, CGFloat* t, CGFloat* out) noexcept:
+cdef void piecewise_callback(void* obj, const CGFloat* t, CGFloat* out) noexcept:
    cdef int i
    cdef CGFloat eps
    cdef PiecewiseLinearColorFunction self
