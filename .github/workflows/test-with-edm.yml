@@ -21,7 +21,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install x11 headers
-        run: sudo apt-get install libx11-dev 
+        run: |
+          sudo apt-get install libx11-dev 
+          sudo apt-get install libopengl0
+        if: matrix.toolkit != 'null'
       - name: Cache EDM packages
         uses: actions/cache@v4
         with:
