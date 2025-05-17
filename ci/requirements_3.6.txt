@@ -1,2 +1,0 @@
-pygarrayimage
-pyglet<2.0

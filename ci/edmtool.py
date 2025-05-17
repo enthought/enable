@@ -86,57 +86,15 @@ from contextlib import contextmanager
 import click
 
 supported_combinations = {
-    '3.6': {'pyside2', 'pyqt5', 'wx', 'null'},
-    '3.8': {'pyside6', 'pyqt6', 'wx', 'null'},
     '3.11': {'pyside6', 'pyqt6', 'wx', 'null'},
 }
 
 platforms = {
-    ('3.6', 'Linux') : 'rh7_x86_64',
-    ('3.8', 'Linux') : 'rh7_x86_64',
     ('3.11', 'Linux') : 'rh8_x86_64',
-    ('3.6', 'Windows') : 'win_x86_64',
-    ('3.8', 'Windows') : 'win_x86_64',
     ('3.11', 'Windows') : 'win_x86_64',
-    ('3.6', 'Darwin') : 'osx_x86_64',
-    ('3.8', 'Darwin') : 'osx_x86_64',
     ('3.11', 'Darwin') : 'osx_x86_64'}
 
 dependencies = {
-    '3.6': {
-        "apptools",
-        "celiagg",
-        "coverage",
-        "Cython",
-        "fonttools",
-        "kiwisolver",
-        "numpy",
-        "pillow",
-        "pyface",
-        "pygments",
-        "pyparsing",
-        "pypdf2",
-        "reportlab",
-        "traits",
-        "traitsui",
-        "wheel",
-    },
-    '3.8': {
-        "apptools",
-        "celiagg",
-        "coverage",
-        "Cython",
-        "fonttools",
-        "kiwisolver",
-        "numpy",
-        "pillow_simd",
-        "pyface",
-        "pygments",
-        "pyparsing",
-        "traits",
-        "traitsui",
-        "wheel",
-    },
     '3.11': {
         "apptools",
         "celiagg",
@@ -166,19 +124,14 @@ source_dependencies = [
 ]
 
 extra_dependencies = {
-    'pyqt5': {'pyqt5'},
     'pyqt6': {'pyqt6'},
-    'pyside2': {'pyside2'},
     'pyside6': {'pyside6'},
-    # XXX once wxPython 4 is available in EDM, we will want it here
-    "wx": set(),
+    "wx": {'wxPython'},
     'null': set()
 }
 
 environment_vars = {
-    'pyside2': {'ETS_TOOLKIT': 'qt', 'QT_API': 'pyside2'},
     'pyside6': {'ETS_TOOLKIT': 'qt', 'QT_API': 'pyside6'},
-    'pyqt5': {'ETS_TOOLKIT': 'qt', 'QT_API': 'pyqt5'},
     'pyqt6': {'ETS_TOOLKIT': 'qt', 'QT_API': 'pyqt6'},
     'wx': {'ETS_TOOLKIT': 'wx'},
     'null': {'ETS_TOOLKIT': 'null.image'},
@@ -206,7 +159,7 @@ def cli():
 
 
 @cli.command()
-@click.option('--runtime', default='3.6')
+@click.option('--runtime', default='3.11')
 @click.option('--toolkit', default='null')
 @click.option('--environment', default=None)
 @click.option(
@@ -230,23 +183,6 @@ def install(runtime, toolkit, environment, source):
         ("edm run -e {environment} -- pip install -r ci/requirements_{runtime}.txt"
          " --no-dependencies"),
     ]
-
-    if toolkit == "wx" and runtime in ("3.6", "3.8"):
-        if sys.platform == "darwin":
-            commands.append(
-                "edm run -e {environment} -- python -m pip install wxPython<4.1"  # noqa: E501
-            )
-        elif sys.platform == "linux":
-            # XXX this is mainly for TravisCI workers; need a generic solution
-            commands.append(
-                "edm run -e {environment} -- pip install -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/ wxPython"  # noqa: E501
-            )
-        else:
-            commands.append(
-                "edm run -e {environment} -- python -m pip install wxPython"
-            )
-    elif toolkit == "wx":
-        commands.append("edm --config {edm_config} install -e {environment} -y wxpython")
 
     click.echo("Creating environment '{environment}'".format(**parameters))
     execute(commands, parameters)

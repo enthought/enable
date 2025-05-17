@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         toolkit: ['null', 'pyside6']
-        runtime: ['3.8', '3.11']
+        runtime: ['3.11']
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v4
