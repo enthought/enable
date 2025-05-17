@@ -15,7 +15,7 @@ jobs:
   test-edm-linux:
     strategy:
       matrix:
-        toolkit: ['null', 'pyside6']
+        toolkit: ['null', 'pyside6', 'wx']
         runtime: ['3.11']
     runs-on: "ubuntu-latest"
     steps:
