@@ -243,6 +243,7 @@ def agg_extensions():
     if plat == 'win32':
         plat_support_libraries += ['gdi32', 'user32']
     elif plat == 'x11':
+        include_dirs += ['/usr/include']
         plat_support_libraries += ['X11']
 
     return [
