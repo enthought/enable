@@ -110,6 +110,8 @@ dependencies = {
         "traits",
         "traitsui",
         "wheel",
+        "build",
+        "reportlab",
     }
 }
 
@@ -211,10 +213,14 @@ def install(runtime, toolkit, environment, source):
 
     # No matter what happens before, always install local source again with no
     # dependencies or we risk testing against an released enable.
-    install_local = (
-        "edm run -e {environment} -- "
-        "pip install --force-reinstall --no-dependencies " + ROOT
-    )
+    local = [
+        (
+            "edm run -e {environment} -- "
+            "python -m build -x -n -w" + ROOT),
+        (
+            "edm run -e {environment} -- "
+            "python -m pip install --no-deps dist/*.whl")
+    ]
     execute([install_local], parameters)
 
     click.echo('Done install')
