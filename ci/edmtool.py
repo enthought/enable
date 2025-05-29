@@ -213,7 +213,7 @@ def install(runtime, toolkit, environment, source):
 
     # No matter what happens before, always install local source again with no
     # dependencies or we risk testing against an released enable.
-    local = [
+    install_local = [
         (
             "edm run -e {environment} -- "
             "python -m build -x -n -w" + ROOT),
