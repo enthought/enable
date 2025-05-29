@@ -221,7 +221,7 @@ def install(runtime, toolkit, environment, source):
             "edm run -e {environment} -- "
             "python -m pip install --no-deps dist/*.whl")
     ]
-    execute([install_local], parameters)
+    execute(install_local, parameters)
 
     click.echo('Done install')
 
