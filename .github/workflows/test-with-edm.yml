@@ -8,6 +8,7 @@ on: pull_request
 
 env:
   INSTALL_EDM_VERSION: 4.1.1
+  PYTHONUNBUFFERED: 1
 
 jobs:
 
