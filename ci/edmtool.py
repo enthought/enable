@@ -216,10 +216,10 @@ def install(runtime, toolkit, environment, source):
     install_local = [
         (
             "edm run -e {environment} -- "
-            "python -m build -x -n -w " + ROOT),
+            "python -m build -x -n -w ."),
         (
             "edm run -e {environment} -- "
-            f"python -m pip install --no-deps {ROOT}/dist/*")
+            f"python -m pip install --no-deps ./dist/*.whl")
     ]
     execute(install_local, parameters)
 
