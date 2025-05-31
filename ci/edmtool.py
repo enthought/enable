@@ -213,16 +213,15 @@ def install(runtime, toolkit, environment, source):
 
     # No matter what happens before, always install local source again with no
     # dependencies or we risk testing against an released enable.
-    install_local = [
-        (
-            "edm run -e {environment} -- "
-            "python -m build -x -n -w ."),
-        (
-            "edm run -e {environment} -- "
-            f"python -m pip install --no-deps ./dist/*.whl")
-    ]
-    execute(install_local, parameters)
-
+    build_enable = [
+        "edm run -e {environment} -- python -m build -x -n -w ."]
+    execute(build_enable, parameters)
+    whl = glob.glob(f"{ROOT}/dist/*.whl")[0]
+    install_enable = [(
+        "edm run -e {environment} -- "
+        f"python -m pip install --no-deps {whl}")]
+    execute(install_enable, parameters)
+    
     click.echo('Done install')
 
 
