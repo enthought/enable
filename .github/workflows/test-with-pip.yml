@@ -46,6 +46,8 @@ jobs:
           sudo apt-get install libfreetype-dev libharfbuzz-dev
           # needed for Cairo
           sudo apt-get install libcairo2-dev
+          # needed for wx
+          sudo apt-get install libgtk-3-dev
         if: matrix.os == 'ubuntu-latest'
       - name: Install dependencies for Mac
         run: |
