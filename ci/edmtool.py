@@ -76,6 +76,7 @@ how to run commands within an EDM enviornment.
 
 import glob
 import os
+import platform
 import subprocess
 import sys
 from shutil import rmtree, copy as copyfile
@@ -85,12 +86,16 @@ from contextlib import contextmanager
 import click
 
 supported_combinations = {
-    '3.6': {'pyside2', 'pyqt5', 'wx', 'null'},
-    '3.8': {'pyside6', 'pyqt6', 'wx', 'null'},
+    '3.11': {'pyside6', 'pyqt6', 'wx', 'null'},
 }
 
+platforms = {
+    ('3.11', 'Linux') : 'rh8_x86_64',
+    ('3.11', 'Windows') : 'win_x86_64',
+    ('3.11', 'Darwin') : 'osx_x86_64'}
+
 dependencies = {
-    '3.6': {
+    '3.11': {
         "apptools",
         "celiagg",
         "coverage",
@@ -102,27 +107,11 @@ dependencies = {
         "pyface",
         "pygments",
         "pyparsing",
-        "pypdf2",
+        "traits",
+        "traitsui",
+        "wheel",
+        "build",
         "reportlab",
-        "traits",
-        "traitsui",
-        "wheel",
-    },
-    '3.8': {
-        "apptools",
-        "celiagg",
-        "coverage",
-        "Cython",
-        "fonttools",
-        "kiwisolver",
-        "numpy",
-        "pillow_simd",
-        "pyface",
-        "pygments",
-        "pyparsing",
-        "traits",
-        "traitsui",
-        "wheel",
     }
 }
 
@@ -137,19 +126,14 @@ source_dependencies = [
 ]
 
 extra_dependencies = {
-    'pyqt5': {'pyqt5'},
     'pyqt6': {'pyqt6'},
-    'pyside2': {'pyside2'},
     'pyside6': {'pyside6'},
-    # XXX once wxPython 4 is available in EDM, we will want it here
-    "wx": set(),
+    "wx": {'wxPython'},
     'null': set()
 }
 
 environment_vars = {
-    'pyside2': {'ETS_TOOLKIT': 'qt', 'QT_API': 'pyside2'},
     'pyside6': {'ETS_TOOLKIT': 'qt', 'QT_API': 'pyside6'},
-    'pyqt5': {'ETS_TOOLKIT': 'qt', 'QT_API': 'pyqt5'},
     'pyqt6': {'ETS_TOOLKIT': 'qt', 'QT_API': 'pyqt6'},
     'wx': {'ETS_TOOLKIT': 'wx'},
     'null': {'ETS_TOOLKIT': 'null.image'},
@@ -177,7 +161,7 @@ def cli():
 
 
 @cli.command()
-@click.option('--runtime', default='3.6')
+@click.option('--runtime', default='3.11')
 @click.option('--toolkit', default='null')
 @click.option('--environment', default=None)
 @click.option(
@@ -195,27 +179,12 @@ def install(runtime, toolkit, environment, source):
     # edm commands to setup the development environment
     commands = [
         ("edm --config {edm_config} environments create {environment} "
-         "--force --version={runtime}"),
+         "--force --version={runtime} --platform={platform}"),
         ("edm --config {edm_config} install -y -e {environment} {packages} "
          "--add-repository enthought/lgpl"),
         ("edm run -e {environment} -- pip install -r ci/requirements_{runtime}.txt"
          " --no-dependencies"),
     ]
-
-    if toolkit == "wx":
-        if sys.platform == "darwin":
-            commands.append(
-                "edm run -e {environment} -- python -m pip install wxPython<4.1"  # noqa: E501
-            )
-        elif sys.platform == "linux":
-            # XXX this is mainly for TravisCI workers; need a generic solution
-            commands.append(
-                "edm run -e {environment} -- pip install -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/ wxPython"  # noqa: E501
-            )
-        else:
-            commands.append(
-                "edm run -e {environment} -- python -m pip install wxPython"
-            )
 
     click.echo("Creating environment '{environment}'".format(**parameters))
     execute(commands, parameters)
@@ -244,12 +213,15 @@ def install(runtime, toolkit, environment, source):
 
     # No matter what happens before, always install local source again with no
     # dependencies or we risk testing against an released enable.
-    install_local = (
+    build_enable = [
+        "edm run -e {environment} -- python -m build -x -n -w ."]
+    execute(build_enable, parameters)
+    whl = glob.glob(f"{ROOT}/dist/*.whl")[0]
+    install_enable = [(
         "edm run -e {environment} -- "
-        "pip install --force-reinstall --no-dependencies " + ROOT
-    )
-    execute([install_local], parameters)
-
+        f"python -m pip install --no-deps {whl}")]
+    execute(install_enable, parameters)
+    
     click.echo('Done install')
 
 
@@ -477,7 +449,8 @@ def get_parameters(runtime, toolkit, environment):
         tmpl = 'enable-test-{runtime}-{toolkit}'
         environment = tmpl.format(**parameters)
         parameters['environment'] = environment
-
+    os = platform.system()
+    parameters['platform'] = platforms[(runtime, os)]
     parameters["edm_config"] = EDM_CONFIG
     return parameters
 

@@ -15,7 +15,7 @@
 {
     PyArrayObject* ary=NULL;
     int is_new_object;
-    ary = obj_to_array_contiguous_allow_conversion($input, PyArray_DOUBLE,
+    ary = obj_to_array_contiguous_allow_conversion($input, NPY_DOUBLE,
                                                    is_new_object);
 
     int size[1] = {4};
@@ -26,7 +26,7 @@
         goto fail;
     }
 
-    double* data = (double*)(ary->data);
+    double* data = (double*)PyArray_DATA(ary);
     kiva::rect_type rect(data[0], data[1],
                          data[2], data[3]);
     $1 = &rect;

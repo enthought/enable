@@ -169,6 +169,7 @@ def agg_extensions():
     define_macros = [
         # Numpy defines
         ('NUMPY', None),
+        ("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION"),
         ('PY_ARRAY_TYPES_PREFIX', 'NUMPY_CXX'),
         ('OWN_DIMENSIONS', '0'),
         ('OWN_STRIDES', '0'),
@@ -242,6 +243,7 @@ def agg_extensions():
     if plat == 'win32':
         plat_support_libraries += ['gdi32', 'user32']
     elif plat == 'x11':
+        include_dirs += ['/usr/include']
         plat_support_libraries += ['X11']
 
     return [
@@ -280,6 +282,9 @@ def base_extensions():
             depends=[
                 'kiva/_hit_test.h',
                 'kiva/_hit_test.pxd',
+            ],
+            define_macros=[
+                ("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION"),
             ],
             include_dirs=['kiva', numpy.get_include()],
             language='c++',
@@ -320,11 +325,6 @@ def macos_extensions():
             'kiva.quartz.ABCGI',
             sources=[
                 'kiva/quartz/ABCGI.pyx',
-                'kiva/quartz/Python.pxi',
-                'kiva/quartz/numpy.pxi',
-                'kiva/quartz/CoreFoundation.pxi',
-                'kiva/quartz/CoreGraphics.pxi',
-                'kiva/quartz/CoreText.pxi',
             ],
             extra_link_args=extra_link_args,
             include_dirs=[numpy.get_include()],
@@ -333,9 +333,6 @@ def macos_extensions():
             'kiva.quartz.CTFont',
             sources=[
                 'kiva/quartz/CTFont.pyx',
-                'kiva/quartz/CoreFoundation.pxi',
-                'kiva/quartz/CoreGraphics.pxi',
-                'kiva/quartz/CoreText.pxi',
             ],
             extra_link_args=extra_link_args,
         ),
@@ -457,5 +454,5 @@ if __name__ == "__main__":
             ],
         },
         zip_safe=False,
-        python_requires=">=3.7",
+        python_requires=">=3.9",
     )

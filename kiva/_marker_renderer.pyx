@@ -7,11 +7,13 @@
 # is also available online at http://www.enthought.com/licenses/BSD.txt
 #
 # Thanks for using Enthought open source!
-import cython
 import numpy as np
-from numpy cimport uint8_t
 
-cimport _marker_renderer
+from numpy cimport uint8_t, import_array
+cimport cython
+from . cimport _marker_renderer
+
+import_array()
 
 ctypedef _marker_renderer.marker_renderer_base renderer_base_t
 

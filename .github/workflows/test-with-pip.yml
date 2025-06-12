@@ -11,32 +11,28 @@ on:
 jobs:
   test-ets:
     strategy:
+      fail-fast: false
       matrix:
-        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+        os: ['macos-latest', 'ubuntu-latest', 'windows-latest']
         toolkit: ['null', 'pyside2', 'pyside6', 'pyqt5', 'wx']
-        python-version: ['3.8', '3.10', '3.11']
+        python-version: ['3.10', '3.11']
         exclude:
-          # No Wx wheels available for Python 3.11
-          - toolkit: 'wx'
-            python-version: '3.11'
           # No PySide2 wheels available for Python 3.11
           - toolkit: 'pyside2'
             python-version: '3.11'
           # No PyQt5 wheels available for Python 3.11
           - toolkit: 'pyqt5'
             python-version: '3.11'
-          # No Wx wheels available for ubuntu or macos
-          - os: 'ubuntu-latest'
-            toolkit: 'wx'
+          # No PySide2 wheels for macos-latest
           - os: 'macos-latest'
-            toolkit: 'wx'
+            toolkit: 'pyside2'
           # Kiva tests hanging on windows, see #1038
           - os: 'windows-latest'
             toolkit: 'pyqt5'
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -50,6 +46,8 @@ jobs:
           sudo apt-get install libfreetype-dev libharfbuzz-dev
           # needed for Cairo
           sudo apt-get install libcairo2-dev
+          # needed for wx
+          sudo apt-get install libgtk-3-dev
         if: matrix.os == 'ubuntu-latest'
       - name: Install dependencies for Mac
         run: |
@@ -57,9 +55,9 @@ jobs:
         if: matrix.os == 'macos-latest'
       - name: Install build dependencies
         run: |
-          python -m pip install --upgrade pip wheel
+          python -m pip install --upgrade pip wheel cython
       - name: Install local packages
-        run: pip install ".[celiagg,cairo,layout,pdf,svg,test,${{ matrix.toolkit }}]"
+        run: pip install ".[cairo,layout,pdf,svg,test,${{ matrix.toolkit }}]"
       - name: Sanity check package version
         run: pip list
       - name: Run kiva test suite (Linux)

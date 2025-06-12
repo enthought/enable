@@ -8,9 +8,12 @@
 #
 # Thanks for using Enthought open source!
 import numpy as np
-from numpy cimport uint8_t
-cimport _hit_test
 
+from numpy cimport uint8_t, import_array
+cimport cython
+from . cimport _hit_test
+
+import_array()
 
 def points_in_polygon(pts, poly_pts, use_winding=False):
     """Test whether point pairs in pts are within the polygon, poly_pts.

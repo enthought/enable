@@ -7,7 +7,8 @@ name: Test with EDM
 on: pull_request
 
 env:
-  INSTALL_EDM_VERSION: 3.5.0
+  INSTALL_EDM_VERSION: 4.1.1
+  PYTHONUNBUFFERED: 1
 
 jobs:
 
@@ -15,21 +16,20 @@ jobs:
   test-edm-linux:
     strategy:
       matrix:
-        toolkit: ['null', 'pyside6']
-        runtime: ['3.8']
+        toolkit: ['null', 'pyside6', 'wx']
+        runtime: ['3.11']
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v3
-      - name: Install Qt dependencies
-        uses: ./.github/actions/install-qt-support
-        if: matrix.toolkit != 'wx'
+      - uses: actions/checkout@v4
+      - name: Install x11 headers
+        run: sudo apt-get install libx11-dev libopengl0 libegl1
       - name: Cache EDM packages
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.cache
           key: ${{ runner.os }}-${{ matrix.toolkit }}-${{ matrix.runtime }}-${{ hashFiles('ci/edmtool.py') }}
       - name: Setup EDM
-        uses: enthought/setup-edm-action@v2
+        uses: enthought/setup-edm-action@v4.1
         with:
           edm-version: ${{ env.INSTALL_EDM_VERSION }}
       - name: Install click to the default EDM environment
@@ -46,7 +46,7 @@ jobs:
       matrix:
         os: ["windows-latest"]
         toolkit: ['null', 'pyside6', 'wx']
-        runtime: ['3.8']
+        runtime: ['3.11']
     runs-on: ${{ matrix.os }}
     env:
       # Set root directory, mainly for Windows, so that the EDM Python
@@ -55,14 +55,14 @@ jobs:
       # relative path between the site-packages and the source directory.
       EDM_ROOT_DIRECTORY: ${{ github.workspace }}/.edm
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Cache EDM packages
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.cache
           key: ${{ runner.os }}-${{ matrix.toolkit }}-${{ matrix.runtime }}-${{ hashFiles('ci/edmtool.py') }}
       - name: Setup EDM
-        uses: enthought/setup-edm-action@v1
+        uses: enthought/setup-edm-action@v4.1
         with:
           edm-version: ${{ env.INSTALL_EDM_VERSION }}
       - name: Install click to the default EDM environment
