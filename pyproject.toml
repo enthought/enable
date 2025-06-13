@@ -3,7 +3,7 @@ requires = ["cython", "numpy>=2", "setuptools", "swig", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
-skip = 'pp* *-musllinux* cp36-* cp-37-* cp38-*'
+skip = 'pp* *-musllinux* cp38-*'
 
 [tool.cibuildwheel.linux]
 archs = ['auto', 'aarch64']
