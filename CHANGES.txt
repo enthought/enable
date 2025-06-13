@@ -2,6 +2,18 @@
 Enable CHANGELOG
 ================
 
+Enable 6.1.0
+============
+
+This is a minor release fixing build problems of the enable package
+
+Fixes
+-----
+
+* Fix building on Apple Silicon (#1067, #1070)
+* Fix building with Cython 3.x (#1060, #1070)
+* Test on CI with wxPython on PyPI and EDM workflows (#1009, #1070)
+
 Enable 6.0.0
 ============
 
