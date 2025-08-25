@@ -1218,7 +1218,8 @@ class GraphicsContextBase(AbstractGraphicsContext):
         elif func == CONCAT_CTM:
             self.device_ctm = affine.concat(self.device_ctm, args[0])
         elif func == LOAD_CTM:
-            self.device_ctm = args[0].copy()
+            self.device_prepare_device_ctm()
+            self.device_ctm = affine.concat(self.device_ctm, args[0])
 
     def device_draw_rect(self, x, y, sx, sy, mode):
         """ Default implementation of drawing  a rect.
