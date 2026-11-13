@@ -48,7 +48,7 @@ main branch should always be in a buildable/runnable condition. Continuous
 Integration is your friend here, not your nemesis.
 
 Releases will always be tagged. If a patch release is later needed, and major
-changes have occured on the main branch (not just bug fixes), then a branch
+changes have occurred on the main branch (not just bug fixes), then a branch
 should be created from the release tag and fix commits cherry-picked from main
 until the appropriately patched result is arrived at. That result should then be
 tagged as a normal release and the branch deleted.
